@@ -1,0 +1,30 @@
+{
+  "app": "test-wec-temas",
+  "schema": 1,
+  "exportedAt": "2026-11-08T12:00:00.000Z",
+  "asignatura": {
+    "id": "wec",
+    "nombre": "WEC"
+  },
+  "totalPreguntas": 100,
+  "wrongIds": [8, 35, 36, 47, 50, 53, 66, 77, 85, 93],
+  "history": {
+    "8": { "selected": "A", "at": "2026-11-08T11:50:00.000Z", "fails": 1 },
+    "35": { "selected": "A", "at": "2026-11-08T11:51:00.000Z", "fails": 2 },
+    "36": { "selected": "D", "at": "2026-11-08T11:52:00.000Z", "fails": 1 },
+    "47": { "selected": "A", "at": "2026-11-08T11:53:00.000Z", "fails": 1 },
+    "50": { "selected": "A", "at": "2026-11-08T11:54:00.000Z", "fails": 1 },
+    "53": { "selected": "B", "at": "2026-11-08T11:55:00.000Z", "fails": 1 },
+    "66": { "selected": "B", "at": "2026-11-08T11:56:00.000Z", "fails": 3 },
+    "77": { "selected": "B", "at": "2026-11-08T11:57:00.000Z", "fails": 1 },
+    "85": { "selected": "B", "at": "2026-11-08T11:58:00.000Z", "fails": 1 },
+    "93": { "selected": "A", "at": "2026-11-08T11:59:00.000Z", "fails": 2 }
+  },
+  "stats": {
+    "attempts": 3,
+    "bestPct": 82,
+    "lastPct": 74,
+    "lastTotal": 100,
+    "lastDate": "2026-11-08T11:59:00.000Z"
+  }
+}

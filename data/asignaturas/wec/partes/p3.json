@@ -1,0 +1,430 @@
+[
+  {
+    "id": 41,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Historia de JavaScript",
+    "dificultad": "facil",
+    "enunciado": "¿Quién desarrolló JavaScript y con qué nombre nació?",
+    "opciones": {
+      "A": "Sun, LiveScript",
+      "B": "Oracle, Java",
+      "C": "Microsoft, JScript",
+      "D": "Netscape, Mocha"
+    },
+    "correcta": "D",
+    "explicacion": "Lo desarrolló Netscape; se llamó primero Mocha, luego LiveScript y al final JavaScript."
+  },
+  {
+    "id": 42,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Historia de JavaScript",
+    "dificultad": "media",
+    "enunciado": "Orden histórico de los nombres de JavaScript:",
+    "opciones": {
+      "A": "LiveScript → JavaScript → Mocha",
+      "B": "Mocha → JavaScript → LiveScript",
+      "C": "Mocha → LiveScript → JavaScript",
+      "D": "JavaScript → Mocha → LiveScript"
+    },
+    "correcta": "C",
+    "explicacion": "El orden es Mocha → LiveScript → JavaScript."
+  },
+  {
+    "id": 43,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Historia de JavaScript",
+    "dificultad": "media",
+    "enunciado": "¿Quién desarrolló JScript?",
+    "opciones": {
+      "A": "Netscape",
+      "B": "Microsoft",
+      "C": "Mozilla",
+      "D": "Oracle"
+    },
+    "correcta": "B",
+    "explicacion": "JScript es una variante muy parecida a JavaScript desarrollada por Microsoft."
+  },
+  {
+    "id": 44,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Historia de JavaScript",
+    "dificultad": "media",
+    "enunciado": "¿A quién pertenece hoy el nombre JavaScript?",
+    "opciones": {
+      "A": "Microsoft",
+      "B": "Oracle Corporation",
+      "C": "W3C",
+      "D": "Netscape"
+    },
+    "correcta": "B",
+    "explicacion": "Hoy el nombre pertenece a Oracle Corporation, la propietaria también de Java. JavaScript y Java son lenguajes distintos."
+  },
+  {
+    "id": 45,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Tipos de datos",
+    "dificultad": "facil",
+    "enunciado": "¿Cuántos tipos de datos pide el temario?",
+    "opciones": {
+      "A": "4",
+      "B": "6",
+      "C": "5",
+      "D": "8"
+    },
+    "correcta": "B",
+    "explicacion": "String, Number, Boolean, Null, Object y Undefined."
+  },
+  {
+    "id": 46,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Tipos de datos",
+    "dificultad": "media",
+    "enunciado": "¿Qué tipo permite tener una variable inicializada sin valor?",
+    "opciones": {
+      "A": "Null",
+      "B": "NaN",
+      "C": "Empty",
+      "D": "Undefined"
+    },
+    "correcta": "D",
+    "explicacion": "Undefined es 'existe, pero nadie le ha puesto nada'. Null es una ausencia intencionada."
+  },
+  {
+    "id": 47,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Tipos de datos",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué devuelve `typeof null`?",
+    "opciones": {
+      "A": "\"null\"",
+      "B": "\"boolean\"",
+      "C": "\"object\"",
+      "D": "\"undefined\""
+    },
+    "correcta": "C",
+    "explicacion": "Es un error histórico de 1995 que nunca se arregló porque arreglarlo rompería media internet. Aparece mucho en los exámenes."
+  },
+  {
+    "id": 48,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Tipos de datos",
+    "dificultad": "media",
+    "enunciado": "¿Qué devuelve `typeof undefined`?",
+    "opciones": {
+      "A": "\"void\"",
+      "B": "\"object\"",
+      "C": "\"null\"",
+      "D": "\"undefined\""
+    },
+    "correcta": "D",
+    "explicacion": "`typeof undefined` devuelve la cadena \"undefined\"."
+  },
+  {
+    "id": 49,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Undefined",
+    "dificultad": "facil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let x;\nconsole.log(typeof x);",
+    "opciones": {
+      "A": "\"number\"",
+      "B": "\"null\"",
+      "C": "\"object\"",
+      "D": "\"undefined\""
+    },
+    "correcta": "D",
+    "explicacion": "Una variable declarada con let pero sin asignación contiene undefined. `typeof x` devuelve la cadena \"undefined\".",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "x": "undefined"
+        },
+        "nota": "Se declara x sin asignar: su valor es undefined."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "x": "undefined"
+        },
+        "nota": "typeof x devuelve la cadena \"undefined\".",
+        "salida": "undefined"
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Null",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "const v = null;\nconsole.log(typeof v);",
+    "opciones": {
+      "A": "\"undefined\"",
+      "B": "\"object\"",
+      "C": "\"boolean\"",
+      "D": "\"null\""
+    },
+    "correcta": "B",
+    "explicacion": "`typeof null` devuelve \"object\" por el error histórico de 1995. No significa que null sea un objeto real.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "v": null
+        },
+        "nota": "v se inicializa a null: ausencia intencionada."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "v": null
+        },
+        "nota": "typeof null devuelve \"object\".",
+        "salida": "object"
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Undefined y null",
+    "dificultad": "media",
+    "enunciado": "¿Cuál es la diferencia entre undefined y null?",
+    "opciones": {
+      "A": "Son exactamente iguales",
+      "B": "undefined es 'existe pero nadie le ha puesto nada'; null es 'alguien le ha puesto vacío a propósito'",
+      "C": "undefined solo existe en el servidor",
+      "D": "null es un número y undefined un texto"
+    },
+    "correcta": "B",
+    "explicacion": "La diferencia es quién lo decidió: undefined es la ausencia por defecto; null es una ausencia puesta a propósito."
+  },
+  {
+    "id": 52,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Conversiones",
+    "dificultad": "facil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "const r = parseInt(\"98.76\");\nconsole.log(r);",
+    "opciones": {
+      "A": "NaN",
+      "B": "98.76",
+      "C": "99",
+      "D": "98"
+    },
+    "correcta": "D",
+    "explicacion": "parseInt se queda con la parte entera: 98.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "r": 98
+        },
+        "nota": "parseInt(\"98.76\") se queda con la parte entera: 98."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "r": 98
+        },
+        "nota": "console.log(r) imprime 98.",
+        "salida": "98"
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Conversiones",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "const r = parseInt(\"23,932\");\nconsole.log(r);",
+    "opciones": {
+      "A": "24",
+      "B": "23",
+      "C": "23.932",
+      "D": "NaN"
+    },
+    "correcta": "B",
+    "explicacion": "parseInt se para en la coma: 23. La coma no es el separador decimal de JavaScript; para decimales se usa el punto.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "r": 23
+        },
+        "nota": "parseInt se para en la coma y devuelve 23."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "r": 23
+        },
+        "nota": "console.log(r) imprime 23.",
+        "salida": "23"
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Conversiones",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "const r = parseFloat(\"23,932\");\nconsole.log(r);",
+    "opciones": {
+      "A": "23.932",
+      "B": "24",
+      "C": "23",
+      "D": "NaN"
+    },
+    "correcta": "C",
+    "explicacion": "parseFloat solo entiende el punto como separador decimal. Con coma se queda en 23.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "r": 23
+        },
+        "nota": "parseFloat solo entiende el punto; con coma devuelve 23."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "r": 23
+        },
+        "nota": "console.log(r) imprime 23.",
+        "salida": "23"
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "NaN",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "const r = parseInt(\"hola\");\nconsole.log(r);",
+    "opciones": {
+      "A": "NaN",
+      "B": "null",
+      "C": "undefined",
+      "D": "0"
+    },
+    "correcta": "A",
+    "explicacion": "No hay ningún número al principio: parseInt devuelve NaN (Not a Number).",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "r": "NaN"
+        },
+        "nota": "parseInt(\"hola\") no encuentra un número: NaN."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "r": "NaN"
+        },
+        "nota": "console.log(r) imprime NaN.",
+        "salida": "NaN"
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Variables",
+    "dificultad": "facil",
+    "enunciado": "¿Qué es una variable?",
+    "opciones": {
+      "A": "Una función del navegador",
+      "B": "Una zona de memoria identificada con un nombre donde se almacenan datos",
+      "C": "Un tipo de dato fijo",
+      "D": "Un archivo de JavaScript"
+    },
+    "correcta": "B",
+    "explicacion": "Una variable es una zona de memoria identificada con un nombre en la que se almacenan datos."
+  },
+  {
+    "id": 57,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Variables",
+    "dificultad": "facil",
+    "enunciado": "¿Cuál es la forma correcta de declarar una constante con valor?",
+    "opciones": {
+      "A": "`const IVA = 0.21;`",
+      "B": "`const = 0.21;`",
+      "C": "`constant IVA = 0.21;`",
+      "D": "`const IVA;`"
+    },
+    "correcta": "A",
+    "explicacion": "const debe llevar valor al declararla: `const IVA = 0.21;`."
+  },
+  {
+    "id": 58,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Variables",
+    "dificultad": "media",
+    "enunciado": "¿Qué ocurre con `const numero;`?",
+    "opciones": {
+      "A": "Se convierte en let automáticamente",
+      "B": "Se crea con undefined",
+      "C": "Error de sintaxis: const debe llevar valor al declararla",
+      "D": "Se crea con null"
+    },
+    "correcta": "C",
+    "explicacion": "Una const debe llevar valor al declararla. Si necesitas declarar sin valor, usa `let numero;`."
+  },
+  {
+    "id": 59,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Variables",
+    "dificultad": "facil",
+    "enunciado": "¿Qué palabra declara una variable local de ámbito de bloque?",
+    "opciones": {
+      "A": "`function`",
+      "B": "`let`",
+      "C": "`var`",
+      "D": "`const`"
+    },
+    "correcta": "B",
+    "explicacion": "let declara una variable local de ámbito de bloque: solo existe entre sus llaves."
+  },
+  {
+    "id": 60,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Variables",
+    "dificultad": "media",
+    "enunciado": "¿Qué palabra es la forma antigua de declarar variables, sin ámbito de bloque?",
+    "opciones": {
+      "A": "`var`",
+      "B": "`const`",
+      "C": "`class`",
+      "D": "`let`"
+    },
+    "correcta": "A",
+    "explicacion": "var es la forma antigua. No tiene ámbito de bloque y se evita en código moderno."
+  }
+]

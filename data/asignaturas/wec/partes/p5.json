@@ -1,0 +1,780 @@
+[
+  {
+    "id": 81,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operador ternario",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "const edat = 20;\nconst estat = (edat >= 18) ? \"adult\" : \"menor\";\nconsole.log(estat);",
+    "opciones": {
+      "A": "undefined",
+      "B": "true",
+      "C": "adult",
+      "D": "menor"
+    },
+    "correcta": "C",
+    "explicacion": "El operador ternario evalúa la condición. Como 20 >= 18 es true, toma el valor de la izquierda: \"adult\".",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "edat": 20
+        },
+        "nota": "edat vale 20."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "edat": 20,
+          "estat": "adult"
+        },
+        "nota": "La condición 20 >= 18 es true: toma el valor de la izquierda."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "edat": 20,
+          "estat": "adult"
+        },
+        "nota": "console.log(estat) imprime adult.",
+        "salida": "adult"
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores lógicos",
+    "dificultad": "facil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "console.log(true && false);",
+    "opciones": {
+      "A": "undefined",
+      "B": "true",
+      "C": "false",
+      "D": "0"
+    },
+    "correcta": "C",
+    "explicacion": "&& (AND) solo es true si todos los valores son true. Aquí uno es false, así que el resultado es false.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "true && false: falta uno para que todos sean true.",
+        "salida": "false"
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores lógicos",
+    "dificultad": "facil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "console.log(true || false);",
+    "opciones": {
+      "A": "true",
+      "B": "0",
+      "C": "undefined",
+      "D": "false"
+    },
+    "correcta": "A",
+    "explicacion": "|| (OR) es true si al menos uno de los valores es true. Aquí el primero ya es true.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "true || false: basta con que uno sea true.",
+        "salida": "true"
+      }
+    ]
+  },
+  {
+    "id": 84,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Precedencia",
+    "dificultad": "media",
+    "enunciado": "¿Cuál es el resultado de `2 + 3 * 4`?",
+    "codigo": "console.log(2 + 3 * 4);",
+    "opciones": {
+      "A": "24",
+      "B": "20",
+      "C": "14",
+      "D": "9"
+    },
+    "correcta": "C",
+    "explicacion": "La multiplicación tiene prioridad sobre la suma: 3 * 4 = 12 y después 2 + 12 = 14.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "Primero 3 * 4 = 12; después 2 + 12 = 14.",
+        "salida": "14"
+      }
+    ]
+  },
+  {
+    "id": 85,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Valores falsy",
+    "dificultad": "dificil",
+    "enunciado": "¿Cuáles son los seis valores que JavaScript considera falsos en un if?",
+    "opciones": {
+      "A": "false, 0, \"\", null, undefined y NaN",
+      "B": "false, 0, \"0\", null, undefined y NaN",
+      "C": "true, 1, \"false\", {}, [] y NaN",
+      "D": "Solo false y 0"
+    },
+    "correcta": "A",
+    "explicacion": "Solo hay seis valores falsy: false, 0, \"\", null, undefined y NaN. Todo lo demás es cierto, incluido el texto \"0\" y el texto \"false\"."
+  },
+  {
+    "id": 86,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Booleanos",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "if (\"0\") {\n  console.log(\"entra\");\n} else {\n  console.log(\"no entra\");\n}",
+    "opciones": {
+      "A": "no entra",
+      "B": "undefined",
+      "C": "Error",
+      "D": "entra"
+    },
+    "correcta": "D",
+    "explicacion": "El texto \"0\" es un valor truthy. Solo son falsos false, 0, \"\", null, undefined y NaN; el texto \"0\" no está en esa lista.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "La condición es el texto \"0\". Es truthy, así que entra en el if."
+      },
+      {
+        "linea": 2,
+        "vars": {},
+        "nota": "Se ejecuta la rama del if.",
+        "salida": "entra"
+      },
+      {
+        "linea": 5,
+        "vars": {},
+        "nota": "Fin del if: el else no se ejecuta."
+      }
+    ]
+  },
+  {
+    "id": 87,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Bucles",
+    "dificultad": "facil",
+    "enunciado": "¿Cuántas veces como mínimo se ejecuta un `do...while`?",
+    "opciones": {
+      "A": "2",
+      "B": "0",
+      "C": "1",
+      "D": "Depende de la condición"
+    },
+    "correcta": "C",
+    "explicacion": "La condición se evalúa después, así que el cuerpo se ejecuta siempre al menos una vez."
+  },
+  {
+    "id": 88,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Bucles",
+    "dificultad": "facil",
+    "enunciado": "¿Qué bucle comprueba la condición antes de cada vuelta?",
+    "opciones": {
+      "A": "`switch`",
+      "B": "`for...in`",
+      "C": "`while`",
+      "D": "`do...while`"
+    },
+    "correcta": "C",
+    "explicacion": "while comprueba la condición antes; do...while la comprueba al final."
+  },
+  {
+    "id": 89,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Bucle for",
+    "dificultad": "facil",
+    "enunciado": "¿Cuántas vueltas da este bucle?",
+    "codigo": "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}",
+    "opciones": {
+      "A": "Infinitas",
+      "B": "5",
+      "C": "6",
+      "D": "4"
+    },
+    "correcta": "B",
+    "explicacion": "i toma los valores 1, 2, 3, 4 y 5: cinco vueltas. Cuando i vale 6, la condición 6 <= 5 es false y sale.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "i": 1
+        },
+        "nota": "Inicialización: i = 1. Se comprueba 1 <= 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 1
+        },
+        "nota": "Primera vuelta.",
+        "salida": "1"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "i": 2
+        },
+        "nota": "i++ deja i = 2; 2 <= 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 2
+        },
+        "nota": "Segunda vuelta.",
+        "salida": "2"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "i": 3
+        },
+        "nota": "i++ deja i = 3; 3 <= 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 3
+        },
+        "nota": "Tercera vuelta.",
+        "salida": "3"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "i": 4
+        },
+        "nota": "i++ deja i = 4; 4 <= 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 4
+        },
+        "nota": "Cuarta vuelta.",
+        "salida": "4"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "i": 5
+        },
+        "nota": "i++ deja i = 5; 5 <= 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 5
+        },
+        "nota": "Quinta vuelta.",
+        "salida": "5"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "i": 6
+        },
+        "nota": "i++ deja i = 6; 6 <= 5 es false: sale del bucle."
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Bucle while",
+    "dificultad": "media",
+    "enunciado": "¿Cuántas veces se ejecuta el cuerpo de este bucle?",
+    "codigo": "let i = 0;\nwhile (i <= 10) {\n  i++;\n}",
+    "opciones": {
+      "A": "12",
+      "B": "11",
+      "C": "0",
+      "D": "10"
+    },
+    "correcta": "B",
+    "explicacion": "i va de 0 a 10 inclusive: 11 valores. Cuando i vale 11, la condición 11 <= 10 es false y sale.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "i": 0
+        },
+        "nota": "i empieza en 0."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 0
+        },
+        "nota": "0 <= 10: entra."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "i": 1
+        },
+        "nota": "Primera vuelta: i pasa a 1."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 1
+        },
+        "nota": "1 <= 10: sigue."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "i": 10
+        },
+        "nota": "Así hasta que i vale 10."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 10
+        },
+        "nota": "10 <= 10: entra una última vez."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "i": 11
+        },
+        "nota": "i pasa a 11."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 11
+        },
+        "nota": "11 <= 10 es false: sale del bucle."
+      },
+      {
+        "linea": 4,
+        "vars": {
+          "i": 11
+        },
+        "nota": "Fin del while."
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "break",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "for (let k = 1; k <= 5; k++) {\n  if (k === 3) { break; }\n  console.log(k);\n}",
+    "opciones": {
+      "A": "1 2 4 5",
+      "B": "1 2 3 4 5",
+      "C": "3",
+      "D": "1 2"
+    },
+    "correcta": "D",
+    "explicacion": "Cuando k vale 3, break sale del bucle del todo. Solo se imprimen 1 y 2.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "k": 1
+        },
+        "nota": "k = 1; 1 <= 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "k": 1
+        },
+        "nota": "1 === 3 es false."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "k": 1
+        },
+        "nota": "Se imprime 1.",
+        "salida": "1"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "k": 2
+        },
+        "nota": "k = 2; 2 <= 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "k": 2
+        },
+        "nota": "2 === 3 es false."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "k": 2
+        },
+        "nota": "Se imprime 2.",
+        "salida": "2"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "k": 3
+        },
+        "nota": "k = 3; 3 <= 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "k": 3
+        },
+        "nota": "3 === 3 es true: break sale del bucle."
+      },
+      {
+        "linea": 4,
+        "vars": {
+          "k": 3
+        },
+        "nota": "Fin del bucle: no se imprime el 3."
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "continue",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "for (let k = 1; k <= 5; k++) {\n  if (k === 3) { continue; }\n  console.log(k);\n}",
+    "opciones": {
+      "A": "1 2 3",
+      "B": "1 2 3 4 5",
+      "C": "1 2",
+      "D": "1 2 4 5"
+    },
+    "correcta": "D",
+    "explicacion": "continue se salta solo la vuelta actual: cuando k vale 3 no se ejecuta console.log. Se imprimen 1, 2, 4 y 5.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "k": 1
+        },
+        "nota": "k = 1."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "k": 1
+        },
+        "nota": "1 === 3 es false."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "k": 1
+        },
+        "nota": "Se imprime 1.",
+        "salida": "1"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "k": 2
+        },
+        "nota": "k = 2."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "k": 2
+        },
+        "nota": "2 === 3 es false."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "k": 2
+        },
+        "nota": "Se imprime 2.",
+        "salida": "2"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "k": 3
+        },
+        "nota": "k = 3."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "k": 3
+        },
+        "nota": "3 === 3 es true: continue salta a la siguiente vuelta sin ejecutar console.log."
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "k": 4
+        },
+        "nota": "k = 4."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "k": 4
+        },
+        "nota": "4 === 3 es false."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "k": 4
+        },
+        "nota": "Se imprime 4.",
+        "salida": "4"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "k": 5
+        },
+        "nota": "k = 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "k": 5
+        },
+        "nota": "5 === 3 es false."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "k": 5
+        },
+        "nota": "Se imprime 5.",
+        "salida": "5"
+      },
+      {
+        "linea": 1,
+        "vars": {
+          "k": 6
+        },
+        "nota": "k = 6; 6 <= 5 es false: fin."
+      }
+    ]
+  },
+  {
+    "id": 93,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "switch",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let dia = 3;\nswitch (dia) {\n  case 1: console.log(\"Dilluns\"); break;\n  case 2: console.log(\"Dimarts\"); break;\n  case 3: console.log(\"Dimecres\");\n  default: console.log(\"Cap dels anteriors\");\n}",
+    "opciones": {
+      "A": "Dimecres y Cap dels anteriors",
+      "B": "Cap dels anteriors",
+      "C": "Dimecres",
+      "D": "No imprime nada"
+    },
+    "correcta": "A",
+    "explicacion": "Falta break en el case 3: la ejecución cae hacia abajo (fall-through) y ejecuta también el default.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "dia": 3
+        },
+        "nota": "dia vale 3."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "dia": 3
+        },
+        "nota": "Se evalúa el switch."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "dia": 3
+        },
+        "nota": "case 1 no coincide."
+      },
+      {
+        "linea": 4,
+        "vars": {
+          "dia": 3
+        },
+        "nota": "case 2 no coincide."
+      },
+      {
+        "linea": 5,
+        "vars": {
+          "dia": 3
+        },
+        "nota": "case 3 coincide. No hay break.",
+        "salida": "Dimecres"
+      },
+      {
+        "linea": 6,
+        "vars": {
+          "dia": 3
+        },
+        "nota": "Sin break, la ejecución cae al default.",
+        "salida": "Cap dels anteriors"
+      },
+      {
+        "linea": 7,
+        "vars": {
+          "dia": 3
+        },
+        "nota": "Fin del switch."
+      }
+    ]
+  },
+  {
+    "id": 94,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "switch",
+    "dificultad": "facil",
+    "enunciado": "¿Para qué sirve `default` en un `switch`?",
+    "opciones": {
+      "A": "Se ejecuta cuando ningún case coincide",
+      "B": "Se ejecuta siempre",
+      "C": "Detiene el switch",
+      "D": "Declara una variable"
+    },
+    "correcta": "A",
+    "explicacion": "default se ejecuta cuando ningún caso coincide con la expresión del switch."
+  },
+  {
+    "id": 95,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "if / switch",
+    "dificultad": "media",
+    "enunciado": "Para intervalos como 'hasta 2 kg' o 'hasta 10 kg', ¿qué estructura es más adecuada?",
+    "opciones": {
+      "A": "`try...catch`",
+      "B": "`if / else if`",
+      "C": "`switch`",
+      "D": "`do...while`"
+    },
+    "correcta": "B",
+    "explicacion": "switch compara igualdades con valores fijos. Para intervalos se usa una cadena if / else if."
+  },
+  {
+    "id": 96,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Comentarios",
+    "dificultad": "facil",
+    "enunciado": "¿Qué carácter se usa para comentar una sola línea?",
+    "opciones": {
+      "A": "`/* */`",
+      "B": "`#`",
+      "C": "`//`",
+      "D": "`<!-- -->`"
+    },
+    "correcta": "C",
+    "explicacion": "Para comentar una sola línea se usa //. /* */ es multilínea, <!-- --> es de HTML y # es de otros lenguajes."
+  },
+  {
+    "id": 97,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Comentarios",
+    "dificultad": "facil",
+    "enunciado": "¿Cómo se escribe un comentario multilínea?",
+    "opciones": {
+      "A": "`# ...`",
+      "B": "`/* ... */`",
+      "C": "`<!-- ... -->`",
+      "D": "`// ...`"
+    },
+    "correcta": "B",
+    "explicacion": "El comentario multilínea va entre /* y */."
+  },
+  {
+    "id": 98,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Comentarios",
+    "dificultad": "facil",
+    "enunciado": "¿El intérprete de JavaScript tiene en cuenta los comentarios?",
+    "opciones": {
+      "A": "No, los ignora",
+      "B": "Solo en modo estricto",
+      "C": "Sí, los ejecuta",
+      "D": "Solo los de una línea"
+    },
+    "correcta": "A",
+    "explicacion": "El intérprete no tiene en cuenta los comentarios: sirven al programador para dejar anotaciones."
+  },
+  {
+    "id": 99,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Depuración",
+    "dificultad": "media",
+    "enunciado": "¿En qué pestaña del navegador se depura con breakpoints?",
+    "opciones": {
+      "A": "Sources",
+      "B": "Application",
+      "C": "Network",
+      "D": "Console"
+    },
+    "correcta": "A",
+    "explicacion": "En Sources se pone el punto de ruptura y la página se congela; F8 continúa la ejecución."
+  },
+  {
+    "id": 100,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Depuración",
+    "dificultad": "media",
+    "enunciado": "¿Qué tecla avanza una línea (Step over) en el depurador?",
+    "opciones": {
+      "A": "F5",
+      "B": "F12",
+      "C": "F8",
+      "D": "F10"
+    },
+    "correcta": "D",
+    "explicacion": "F10 avanza una línea; F8 continúa hasta el siguiente breakpoint; F5 recarga la página."
+  }
+]

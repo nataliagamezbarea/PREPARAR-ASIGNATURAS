@@ -1,0 +1,647 @@
+[
+  {
+    "id": 61,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Ámbito de let",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué ocurre al ejecutar este código?",
+    "codigo": "{\n  let dedins = \"solo dentro\";\n  console.log(dedins);\n}\nconsole.log(dedins);",
+    "opciones": {
+      "A": "No imprime nada",
+      "B": "Imprime \"solo dentro\" dos veces",
+      "C": "Imprime \"solo dentro\" y luego lanza ReferenceError: dedins is not defined",
+      "D": "Lanza SyntaxError en la primera línea"
+    },
+    "correcta": "C",
+    "explicacion": "let tiene ámbito de bloque: solo existe entre sus llaves. Dentro funciona; fuera, la variable no existe y se lanza ReferenceError.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "Empieza el bloque."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "dedins": "solo dentro"
+        },
+        "nota": "dedins nace dentro del bloque."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "dedins": "solo dentro"
+        },
+        "nota": "Dentro del bloque, dedins existe.",
+        "salida": "solo dentro"
+      },
+      {
+        "linea": 4,
+        "vars": {},
+        "nota": "Termina el bloque: dedins deja de existir."
+      },
+      {
+        "linea": 5,
+        "vars": {},
+        "nota": "Fuera del bloque, dedins no está definido.",
+        "error": "ReferenceError: dedins is not defined"
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Variables",
+    "dificultad": "facil",
+    "enunciado": "¿Cuál de estos nombres de variable es válido?",
+    "opciones": {
+      "A": "`total precio`",
+      "B": "`total-precio`",
+      "C": "`total_precio`",
+      "D": "`2total`"
+    },
+    "correcta": "C",
+    "explicacion": "No puede empezar por número, ni tener espacios ni símbolos de puntuación: solo caracteres alfanuméricos y el guion bajo."
+  },
+  {
+    "id": 63,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Variables",
+    "dificultad": "facil",
+    "enunciado": "¿Puede un nombre de variable empezar por un número?",
+    "opciones": {
+      "A": "Sí, si luego lleva letras",
+      "B": "Solo en modo estricto",
+      "C": "Solo si es const",
+      "D": "No"
+    },
+    "correcta": "D",
+    "explicacion": "Un nombre de variable no puede empezar por un número."
+  },
+  {
+    "id": 64,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Variables",
+    "dificultad": "facil",
+    "enunciado": "¿`nota` y `Nota` son la misma variable?",
+    "opciones": {
+      "A": "Sí, JavaScript ignora mayúsculas",
+      "B": "Depende del navegador",
+      "C": "Solo si se declaran con var",
+      "D": "No, distingue mayúsculas de minúsculas"
+    },
+    "correcta": "D",
+    "explicacion": "JavaScript distingue mayúsculas de minúsculas: nota y Nota son variables distintas."
+  },
+  {
+    "id": 65,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Palabras reservadas",
+    "dificultad": "media",
+    "enunciado": "¿Cuál de estas es una palabra reservada que no se puede usar como nombre de variable?",
+    "opciones": {
+      "A": "`total`",
+      "B": "`precio`",
+      "C": "`letra`",
+      "D": "`const`"
+    },
+    "correcta": "D",
+    "explicacion": "const es una palabra reservada por ES6; no se puede usar como nombre de variable, función o etiqueta."
+  },
+  {
+    "id": 66,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores ++ y --",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let a = 1;\nlet z = 10;\nz = a;\nz = ++a;\nz = a++;\nconsole.log(a, z);",
+    "opciones": {
+      "A": "2 2",
+      "B": "3 2",
+      "C": "2 3",
+      "D": "3 3"
+    },
+    "correcta": "B",
+    "explicacion": "z = a → 1; ++a → a = 2, z = 2; a++ → z = 2, a = 3. Al final a = 3 y z = 2.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "a": 1
+        },
+        "nota": "Se declara a y se inicializa a 1."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "a": 1,
+          "z": 10
+        },
+        "nota": "Se declara z y se inicializa a 10."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "a": 1,
+          "z": 1
+        },
+        "nota": "z = a: z toma el valor actual de a, que es 1."
+      },
+      {
+        "linea": 4,
+        "vars": {
+          "a": 2,
+          "z": 2
+        },
+        "nota": "++a: primero incrementa a a 2 y después asigna el valor ya incrementado a z."
+      },
+      {
+        "linea": 5,
+        "vars": {
+          "a": 3,
+          "z": 2
+        },
+        "nota": "a++: primero asigna el valor actual (2) a z y después incrementa a a 3."
+      },
+      {
+        "linea": 6,
+        "vars": {
+          "a": 3,
+          "z": 2
+        },
+        "nota": "console.log(a, z) imprime 3 2.",
+        "salida": "3 2"
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores ++ y --",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let a = 1;\nlet z = ++a;\nconsole.log(a, z);",
+    "opciones": {
+      "A": "2 2",
+      "B": "1 2",
+      "C": "1 1",
+      "D": "2 1"
+    },
+    "correcta": "A",
+    "explicacion": "Prefijo: primero se incrementa a (pasa a 2) y después se asigna el valor ya incrementado.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "a": 1
+        },
+        "nota": "a empieza en 1."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "a": 2,
+          "z": 2
+        },
+        "nota": "++a incrementa a a 2 y asigna 2 a z."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "a": 2,
+          "z": 2
+        },
+        "nota": "console.log(a, z) imprime 2 2.",
+        "salida": "2 2"
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores ++ y --",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let a = 1;\nlet z = a++;\nconsole.log(a, z);",
+    "opciones": {
+      "A": "2 1",
+      "B": "1 1",
+      "C": "1 2",
+      "D": "2 2"
+    },
+    "correcta": "A",
+    "explicacion": "Postfijo: primero se asigna el valor actual (1) a z y después se incrementa a (2).",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "a": 1
+        },
+        "nota": "a empieza en 1."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "a": 2,
+          "z": 1
+        },
+        "nota": "a++ asigna el valor actual (1) a z y después incrementa a a 2."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "a": 2,
+          "z": 1
+        },
+        "nota": "console.log(a, z) imprime 2 1.",
+        "salida": "2 1"
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores ++ y --",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let a = 5;\nlet b = ++a;\nconsole.log(a, b);",
+    "opciones": {
+      "A": "5 6",
+      "B": "6 6",
+      "C": "5 5",
+      "D": "6 5"
+    },
+    "correcta": "B",
+    "explicacion": "++a incrementa primero: a pasa a 6 y b recibe 6.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "a": 5
+        },
+        "nota": "a empieza en 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "a": 6,
+          "b": 6
+        },
+        "nota": "++a: a pasa a 6 y b recibe el valor ya incrementado."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "a": 6,
+          "b": 6
+        },
+        "nota": "console.log(a, b) imprime 6 6.",
+        "salida": "6 6"
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores ++ y --",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let a = 5;\nlet b = a++;\nconsole.log(a, b);",
+    "opciones": {
+      "A": "6 5",
+      "B": "5 6",
+      "C": "5 5",
+      "D": "6 6"
+    },
+    "correcta": "A",
+    "explicacion": "a++ asigna primero el valor actual (5) a b y después incrementa a a 6.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "a": 5
+        },
+        "nota": "a empieza en 5."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "a": 6,
+          "b": 5
+        },
+        "nota": "a++: b recibe 5 y después a pasa a 6."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "a": 6,
+          "b": 5
+        },
+        "nota": "console.log(a, b) imprime 6 5.",
+        "salida": "6 5"
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores ++ y --",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let x = 3;\nlet y = x--;\nconsole.log(x, y);",
+    "opciones": {
+      "A": "2 3",
+      "B": "3 3",
+      "C": "2 2",
+      "D": "3 2"
+    },
+    "correcta": "A",
+    "explicacion": "x-- asigna primero el valor actual (3) a y y después decrementa x a 2.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "x": 3
+        },
+        "nota": "x empieza en 3."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "x": 2,
+          "y": 3
+        },
+        "nota": "x--: y recibe 3 y después x pasa a 2."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "x": 2,
+          "y": 3
+        },
+        "nota": "console.log(x, y) imprime 2 3.",
+        "salida": "2 3"
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "tema": 2,
+    "tipo": "teoria",
+    "tag": "Asignaciones",
+    "dificultad": "facil",
+    "enunciado": "`a += 5` equivale a:",
+    "opciones": {
+      "A": "`a = 5`",
+      "B": "`a = 5 + 5`",
+      "C": "`a = a + 5`",
+      "D": "`a = a * 5`"
+    },
+    "correcta": "C",
+    "explicacion": "Los operadores compuestos calculan y asignan en un paso: a += 5 equivale a a = a + 5."
+  },
+  {
+    "id": 73,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Asignaciones",
+    "dificultad": "facil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let n = 10;\nn -= 3;\nconsole.log(n);",
+    "opciones": {
+      "A": "13",
+      "B": "3",
+      "C": "7",
+      "D": "10"
+    },
+    "correcta": "C",
+    "explicacion": "n -= 3 equivale a n = n - 3: 10 - 3 = 7.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "n": 10
+        },
+        "nota": "n empieza en 10."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "n": 7
+        },
+        "nota": "n -= 3 resta 3 y asigna: n pasa a 7."
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "n": 7
+        },
+        "nota": "console.log(n) imprime 7.",
+        "salida": "7"
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores ++ y --",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "let i = 0;\nconsole.log(i++);\nconsole.log(i);",
+    "opciones": {
+      "A": "0 y 0",
+      "B": "1 y 1",
+      "C": "0 y 1",
+      "D": "1 y 0"
+    },
+    "correcta": "C",
+    "explicacion": "En `console.log(i++)` se imprime el valor actual (0) y después i se incrementa a 1. El segundo console.log imprime 1.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {
+          "i": 0
+        },
+        "nota": "i empieza en 0."
+      },
+      {
+        "linea": 2,
+        "vars": {
+          "i": 1
+        },
+        "nota": "i++ devuelve el valor actual (0) y después incrementa i a 1.",
+        "salida": "0"
+      },
+      {
+        "linea": 3,
+        "vars": {
+          "i": 1
+        },
+        "nota": "Ahora i vale 1; console.log(i) imprime 1.",
+        "salida": "1"
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores de comparación",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "console.log(\"5\" == 5);",
+    "opciones": {
+      "A": "5",
+      "B": "NaN",
+      "C": "true",
+      "D": "false"
+    },
+    "correcta": "C",
+    "explicacion": "== convierte el tipo antes de comparar: \"5\" se convierte a 5 y la comparación es true.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "== convierte \"5\" a número antes de comparar.",
+        "salida": "true"
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores de comparación",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "console.log(\"5\" === 5);",
+    "opciones": {
+      "A": "5",
+      "B": "false",
+      "C": "NaN",
+      "D": "true"
+    },
+    "correcta": "B",
+    "explicacion": "=== exige mismo valor y mismo tipo. \"5\" es string y 5 es number, así que es false.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "=== no convierte tipos: string frente a number.",
+        "salida": "false"
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Booleanos",
+    "dificultad": "dificil",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "console.log(0 == false);",
+    "opciones": {
+      "A": "NaN",
+      "B": "true",
+      "C": "0",
+      "D": "false"
+    },
+    "correcta": "B",
+    "explicacion": "Con ==, false se convierte a 0 y la comparación 0 == 0 es true.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "false se convierte a 0 antes de comparar.",
+        "salida": "true"
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores aritméticos",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "console.log(\"5\" + 1);",
+    "opciones": {
+      "A": "\"51\"",
+      "B": "6",
+      "C": "51",
+      "D": "NaN"
+    },
+    "correcta": "A",
+    "explicacion": "Si un lado del + es texto, el operador concatena: \"5\" + 1 produce la cadena \"51\".",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "+ concatena porque \"5\" es texto.",
+        "salida": "51"
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores aritméticos",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "console.log(\"5\" - 1);",
+    "opciones": {
+      "A": "4",
+      "B": "NaN",
+      "C": "\"51\"",
+      "D": "5"
+    },
+    "correcta": "A",
+    "explicacion": "El operador - solo sabe restar: convierte \"5\" a número y hace 5 - 1 = 4.",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "- fuerza la conversión numérica.",
+        "salida": "4"
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "tema": 2,
+    "tipo": "codigo",
+    "tag": "Operadores aritméticos",
+    "dificultad": "media",
+    "enunciado": "¿Qué imprime este código?",
+    "codigo": "console.log(\"23\" + 95);",
+    "opciones": {
+      "A": "NaN",
+      "B": "2395",
+      "C": "\"2395\"",
+      "D": "118"
+    },
+    "correcta": "C",
+    "explicacion": "El + concatena porque \"23\" es texto: se obtiene la cadena \"2395\".",
+    "traza": [
+      {
+        "linea": 1,
+        "vars": {},
+        "nota": "Se concatena el texto \"23\" con 95.",
+        "salida": "2395"
+      }
+    ]
+  }
+]
