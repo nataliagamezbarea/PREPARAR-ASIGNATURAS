@@ -4,7 +4,6 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
-const publicDir = path.join(rootDir, "public");
 
 const files = [
   "assets/js/app/persistencia-archivos.js",
@@ -18,13 +17,22 @@ const files = [
   "assets/js/app/inicio.js"
 ];
 
-const outPath = path.join(publicDir, "assets/js/app.js");
+const targets = [
+  path.join(rootDir, "public"),
+  path.join(rootDir, "assets"),
+  path.join(rootDir, "docs")
+];
 
-const bundled = files.map(file => {
-  const fullPath = path.join(publicDir, file);
-  const content = fs.readFileSync(fullPath, "utf8");
-  return `// === ${file} ===\n${content}\n`;
-}).join("\n");
+for (const targetDir of targets) {
+  const baseDir = targetDir.endsWith("assets") ? path.dirname(targetDir) : targetDir;
+  const outPath = targetDir.endsWith("assets") ? path.join(targetDir, "js", "app.js") : path.join(targetDir, "assets", "js", "app.js");
+  
+  const bundled = files.map(file => {
+    const fullPath = path.join(rootDir, "public", file);
+    const content = fs.readFileSync(fullPath, "utf8");
+    return `// === ${file} ===\n${content}\n`;
+  }).join("\n");
 
-fs.writeFileSync(outPath, bundled, "utf8");
-console.log(`Bundled ${files.length} files successfully into ${outPath}`);
+  fs.writeFileSync(outPath, bundled, "utf8");
+  console.log(`Bundled ${files.length} files successfully into ${outPath}`);
+}

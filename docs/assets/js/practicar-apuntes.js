@@ -52,6 +52,18 @@ function escaparHTML(valor) {
 }
 
 async function consultarAPI(ruta, opciones = {}) {
+  const esEntornoEstatico =
+    typeof window !== "undefined" &&
+    (window.location.protocol === "file:" ||
+      window.location.hostname.endsWith("github.io") ||
+      window.location.hostname.endsWith("pages.dev"));
+
+  if (esEntornoEstatico) {
+    throw new Error(
+      "La generación de tests desde apuntes privados requiere ejecutar la aplicación en local (con el acceso directo de tu Escritorio o Docker), ya que en GitHub Pages no hay acceso a los archivos de tu ordenador ni a la IA local.",
+    );
+  }
+
   const respuesta = await fetch(ruta, {
     cache: "no-store",
     ...opciones,

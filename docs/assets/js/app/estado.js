@@ -809,25 +809,37 @@ async function loadCatalog() {
   } catch {
     catalog = getCatalogFallback().asignaturas;
   }
-  try {
-    const respuesta = await fetch("/api/apuntes", { cache: "no-store" });
-    const datos = await respuesta.json();
-    if (!respuesta.ok) throw new Error(datos.error || `HTTP ${respuesta.status}`);
-    state.apuntesCatalogo = Array.isArray(datos.asignaturas) ? datos.asignaturas : [];
-    for (const asignatura of datos.asignaturas || []) {
-      if (!asignatura?.nombre || !Array.isArray(asignatura.temas)) continue;
-      catalog.push({
-        id: `apuntes-${slugify(asignatura.nombre)}`,
-        nombre: asignatura.nombre,
-        etiqueta: `${asignatura.nombre} · apuntes (${asignatura.temas.length} temas)`,
-        nombreApuntes: asignatura.nombre,
-        temas: asignatura.temas,
-        descripcion: `${asignatura.temas.length} temas detectados`,
-        apuntesPrivados: true
-      });
+  const esEntornoEstatico =
+    typeof window !== "undefined" &&
+    (window.location.protocol === "file:" ||
+      window.location.hostname.endsWith("github.io") ||
+      window.location.hostname.endsWith("pages.dev"));
+
+  if (!esEntornoEstatico) {
+    try {
+      const respuesta = await fetch("/api/apuntes", { cache: "no-store" });
+      const contentType = respuesta.headers.get("content-type") || "";
+      if (respuesta.ok && contentType.includes("application/json")) {
+        const datos = await respuesta.json();
+        state.apuntesCatalogo = Array.isArray(datos.asignaturas) ? datos.asignaturas : [];
+        for (const asignatura of datos.asignaturas || []) {
+          if (!asignatura?.nombre || !Array.isArray(asignatura.temas)) continue;
+          catalog.push({
+            id: `apuntes-${slugify(asignatura.nombre)}`,
+            nombre: asignatura.nombre,
+            etiqueta: `${asignatura.nombre} · apuntes (${asignatura.temas.length} temas)`,
+            nombreApuntes: asignatura.nombre,
+            temas: asignatura.temas,
+            descripcion: `${asignatura.temas.length} temas detectados`,
+            apuntesPrivados: true,
+          });
+        }
+      } else if (!respuesta.ok && respuesta.status !== 404) {
+        state.errorCatalogoApuntes = `El servidor devolvió HTTP ${respuesta.status}`;
+      }
+    } catch {
+      state.errorCatalogoApuntes = "";
     }
-  } catch (error) {
-    state.errorCatalogoApuntes = error.message || "No se pudo leer el catálogo de apuntes.";
   }
   const byId = new Map();
   // 1. Conservar siempre todos los bancos oficiales y locales que contienen preguntas
