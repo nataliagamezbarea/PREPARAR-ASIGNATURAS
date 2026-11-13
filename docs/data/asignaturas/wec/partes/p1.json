@@ -1,0 +1,322 @@
+[
+  {
+    "id": 1,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Origen de la web",
+    "dificultad": "facil",
+    "enunciado": "¿Qué lenguaje de marcas usaban las primeras páginas web y el navegador entiende directamente?",
+    "opciones": {
+      "A": "SQL",
+      "B": "JavaScript",
+      "C": "HTML",
+      "D": "CSS"
+    },
+    "correcta": "C",
+    "explicacion": "La web nació con documentos HTML sencillos que el navegador sabía mostrar. CSS da estilo y JavaScript añade comportamiento; ninguno es el lenguaje de marcas original."
+  },
+  {
+    "id": 2,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Origen de la web",
+    "dificultad": "facil",
+    "enunciado": "¿Qué es el hipertexto?",
+    "opciones": {
+      "A": "Un lenguaje compilado",
+      "B": "Texto que solo puede contener imágenes",
+      "C": "Texto con enlaces que llevan a otra información relacionada",
+      "D": "Un programa que se ejecuta en el servidor"
+    },
+    "correcta": "C",
+    "explicacion": "El hipertexto es texto con enlaces; es la idea sobre la que se construye la web."
+  },
+  {
+    "id": 3,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Origen de la web",
+    "dificultad": "facil",
+    "enunciado": "¿Qué organización define y mantiene los estándares de la web?",
+    "opciones": {
+      "A": "Netscape",
+      "B": "W3C",
+      "C": "Microsoft",
+      "D": "Oracle"
+    },
+    "correcta": "B",
+    "explicacion": "El W3C nació por el crecimiento de la web y define y mantiene sus estándares. Su validador está en validator.w3.org."
+  },
+  {
+    "id": 4,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Diseño web",
+    "dificultad": "media",
+    "enunciado": "¿Cuáles son los cuatro campos del diseño web?",
+    "opciones": {
+      "A": "HTML, CSS, JavaScript y SQL",
+      "B": "Visual, tecnología, distribución y propósito",
+      "C": "Cliente, servidor, red y base de datos",
+      "D": "Diseño, programación, pruebas y despliegue"
+    },
+    "correcta": "B",
+    "explicacion": "Visual = atraer; tecnología = estático/dinámico y bases de datos; distribución = velocidad y fiabilidad; propósito = objetivo económico o informativo."
+  },
+  {
+    "id": 5,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Cliente-servidor",
+    "dificultad": "facil",
+    "enunciado": "En el modelo cliente-servidor, ¿quién aloja la página y responde a las peticiones?",
+    "opciones": {
+      "A": "El navegador",
+      "B": "La red",
+      "C": "El servidor",
+      "D": "El usuario"
+    },
+    "correcta": "C",
+    "explicacion": "El servidor aloja y responde; el navegador (cliente) pide y presenta la información."
+  },
+  {
+    "id": 6,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Cliente-servidor",
+    "dificultad": "facil",
+    "enunciado": "¿Cuál es el objetivo de un navegador?",
+    "opciones": {
+      "A": "Compilar JavaScript a código máquina",
+      "B": "Alojar la página web",
+      "C": "Presentar la información escrita normalmente en HTML y alojada en un servidor",
+      "D": "Guardar la base de datos"
+    },
+    "correcta": "C",
+    "explicacion": "El navegador presenta la información; alojar y responder es trabajo del servidor."
+  },
+  {
+    "id": 7,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Cliente-servidor",
+    "dificultad": "media",
+    "enunciado": "¿Dónde se ejecutan los programas que realizan la petición de solicitud web al servidor?",
+    "opciones": {
+      "A": "En la máquina cliente",
+      "B": "En el servidor",
+      "C": "En la base de datos",
+      "D": "En la conectividad de la red"
+    },
+    "correcta": "A",
+    "explicacion": "La máquina cliente tiene los programas (navegadores) que realizan la petición de solicitud web al servidor."
+  },
+  {
+    "id": 8,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Cliente-servidor",
+    "dificultad": "facil",
+    "enunciado": "¿Cuáles son los tres elementos comunes del modelo cliente-servidor?",
+    "opciones": {
+      "A": "HTML, CSS y JavaScript",
+      "B": "Servidor, máquina cliente y conectividad de la red",
+      "C": "Petición, respuesta y cookie",
+      "D": "Navegador, sistema operativo y disco duro"
+    },
+    "correcta": "B",
+    "explicacion": "Los tres elementos son el servidor, la máquina cliente y la conectividad de la red."
+  },
+  {
+    "id": 9,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "DOM",
+    "dificultad": "media",
+    "enunciado": "En la demo D3, ¿qué muestra `Ctrl+U` frente a `F12`?",
+    "opciones": {
+      "A": "`Ctrl+U` muestra el documento tal como lo envió el servidor; `F12` muestra el DOM construido",
+      "B": "`Ctrl+U` solo funciona con Live Server",
+      "C": "`Ctrl+U` muestra el DOM y `F12` el fichero del servidor",
+      "D": "Ambos muestran exactamente lo mismo"
+    },
+    "correcta": "A",
+    "explicacion": "`Ctrl+U` enseña el fichero enviado; `F12` > Elements enseña el DOM que ha construido el navegador después de ejecutar JavaScript."
+  },
+  {
+    "id": 10,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "DOM",
+    "dificultad": "media",
+    "enunciado": "Si editas el DOM a mano desde `F12` y pulsas `F5`, ¿qué ocurre?",
+    "opciones": {
+      "A": "El cambio se guarda en el servidor",
+      "B": "Se desactiva JavaScript",
+      "C": "Se borra el historial",
+      "D": "La página vuelve a como estaba porque el fichero del servidor no se ha tocado"
+    },
+    "correcta": "D",
+    "explicacion": "El DOM es una cosa viva, pero el fichero del servidor no cambia; al recargar vuelve el original."
+  },
+  {
+    "id": 11,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Capas web",
+    "dificultad": "facil",
+    "enunciado": "¿Qué capa del desarrollo web en el cliente gestiona el comportamiento?",
+    "opciones": {
+      "A": "Presentación",
+      "B": "Comportamiento (JavaScript)",
+      "C": "Contenido",
+      "D": "Estructura"
+    },
+    "correcta": "B",
+    "explicacion": "De abajo arriba: contenido, estructura, presentación y comportamiento. JavaScript está en la capa superior."
+  },
+  {
+    "id": 12,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Capas web",
+    "dificultad": "media",
+    "enunciado": "Orden correcto de las cuatro capas, de abajo arriba:",
+    "opciones": {
+      "A": "Contenido → estructura → presentación → comportamiento",
+      "B": "Comportamiento → presentación → estructura → contenido",
+      "C": "Presentación → contenido → estructura → comportamiento",
+      "D": "Estructura → contenido → comportamiento → presentación"
+    },
+    "correcta": "A",
+    "explicacion": "Contenido (texto, imágenes) → estructura (DOM/HTML) → presentación (CSS) → comportamiento (JavaScript)."
+  },
+  {
+    "id": 13,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Lenguajes",
+    "dificultad": "facil",
+    "enunciado": "¿Dónde se ejecuta PHP?",
+    "opciones": {
+      "A": "Ninguno",
+      "B": "Cliente",
+      "C": "Servidor",
+      "D": "Los dos"
+    },
+    "correcta": "C",
+    "explicacion": "PHP se ejecuta antes de enviar la página; el navegador solo recibe el resultado."
+  },
+  {
+    "id": 14,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Lenguajes",
+    "dificultad": "media",
+    "enunciado": "¿Dónde se ejecuta JavaScript?",
+    "opciones": {
+      "A": "En los dos: navegador y Node.js",
+      "B": "Solo en el cliente",
+      "C": "En ninguno",
+      "D": "Solo en el servidor"
+    },
+    "correcta": "A",
+    "explicacion": "Nació en el navegador, pero con Node.js también se ejecuta en el servidor. No es 'solo cliente'."
+  },
+  {
+    "id": 15,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Lenguajes",
+    "dificultad": "media",
+    "enunciado": "¿Cuál de estas tecnologías NO es un lenguaje de programación, sino un formato de datos?",
+    "opciones": {
+      "A": "WebAssembly",
+      "B": "PHP",
+      "C": "TypeScript",
+      "D": "JSON"
+    },
+    "correcta": "D",
+    "explicacion": "JSON es un formato de datos que usan cliente y servidor para intercambiar información."
+  },
+  {
+    "id": 16,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Arquitectura del navegador",
+    "dificultad": "media",
+    "enunciado": "¿Qué componente del navegador construye el árbol DOM?",
+    "opciones": {
+      "A": "Intérprete de JavaScript",
+      "B": "Parser XML",
+      "C": "Motor del buscador",
+      "D": "Subsistema de comunicaciones"
+    },
+    "correcta": "B",
+    "explicacion": "El parser XML carga en memoria una representación en árbol (el DOM) del documento."
+  },
+  {
+    "id": 17,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Arquitectura del navegador",
+    "dificultad": "media",
+    "enunciado": "¿Qué componente guarda cookies, historial de navegación y preferencias?",
+    "opciones": {
+      "A": "Motor de renderizado",
+      "B": "Parser XML",
+      "C": "Interfaz de usuario",
+      "D": "Subsistema de persistencia de datos"
+    },
+    "correcta": "D",
+    "explicacion": "La persistencia de datos guarda historiales, sesiones, preferencias, certificados y cookies."
+  },
+  {
+    "id": 18,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Arquitectura del navegador",
+    "dificultad": "media",
+    "enunciado": "¿Qué componente presenta de forma visual el recurso e interpreta HTML, CSS, imágenes y contenido embebido?",
+    "opciones": {
+      "A": "Motor del buscador",
+      "B": "Intérprete de JavaScript",
+      "C": "Subsistema de comunicaciones",
+      "D": "Motor de renderizado"
+    },
+    "correcta": "D",
+    "explicacion": "El motor de renderizado presenta de forma visual el recurso obtenido e interpreta el código de la página."
+  },
+  {
+    "id": 19,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Arquitectura del navegador",
+    "dificultad": "facil",
+    "enunciado": "¿Cuántos componentes tiene la arquitectura de referencia del navegador?",
+    "opciones": {
+      "A": "10",
+      "B": "6",
+      "C": "8",
+      "D": "4"
+    },
+    "correcta": "C",
+    "explicacion": "Son 8: interfaz de usuario, motor del buscador, motor de renderizado, comunicaciones, intérprete de JavaScript, parser XML, componente de visualización y persistencia de datos."
+  },
+  {
+    "id": 20,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Motores JavaScript",
+    "dificultad": "media",
+    "enunciado": "¿Qué motor de JavaScript usan Chrome, Edge, Opera y Node.js?",
+    "opciones": {
+      "A": "JavaScriptCore",
+      "B": "Chakra",
+      "C": "SpiderMonkey",
+      "D": "V8"
+    },
+    "correcta": "D",
+    "explicacion": "V8 es el motor de Chrome, Edge, Opera y Brave; también es el que lleva dentro Node.js."
+  }
+]

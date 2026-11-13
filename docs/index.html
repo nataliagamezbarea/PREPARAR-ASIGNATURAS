@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test interactivo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="./assets/css/app.css">
+<link rel="stylesheet" href="./assets/css/practicar-apuntes.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand brand-link" href="/" aria-label="Volver al inicio">
+      <div class="logo" id="brand-logo">T</div>
+      <div>
+        <div class="brand-title" id="brand-title">Test interactivo</div>
+        <div class="brand-sub" id="brand-sub">Cargando preguntas…</div>
+      </div>
+    </a>
+    <div class="top-actions">
+      <span class="chip brand hidden" id="mode-chip"></span>
+      <button class="icon-btn generation-notification hidden" id="generation-notification" type="button" title="Ver progreso de generación" aria-label="Hay una generación en curso; ver progreso">
+        <span aria-hidden="true">🔔</span><span class="generation-notification-dot" aria-hidden="true"></span>
+      </button>
+      <div class="topbar-dropdown-wrap" style="position:relative;display:inline-flex">
+        <button class="icon-btn" id="options-toggle-btn" type="button" title="Opciones de test y corrección" aria-label="Opciones de test"><i class="fa-solid fa-sliders" aria-hidden="true"></i></button>
+        <div class="topbar-dropdown-menu hidden" id="options-dropdown" style="position:absolute; right:0; top:calc(100% + 8px); z-index:100; min-width:270px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:0 12px 32px rgba(0,0,0,0.18);">
+          <div style="font-weight:700; margin-bottom:12px; font-size:14px; display:flex; align-items:center; gap:8px"><i class="fa-solid fa-sliders"></i> Opciones de práctica</div>
+          <div class="option-list" style="display:flex; flex-direction:column; gap:12px;">
+            <label class="switch" style="display:flex; align-items:center; gap:8px; cursor:pointer"><input type="checkbox" id="immediate-toggle" checked> Corrección inmediata</label>
+            <label class="switch" style="display:flex; align-items:center; gap:8px; cursor:pointer"><input type="checkbox" id="shuffle-toggle"> Barajar el orden</label>
+          </div>
+          <hr style="border:0; border-top:1px solid var(--line); margin: 14px 0 10px;">
+          <div style="font-weight:700; font-size:13px; color:var(--text); margin-bottom:8px;"><i class="fa-solid fa-trash-can"></i> Progreso y datos</div>
+          <button class="btn tiny warn" type="button" id="dropdown-reset-progress-btn" style="width:100%; justify-content:center; gap:6px;">
+            <i class="fa-solid fa-trash"></i> Eliminar todo el progreso
+          </button>
+          <p class="muted" style="font-size:11px; margin:6px 0 0; line-height:1.3;">Borra aciertos, fallos guardados y sesiones pendientes para empezar limpio.</p>
+        </div>
+      </div>
+      <button class="icon-btn" id="theme-btn" type="button" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+<main id="main"></main>
+<footer class="footer" id="footer">Cargando preguntas…</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="./assets/js/app.js" defer></script>
+<script type="module" src="./assets/js/practicar-apuntes.js"></script>
+</body>
+</html>
