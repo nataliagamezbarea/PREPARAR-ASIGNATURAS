@@ -1542,28 +1542,6 @@ function construirArbolDashboardHTML() {
     })
     .join("");
 }
-              <span class="tree-chip tema-total">${preguntasTema.length} preg.</span>
-              ${
-                tieneAMediasTema
-                  ? `<span class="tree-chip pend-chip" style="font-weight:700">A medias (${pregActualTema}/${sesionTema.ids.length})</span>`
-                  : respondidasTema.length > 0
-                    ? `<span class="tree-chip done-chip">${respondidasTema.length} hechas · ${aciertosTema.length} aciertos (${pctAcierto}%)</span>`
-                    : `<span class="tree-chip pend-chip">Sin empezar</span>`
-              }
-            </div>
-            <div class="tree-tema-summary-actions" onclick="event.stopPropagation()">
-              ${btnPracticarOContinuarTema}
-              <button class="btn tiny ok" type="button" data-generar-tema="${t.numero}"><i class="fa-solid fa-wand-magic-sparkles"></i> Generar</button>
-            </div>
-          </summary>
-          <div class="tree-apartados-body">
-            ${apartadosHTML || `<p class="muted" style="font-size:13px;padding:6px 0">No hay subapartados registrados en los apuntes para este tema.</p>`}
-          </div>
-        </details>
-      `;
-    })
-    .join("");
-}
 
 function applyDynamicHeader() {
   const counts = dataCounts();
