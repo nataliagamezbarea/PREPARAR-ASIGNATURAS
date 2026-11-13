@@ -1,0 +1,17 @@
+{
+  "name": "preparar-tests",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tests adaptativos con apuntes LaTeX e IA local Ollama",
+  "scripts": {
+    "comprobar": "node --check lanzar.js && node --check server/servidor.js && node --check server/configuracion.js && node --check server/apuntes.js && node --check server/bancos.js && node --check server/modelo.js && node --check server/preguntas.js && node --check server/progreso.js && node --check public/assets/js/practicar-apuntes.js && node --check public/assets/js/app/*.js",
+    "bundle": "node scripts/bundle.js",
+    "probar": "node --test server/pruebas/*.test.js",
+    "iniciar": "node lanzar.js"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^6.2.108",
+    "yauzl": "^3.2.0"
+  }
+}

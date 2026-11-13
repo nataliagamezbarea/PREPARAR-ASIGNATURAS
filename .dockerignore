@@ -1,0 +1,7 @@
+.env
+.git
+node_modules
+datos/bancos/*.json
+*.desktop
+*.log
+index.html.legacy-backup

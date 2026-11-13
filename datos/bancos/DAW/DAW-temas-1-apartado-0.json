@@ -1,0 +1,188 @@
+{
+  "formato": "preparar-tests-banco-preguntas",
+  "version": 1,
+  "clave": "DAW-temas-1-apartado-0",
+  "meta": {
+    "asignatura": "DAW",
+    "titulo": "Tema 1 · DAW",
+    "tema": 1,
+    "temas": [
+      1
+    ],
+    "apartado": 0,
+    "total": 10,
+    "version": "1.0"
+  },
+  "preguntas": [
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es la diferencia entre localhost y un servidor?",
+      "opciones": {
+        "A": "Un servidor es siempre encendido y accesible desde cualquier lugar, mientras que localhost solo funciona en tu ordenador.",
+        "B": "localhost es una máquina que puede ser utilizada para publicar aplicaciones, mientras que un servidor no.",
+        "C": "Un servidor es una máquina que puede ser apagada sin afectar a localhost.",
+        "D": "localhost es un servidor que puede ser accedido desde cualquier lugar."
+      },
+      "correcta": "A",
+      "explicacion": "Un servidor es siempre encendido y accesible desde cualquier lugar, mientras que localhost solo funciona en tu ordenador y no permite el acceso desde otros ordenadores.",
+      "id": 1
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué sucede si apagas tu portátil con localhost?",
+      "opciones": {
+        "A": "localhost se apaga y no puede ser accedido desde tu ordenador.",
+        "B": "localhost sigue funcionando en tu ordenador.",
+        "C": "localhost sigue siendo accesible desde cualquier lugar.",
+        "D": "localhost se apaga y no puede ser accedido desde otros ordenadores."
+      },
+      "correcta": "D",
+      "explicacion": "Al apagar tu portátil, localhost se apaga y no puede ser accedido desde otros ordenadores, ya que solo funciona en tu ordenador.",
+      "id": 2
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es necesario para publicar una aplicación en localhost?",
+      "opciones": {
+        "A": "Necesitar un servidor para publicar la aplicación, pero no es accesible desde tu ordenador.",
+        "B": "Necesitar un servidor para publicar la aplicación.",
+        "C": "Necesitar un servidor para publicar la aplicación, pero no es accesible desde otros lugares.",
+        "D": "No necesitar un servidor para publicar la aplicación."
+      },
+      "correcta": "B",
+      "explicacion": "Para publicar una aplicación en localhost, es necesario tener un servidor, ya que localhost solo funciona en tu ordenador y no permite el acceso desde otros ordenadores.",
+      "id": 3
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué sucede si intentas acceder a un servidor desde tu ordenador?",
+      "opciones": {
+        "A": "El servidor se apaga y no puede ser accedido.",
+        "B": "No puedes acceder al servidor desde tu ordenador.",
+        "C": "El servidor se enciende solo cuando necesitas acceder a él.",
+        "D": "El servidor se mantiene siempre conectado y puedes acceder a él."
+      },
+      "correcta": "D",
+      "explicacion": "Un servidor es siempre encendido y mantiene la conexión, por lo que puedes acceder a él desde tu ordenador.",
+      "id": 4
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es lo que hace que un servidor sea accesible desde cualquier lugar?",
+      "opciones": {
+        "A": "Un servidor es accesible desde cualquier lugar porque solo es necesario tener un servidor.",
+        "B": "Un servidor es accesible desde cualquier lugar porque siempre está encendido y mantiene la conexión.",
+        "C": "Un servidor es accesible desde cualquier lugar porque no es necesario tener un servidor.",
+        "D": "Un servidor es accesible desde cualquier lugar porque solo funciona en tu ordenador."
+      },
+      "correcta": "B",
+      "explicacion": "Un servidor es accesible desde cualquier lugar porque siempre está encendido y mantiene la conexión, lo que permite el acceso desde cualquier lugar.",
+      "id": 5
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es un servidor dedicado?",
+      "opciones": {
+        "A": "Un servidor dedicado es un entorno virtual donde puedes instalar y configurar el sistema operativo.",
+        "B": "Un servidor dedicado es un hosting compartido donde se aloja una web junto con otras aplicaciones.",
+        "C": "Un servidor dedicado es una plataforma que administra la infraestructura de una aplicación web.",
+        "D": "Un servidor dedicado es un equipo físico que se utiliza exclusivamente para una aplicación web."
+      },
+      "correcta": "D",
+      "explicacion": "Un servidor dedicado es un equipo físico que se utiliza exclusivamente para una aplicación web, proporcionando el control más completo sobre el sistema y los recursos de la máquina.",
+      "id": 6
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué tipo de servidor proporciona el control más amplio sobre el sistema operativo?",
+      "opciones": {
+        "A": "Hosting compartido",
+        "B": "Servidor dedicado",
+        "C": "Nube o IaaS",
+        "D": "VPS (servidor virtual privado)"
+      },
+      "correcta": "D",
+      "explicacion": "El servidor virtual privado (VPS) proporciona un entorno virtual propio donde puedes instalar y configurar el sistema operativo, ofreciendo un control más amplio que el hosting compartido.",
+      "id": 7
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es necesario para publicar una aplicación en un servidor dedicado?",
+      "opciones": {
+        "A": "Solo necesitas subir tu aplicación a una plataforma como Vercel o Netlify.",
+        "B": "Necesitas un entorno virtual donde puedes instalar y configurar el sistema operativo.",
+        "C": "Solo necesitas tener acceso a la infraestructura física del servidor.",
+        "D": "Necesitas configurar el entorno del contenedor y asegurar que la aplicación funcione en diferentes entornos."
+      },
+      "correcta": "C",
+      "explicacion": "Para publicar una aplicación en un servidor dedicado, solo necesitas tener acceso a la infraestructura física del servidor, ya que es el equipo que se utiliza exclusivamente para tu aplicación.",
+      "id": 8
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es el nivel de control que el usuario pierde al pasar de máquina propia a IaaS y PaaS?",
+      "opciones": {
+        "A": "El usuario pierde control sobre el código y la configuración de la aplicación",
+        "B": "El usuario pierde control sobre todo el sistema operativo y la aplicación",
+        "C": "El usuario pierde control sobre el sistema operativo y la aplicación",
+        "D": "El usuario pierde control sobre el hardware y la virtualización"
+      },
+      "correcta": "A",
+      "explicacion": "Cuando se pasa de máquina propia a IaaS y PaaS, el usuario pierde control sobre el código y la configuración de la aplicación, ya que estos niveles de servicio proporcionan la plataforma y el entorno de ejecución, dejando al usuario con la responsabilidad de gestionar solo el código y la configuración de la aplicación.",
+      "id": 9
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál de las siguientes afirmaciones es incorrecta sobre un Virtual Private Server (VPS)?",
+      "opciones": {
+        "A": "Un VPS permite la virtualización en entornos aislados.",
+        "B": "Un VPS proporciona acceso de administrador al sistema operativo.",
+        "C": "Un VPS es un servidor físico.",
+        "D": "Un VPS puede ser utilizado para alojar sitios web."
+      },
+      "correcta": "C",
+      "explicacion": "Un VPS no es un servidor físico, sino que funciona dentro de un servidor físico, permitiendo la virtualización en entornos aislados.",
+      "id": 10
+    }
+  ],
+  "revision": "563ab747f709b01df6853aad95045dae221ce0922f8b004eee7195efc456b280",
+  "archivos_origen": [
+    "DAW/Tema 1/Tema1.1/1.1-maquina-y-servidor.tex",
+    "DAW/Tema 1/Tema1.1/1.2-formas-de-desplegar.tex",
+    "DAW/Tema 1/Tema1.1/1.3-gestion-nube.tex",
+    "DAW/Tema 1/Tema1.1/1.4-vps.tex",
+    "DAW/Tema 1/Tema1.1/1.5-ssh.tex",
+    "DAW/Tema 1/Tema1.1/1.6-practica-maquina-virtual.tex"
+  ],
+  "actualizado": "2026-11-08T16:01:14.456Z"
+}

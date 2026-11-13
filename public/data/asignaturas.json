@@ -1,0 +1,50 @@
+{
+  "asignaturas": [
+    {
+      "id": "wec",
+      "nombre": "WEC",
+      "archivo": "./data/asignaturas/wec/preguntas.json",
+      "descripcion": "Temas 1, 2, 3 y 4 · 3000 preguntas de teoría, código y examen",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Arquitecturas y herramientas de programación web",
+          "apartados": [
+            { "numero": 1, "nombre": "Origen y alcance de la web" },
+            { "numero": 2, "nombre": "Lenguajes de programación en entorno cliente" },
+            { "numero": 3, "nombre": "Arquitectura del navegador y motores de ejecución" },
+            { "numero": 4, "nombre": "Subsistema de comunicacions" },
+            { "numero": 5, "nombre": "Intèrpret de JavaScript" },
+            { "numero": 6, "nombre": "Conceptos e Introducción a la Integración del Código con HTML" },
+            { "numero": 7, "nombre": "EINES DE PROGRAMACIÓ SOBRE CLIENTS WEB" }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Sintaxis, tipos de datos, operadores y estructuras de control",
+          "apartados": [
+            { "numero": 1, "nombre": "Selección del lenguaje de programación del cliente" }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Objetos predefinidos y modelo de objetos del documento",
+          "apartados": [
+            { "numero": 1, "nombre": "Objetos predefinidos y modelo de objetos del documento (DOM)" }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Tema 4 · Programación con funciones, arrays y objetos",
+          "apartados": [
+            { "numero": 1, "nombre": "Tema 4.1 · Funciones: para qué sirven y cómo se definen" },
+            { "numero": 2, "nombre": "Tema 4.2 · Arrays: crear y leer posiciones" },
+            { "numero": 3, "nombre": "Tema 4.3 · Métodos de array (map, filter, reduce)" },
+            { "numero": 4, "nombre": "Tema 4.4 · Objectes literals i JSON" },
+            { "numero": 5, "nombre": "Part B · Ejercicios de desarrollo de examen" }
+          ]
+        }
+      ]
+    }
+  ]
+}

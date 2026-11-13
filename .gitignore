@@ -1,0 +1,5 @@
+.env
+datos/bancos/.*.tmp
+node_modules/
+npm-debug.log*
+*.log

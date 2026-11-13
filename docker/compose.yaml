@@ -1,0 +1,42 @@
+services:
+  preparar-tests:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: preparar-tests:local
+    container_name: preparar-tests
+    environment:
+      PUERTO_WEB: 8124
+      RUTA_APUNTES: /data/apuntes
+      RUTA_BANCOS: /app/datos/bancos
+      DIRECCION_OLLAMA: http://generador-apuntes-ollama:11434
+      MODELO_IA: ${MODELO_IA:-qwen2.5vl:7b}
+      NUM_CTX_IA: ${NUM_CTX_IA:-24576}
+      TOKENS_MAX_IA: ${TOKENS_MAX_IA:-2048}
+      TIEMPO_IA: ${TIEMPO_IA:-900}
+      MAX_CARACTERES_BLOQUE: ${MAX_CARACTERES_BLOQUE:-10000}
+    ports:
+      - "127.0.0.1:${PUERTO_WEB:-8124}:8124"
+    volumes:
+      - ${DIRECTORIO_APUNTES:?Selecciona primero la carpeta de apuntes}:/data/apuntes:ro
+      - ./datos/bancos:/app/datos/bancos
+      - ./public:/app/public:ro
+      - ./server:/app/server:ro
+    networks:
+      - ollama_compartido
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8124/api/salud').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+      interval: 20s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+networks:
+  ollama_compartido:
+    external: true
+    name: docker_default

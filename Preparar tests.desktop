@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Preparar tests
+Comment=Practica por asignatura con tus apuntes privados y Ollama local
+Exec=/home/natalia/.nvm/versions/node/v26.13.0/bin/node /home/natalia/Escritorio/preparar-tests/lanzar.js
+Path=/home/natalia/Escritorio/preparar-tests
+Icon=accessories-calculator
+Terminal=false
+Categories=Education;
