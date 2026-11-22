@@ -104,7 +104,7 @@ const LS = {
 };
 
 const DEFAULT_CATALOG = [
-  { id: "wec", nombre: "WEC", archivo: "./data/asignaturas/wec/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · 3000 preguntas de teoría, código y examen" }
+  { id: "wec", nombre: "WEC", archivo: "./data/asignaturas/wec/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · Banco de preguntas" }
 ];
 
 const state = {
@@ -147,11 +147,120 @@ function esc(value) {
 }
 
 function formatText(value) {
-  let out = esc(value);
-  out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
-  out = out.replace(/\n/g, "<br>");
-  return out;
+  if (value == null) return "";
+  let text = String(value);
+
+  // 1. Extraer bloques de código multilínea (1 a 4 backticks, con o sin espacios/salto previo)
+  const codeBlocks = [];
+  const codeRegex = /(^|\n|:\s*)[ \t]*(`{1,4})([a-zA-Z0-9_-]*)[ \t]*\r?\n([\s\S]*?)(?:\r?\n[ \t]*\2[ \t]*(?:\r?\n|$)|(?:\r?\n[ \t]*`{1,4}[ \t]*(?:\r?\n|$))|$)/g;
+  text = text.replace(codeRegex, (match, prefix, fence, lang, code) => {
+    const idx = codeBlocks.length;
+    const escapedCode = String(code)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .trim();
+    const langHtml = lang ? `<div class="md-code-header"><span class="md-code-lang">${esc(lang)}</span></div>` : "";
+    codeBlocks.push(
+      `<div class="md-code-wrapper">${langHtml}<pre class="md-code-block"><code>${escapedCode}</code></pre></div>`
+    );
+    return `${prefix ? prefix.trimEnd() : ""}\n@@@MDCODE${idx}@@@\n`;
+  });
+
+  // 2. Extraer código inline `code`
+  const inlineCodes = [];
+  text = text.replace(/`([^`\n]+)`/g, (_, code) => {
+    const idx = inlineCodes.length;
+    inlineCodes.push(`<code class="md-inline-code">${esc(code)}</code>`);
+    return `@@@MDINL${idx}@@@`;
+  });
+
+  // 3. Escapar el resto del texto antes de formatear etiquetas
+  text = esc(text);
+
+  // 4. Negritas y cursivas
+  text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  text = text.replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, "$1<em>$2</em>$3");
+  text = text.replace(/(^|[^_])_([^_]+)_([^_]|$)/g, "$1<em>$2</em>$3");
+
+  // 5. Procesar líneas para markdown estructurado
+  const lines = text.split(/\r?\n/);
+  const outLines = [];
+  let inOl = false;
+  let inUl = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
+    const trimmed = rawLine.trim();
+
+    if (trimmed.includes("@@@MDCODE")) {
+      if (inOl) { outLines.push("</ol>"); inOl = false; }
+      if (inUl) { outLines.push("</ul>"); inUl = false; }
+      outLines.push(trimmed);
+      continue;
+    }
+
+    const mOl = trimmed.match(/^(\d+)[.)]\s+(.*)$/);
+    if (mOl) {
+      if (!inOl) {
+        if (inUl) { outLines.push("</ul>"); inUl = false; }
+        outLines.push('<ol class="md-list">');
+        inOl = true;
+      }
+      outLines.push(`<li>${mOl[2]}</li>`);
+      continue;
+    } else if (inOl) {
+      outLines.push("</ol>");
+      inOl = false;
+    }
+
+    const mUl = trimmed.match(/^[-*•+]\s+(.*)$/);
+    if (mUl) {
+      if (!inUl) {
+        if (inOl) { outLines.push("</ol>"); inOl = false; }
+        outLines.push('<ul class="md-list">');
+        inUl = true;
+      }
+      outLines.push(`<li>${mUl[1]}</li>`);
+      continue;
+    } else if (inUl) {
+      outLines.push("</ul>");
+      inUl = false;
+    }
+
+    const mH4 = trimmed.match(/^####\s+(.*)$/);
+    const mH3 = trimmed.match(/^###\s+(.*)$/);
+    const mH2 = trimmed.match(/^##\s+(.*)$/);
+    const mH1 = trimmed.match(/^#\s+(.*)$/);
+
+    if (mH4) {
+      outLines.push(`<h5 class="md-heading md-h4">${mH4[1]}</h5>`);
+    } else if (mH3) {
+      outLines.push(`<h4 class="md-heading md-h3">${mH3[1]}</h4>`);
+    } else if (mH2) {
+      outLines.push(`<h3 class="md-heading md-h2">${mH2[1]}</h3>`);
+    } else if (mH1) {
+      outLines.push(`<h2 class="md-heading md-h1">${mH1[1]}</h2>`);
+    } else if (trimmed.startsWith("&gt;")) {
+      outLines.push(`<blockquote class="md-quote">${trimmed.replace(/^&gt;\s*/, "")}</blockquote>`);
+    } else if (trimmed === "---" || trimmed === "***" || trimmed === "___") {
+      outLines.push('<hr class="md-divider">');
+    } else if (!trimmed) {
+      outLines.push('<div class="md-spacer"></div>');
+    } else {
+      outLines.push(`<div class="md-p">${rawLine}</div>`);
+    }
+  }
+
+  if (inOl) outLines.push("</ol>");
+  if (inUl) outLines.push("</ul>");
+
+  let result = outLines.join("");
+  result = result.replace(/@@@MDINL(\d+)@@@/g, (_, idx) => inlineCodes[Number(idx)] || "");
+  result = result.replace(/@@@MDCODE(\d+)@@@/g, (_, idx) => codeBlocks[Number(idx)] || "");
+
+  return result;
 }
 
 function letterIndex(letter) {
@@ -177,6 +286,65 @@ function toast(message) {
   toastEl.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+}
+
+// --- Caché persistente IndexedDB para funcionamiento sin conexión ---
+const DB_CACHE_OFFLINE = "preparar-tests-offline-cache-v1";
+const ALMACEN_CACHE_OFFLINE = "almacen";
+
+function abrirDbOffline() {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === "undefined") {
+      return reject(new Error("IndexedDB no disponible"));
+    }
+    const req = indexedDB.open(DB_CACHE_OFFLINE, 1);
+    req.onupgradeneeded = () => {
+      req.result.createObjectStore(ALMACEN_CACHE_OFFLINE);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error ?? new Error("Error abriendo IndexedDB"));
+  });
+}
+
+async function guardarEnCacheOffline(clave, valor) {
+  try {
+    const db = await abrirDbOffline();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(ALMACEN_CACHE_OFFLINE, "readwrite");
+      tx.objectStore(ALMACEN_CACHE_OFFLINE).put(valor, clave);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  } catch {
+    try {
+      const str = JSON.stringify(valor);
+      if (str.length < 500000) {
+        localStorage.setItem(`pt_offline_${clave}`, str);
+      }
+    } catch {}
+  }
+}
+
+async function obtenerDeCacheOffline(clave) {
+  try {
+    const db = await abrirDbOffline();
+    const resultado = await new Promise((resolve, reject) => {
+      const tx = db.transaction(ALMACEN_CACHE_OFFLINE, "readonly");
+      const req = tx.objectStore(ALMACEN_CACHE_OFFLINE).get(clave);
+      req.onsuccess = () => resolve(req.result ?? null);
+      req.onerror = () => reject(req.error);
+    });
+    db.close();
+    if (resultado) return resultado;
+  } catch {}
+
+  try {
+    const raw = localStorage.getItem(`pt_offline_${clave}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
 }
 
 function readJSON(key, fallback) {
@@ -212,9 +380,51 @@ function removeStore(base) {
   try { localStorage.removeItem(base); } catch { /* noop */ }
 }
 
+function hasQuestion(id) {
+  if (id == null) return false;
+  if (state.byId.has(id)) return true;
+  if (typeof id === "string" && !isNaN(id) && state.byId.has(Number(id))) return true;
+  if (typeof id === "number" && state.byId.has(String(id))) return true;
+  return false;
+}
+
+function getQuestion(id) {
+  if (id == null) return null;
+  if (state.byId.has(id)) return state.byId.get(id);
+  if (typeof id === "string" && !isNaN(id) && state.byId.has(Number(id))) return state.byId.get(Number(id));
+  if (typeof id === "number" && state.byId.has(String(id))) return state.byId.get(String(id));
+  return null;
+}
+
 function getWrongIds() {
   const ids = readStore(LS.wrong, []);
-  return Array.isArray(ids) ? ids.filter((id) => Number.isInteger(id)) : [];
+  const valid = new Set();
+  if (Array.isArray(ids)) {
+    ids.forEach((id) => {
+      if (id != null && String(id).trim() !== "") {
+        valid.add(id);
+      }
+    });
+  }
+
+  const history = getHistory();
+  if (history && typeof history === "object") {
+    Object.entries(history).forEach(([key, entry]) => {
+      if (!entry) return;
+      const q = getQuestion(key);
+      if (q) {
+        if (entry.selected && entry.selected !== q.correcta) {
+          valid.add(q.id);
+        } else if (entry.fails > 0 && entry.selected !== q.correcta) {
+          valid.add(q.id);
+        }
+      } else if (entry.fails > 0) {
+        valid.add(key);
+      }
+    });
+  }
+
+  return [...valid];
 }
 
 function setWrongIds(ids) {
@@ -232,10 +442,22 @@ function setHistory(history) {
 
 function dataCounts() {
   const themes = new Map();
+  const history = getHistory();
+  let practicadas = 0;
+  let oficiales = 0;
+  let introduccion = 0;
+  let entrenamiento = 0;
+
   state.questions.forEach((q) => {
     const key = Number(q.tema);
     themes.set(key, (themes.get(key) || 0) + 1);
+    if (q.practicada || history[q.id] != null) practicadas++;
+    const cat = String(q.categoria || q.tag || "").toLowerCase();
+    if (cat.includes("oficial")) oficiales++;
+    else if (cat.includes("introduc")) introduccion++;
+    else if (cat.includes("entren") || cat.includes("pract")) entrenamiento++;
   });
+
   return {
     total: state.questions.length,
     temas: [...themes.entries()]
@@ -243,13 +465,20 @@ function dataCounts() {
       .map(([tema, count]) => ({ tema, count })),
     teoria: state.questions.filter((q) => q.tipo === "teoria").length,
     codigo: state.questions.filter((q) => q.tipo === "codigo").length,
-    fallos: getWrongIds().filter((id) => state.byId.has(id)).length
+    desarrollo: state.questions.filter((q) => q.tipo === "escribir_codigo" || q.tipo === "traza_linea" || q.tipo === "desarrollo").length,
+    escribir_codigo: state.questions.filter((q) => q.tipo === "escribir_codigo").length,
+    traza_linea: state.questions.filter((q) => q.tipo === "traza_linea").length,
+    fallos: getWrongIds().filter((id) => hasQuestion(id)).length,
+    practicadas,
+    oficiales,
+    introduccion,
+    entrenamiento
   };
 }
 
 function wrongQuestions() {
   return getWrongIds()
-    .map((id) => state.byId.get(id))
+    .map((id) => getQuestion(id))
     .filter(Boolean);
 }
 
@@ -388,7 +617,7 @@ function resolveApartadoForQuestion(q) {
 }
 
 function getWeakSubapartados(topN = 20) {
-  const wrong = new Set(getWrongIds().filter((id) => state.byId.has(id)));
+  const wrong = new Set(getWrongIds().map((id) => getQuestion(id)?.id || id));
   const history = getHistory();
   const bySub = new Map();
 
@@ -477,9 +706,7 @@ function getWeakSubapartadosByTema() {
 }
 
 function getWeakConcepts(topN = 8) {
-  const wrong = new Set(
-    getWrongIds().filter((id) => state.byId.has(id)),
-  );
+  const wrong = new Set(getWrongIds().map((id) => getQuestion(id)?.id || id));
   const history = getHistory();
   const byTag = new Map();
   state.questions.forEach((q) => {
@@ -556,21 +783,22 @@ function applyImportedData(data) {
   if (!data || typeof data !== "object") throw new Error("El archivo no contiene un objeto JSON válido.");
   const rawIds = Array.isArray(data.wrongIds) ? data.wrongIds : Array.isArray(data.fallos) ? data.fallos : null;
   if (!rawIds) throw new Error("El archivo no tiene la lista wrongIds.");
-  const incomingIds = rawIds.map(Number).filter((id) => Number.isInteger(id) && state.byId.has(id));
+  const incomingIds = rawIds.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
   const incomingHistory = data.history && typeof data.history === "object" && !Array.isArray(data.history) ? data.history : {};
 
-  const mergedWrong = new Set(getWrongIds().filter((id) => state.byId.has(id)));
+  const mergedWrong = new Set(getWrongIds().filter((id) => hasQuestion(id)));
   incomingIds.forEach((id) => mergedWrong.add(id));
   const mergedHistory = getHistory();
   Object.entries(incomingHistory).forEach(([key, entry]) => {
-    const id = Number(key);
-    if (Number.isInteger(id) && state.byId.has(id) && isWrongEntry(entry)) {
-      mergedHistory[id] = {
+    const q = getQuestion(key);
+    const resolvedId = q ? q.id : key;
+    if (hasQuestion(resolvedId) && isWrongEntry(entry)) {
+      mergedHistory[resolvedId] = {
         selected: String(entry.selected).charAt(0).toUpperCase(),
         at: typeof entry.at === "string" ? entry.at : new Date().toISOString(),
         fails: Math.max(1, Number(entry.fails) || 1)
       };
-      if (!mergedWrong.has(id)) mergedWrong.add(id);
+      if (!mergedWrong.has(resolvedId)) mergedWrong.add(resolvedId);
     }
   });
   setWrongIds([...mergedWrong]);
@@ -800,30 +1028,79 @@ function saveSessionForFilter(filterKey, sessionData) {
   writeJSON(LS_SESSIONS_MAP, allMaps);
 }
 
-function getSession() {
+function getSession(specificSubjectId = null) {
+  const target = specificSubjectId || state.subjectId;
+  if (target) {
+    const scoped = readJSON(`${LS.session}:${target}`, null);
+    if (scoped && Array.isArray(scoped.ids) && scoped.ids.length) {
+      return scoped;
+    }
+  }
+  const globalSession = readJSON(LS.session, null);
+  if (globalSession && Array.isArray(globalSession.ids) && globalSession.ids.length) {
+    if (!target || globalSession.subjectId === target) {
+      return globalSession;
+    }
+  }
+  const defaultScoped = readJSON(`${LS.session}:default`, null);
+  if (defaultScoped && Array.isArray(defaultScoped.ids) && defaultScoped.ids.length) {
+    if (!target || defaultScoped.subjectId === target) {
+      return defaultScoped;
+    }
+  }
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(`${LS.session}:`)) {
+        const item = readJSON(key, null);
+        if (item && Array.isArray(item.ids) && item.ids.length && !item.finished) {
+          if (!target || item.subjectId === target) {
+            return item;
+          }
+        }
+      }
+    }
+  } catch { /* noop */ }
   return readStore(LS.session, null);
 }
 
 function saveSession() {
   if (!state.order.length) return;
   const filterKey = state.selectedFilter || "all";
+  const aiEvaluations = {};
+  for (const q of state.order) {
+    if (q && q.evaluacionIA) {
+      aiEvaluations[q.id] = {
+        evaluacionIA: q.evaluacionIA,
+        evaluacionMensajes: q.evaluacionMensajes || []
+      };
+    }
+  }
   const sessionData = {
     filter: filterKey,
+    subjectId: state.subjectId,
     ids: state.order.map((q) => q.id),
     index: state.index,
     answers: state.answers,
+    aiEvaluations,
     immediate: state.immediate,
     startedAt: state.startedAt,
     finished: state.finished,
+    screen: state.screen,
     masteryMode: state.masteryMode,
-    masteryRound: state.masteryRound
+    masteryRound: state.masteryRound,
+    updatedAt: Date.now()
   };
   writeStore(LS.session, sessionData);
+  writeJSON(LS.session, sessionData);
   saveSessionForFilter(filterKey, sessionData);
+  guardarEnCacheOffline("ultima_sesion", sessionData);
+  guardarEnCacheOffline(`preguntas_sesion_${state.subjectId || "default"}`, state.order);
 }
 
 function clearSession() {
   removeStore(LS.session);
+  try { localStorage.removeItem(LS.session); } catch { /* noop */ }
   if (state.selectedFilter) {
     saveSessionForFilter(state.selectedFilter, null);
   }
@@ -898,8 +1175,16 @@ async function loadCatalog() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     catalog = Array.isArray(data.asignaturas) ? data.asignaturas : [];
+    if (catalog.length) {
+      guardarEnCacheOffline("catalogo", catalog);
+    }
   } catch {
-    catalog = getCatalogFallback().asignaturas;
+    const catalogoCache = await obtenerDeCacheOffline("catalogo");
+    if (Array.isArray(catalogoCache) && catalogoCache.length) {
+      catalog = catalogoCache;
+    } else {
+      catalog = getCatalogFallback().asignaturas;
+    }
   }
   const esEntornoEstatico =
     typeof window !== "undefined" &&
@@ -941,7 +1226,7 @@ async function loadCatalog() {
       byId.set(s.id, {
         ...s,
         nombre: s.nombre || s.id,
-        etiqueta: `${s.nombre || s.id} (Banco de examen · ${s.id === "wec" ? "3.000 preguntas" : "preguntas"})`,
+        etiqueta: `${s.nombre || s.id} (Banco de preguntas)`,
       });
     });
 
@@ -978,6 +1263,7 @@ async function fetchSubjectData(entry) {
     return entry.localData;
   }
   const primaryUrl = (entry.archivo || "").startsWith("/") ? `.${entry.archivo}` : (entry.archivo || "");
+  const cacheKey = `banco_${entry.id}`;
   try {
     let res = null;
     try {
@@ -988,8 +1274,17 @@ async function fetchSubjectData(entry) {
     }
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     state.source = "json";
-    return await res.json();
+    const data = await res.json();
+    if (data && Array.isArray(data.preguntas)) {
+      guardarEnCacheOffline(cacheKey, data);
+    }
+    return data;
   } catch (error) {
+    const dataCache = await obtenerDeCacheOffline(cacheKey);
+    if (dataCache && Array.isArray(dataCache.preguntas)) {
+      state.source = "offline-cache";
+      return dataCache;
+    }
     throw new Error(`No se pudo cargar "${entry.archivo}". Comprueba que el archivo de preguntas esté disponible.`);
   }
 }
@@ -998,7 +1293,7 @@ async function loadSubject(subjectId) {
   const entry = state.catalog.find((s) => s.id === subjectId) || state.catalog[0];
   if (!entry) throw new Error("No hay asignaturas disponibles.");
   const data = await fetchSubjectData(entry);
-  if (!data || !Array.isArray(data.preguntas) || !data.preguntas.length) {
+  if (!data || !Array.isArray(data.preguntas)) {
     throw new Error(`La asignatura "${entry.nombre}" no tiene preguntas válidas.`);
   }
   state.subjectId = entry.id;
@@ -1025,47 +1320,137 @@ function slugify(text) {
 }
 
 function validateQuestionBank(data) {
-  if (!data || !Array.isArray(data.preguntas) || !data.preguntas.length) {
+  const rawList = Array.isArray(data?.preguntas)
+    ? data.preguntas
+    : Array.isArray(data?.preguntes)
+      ? data.preguntes
+      : Array.isArray(data)
+        ? data
+        : [];
+  if (!rawList.length) {
     throw new Error("El JSON debe tener un array preguntas con al menos una pregunta.");
   }
   const ids = new Set();
-  return data.preguntas.map((raw, index) => {
+  const apartatsMap = data.apartats || {};
+  return rawList.map((raw, index) => {
     if (!raw || typeof raw !== "object") throw new Error(`La pregunta ${index + 1} no es un objeto.`);
-    const opciones = raw.opciones || {};
-    for (const letter of ["A", "B", "C", "D"]) {
-      if (typeof opciones[letter] !== "string" || !opciones[letter].trim()) {
-        throw new Error(`La pregunta ${index + 1} necesita las opciones A, B, C y D.`);
+
+    const enunciado = String(raw.enunciado || raw.q || "").trim();
+    const codigo = String(raw.codigo || raw.codi || "").trim();
+    const explicacion = String(raw.explicacion || raw.exp || raw.solucio || raw.solucion || "Sin explicación.").trim();
+    const explicacionClara = String(raw.explicacionClara || explicacion).trim();
+
+    let tipoRaw = String(raw.tipo || raw.tipus || "teoria").toLowerCase();
+    const tipoMap = {
+      codi: "codigo",
+      codigo: "codigo",
+      código: "codigo",
+      error: "teoria",
+      teoria: "teoria",
+      teoría: "teoria",
+      escriure: "escribir_codigo",
+      escribir: "escribir_codigo",
+      escribir_codigo: "escribir_codigo",
+      interpretar: "traza_linea",
+      traza: "traza_linea",
+      traza_linea: "traza_linea",
+      oberta: "desarrollo",
+      abierta: "desarrollo",
+      desarrollo: "desarrollo",
+    };
+    const tipo = tipoMap[tipoRaw] || tipoRaw;
+
+    let opciones = {};
+    if (raw.opciones && typeof raw.opciones === "object" && !Array.isArray(raw.opciones)) {
+      opciones = { ...raw.opciones };
+    } else if (Array.isArray(raw.op || raw.opciones)) {
+      const arr = raw.op || raw.opciones;
+      const letters = ["A", "B", "C", "D"];
+      arr.forEach((texto, i) => {
+        if (i < 4) opciones[letters[i]] = String(texto);
+      });
+    }
+
+    const esAbierta = tipo === "escribir_codigo" || tipo === "traza_linea" || tipo === "desarrollo";
+    if (esAbierta && Object.keys(opciones).length < 4) {
+      opciones = { A: opciones.A || "-", B: opciones.B || "-", C: opciones.C || "-", D: opciones.D || "-" };
+    } else if (!esAbierta) {
+      for (const letter of ["A", "B", "C", "D"]) {
+        if (!opciones[letter] || typeof opciones[letter] !== "string" || !opciones[letter].trim()) {
+          opciones[letter] = opciones[letter] || `Opción ${letter}`;
+        }
       }
     }
-    const correcta = String(raw.correcta || "").trim().toUpperCase().charAt(0);
-    if (!["A", "B", "C", "D"].includes(correcta)) {
-      throw new Error(`La pregunta ${index + 1} tiene una respuesta correcta inválida.`);
+
+    let correcta = "A";
+    if (typeof raw.ok === "number" && raw.ok >= 0 && raw.ok < 4) {
+      correcta = ["A", "B", "C", "D"][raw.ok];
+    } else if (raw.correcta) {
+      correcta = String(raw.correcta).trim().toUpperCase().charAt(0);
+    } else if (typeof raw.ok === "string") {
+      correcta = String(raw.ok).trim().toUpperCase().charAt(0);
     }
-    let id = Number(raw.id);
-    if (!Number.isInteger(id) || id <= 0 || ids.has(id)) id = index + 1;
+    if (!["A", "B", "C", "D"].includes(correcta)) correcta = "A";
+
+    let id = raw.id;
+    if (id == null || ids.has(id)) {
+      id = index + 1;
+    }
     ids.add(id);
+
+    let tema = Number(raw.tema || 0);
+    if (!tema) {
+      const matchTema = String(raw.tema || raw.id || raw.apartat || raw.apartado || "").match(/T(\d+)|tema\s*(\d+)/i);
+      tema = matchTema ? Number(matchTema[1] || matchTema[2]) : 1;
+    }
+
+    const apRaw = String(raw.apartat || raw.apartado || "");
+    let apartadoNombre = raw.apartadoNombre || (apartatsMap ? apartatsMap[apRaw] : "") || "";
+    let apartado = Number(raw.apartado || 0);
+    if (!apartado) {
+      if (apRaw === "intro") apartado = 1;
+      else if (apRaw === "pract") apartado = tema === 2 ? 10 : 8;
+      else {
+        const match = apRaw.match(/\d+\.(\d+)/);
+        if (match) apartado = Number(match[1]);
+        else apartado = 1;
+      }
+    }
+
     return {
       ...raw,
       id,
-      tema: Number(raw.tema) || 1,
-      tipo: raw.tipo === "codigo" ? "codigo" : "teoria",
+      tema,
+      apartado,
+      apartadoNombre,
+      tipo,
       dificultad: raw.dificultad || "media",
-      tag: raw.tag || "Generado",
+      tag: raw.tag || (tipoRaw === "error" ? "Detección de errores" : tipo === "codigo" ? "Código" : esAbierta ? "Desarrollo" : "Teoría"),
+      enunciado,
+      codigo,
       opciones,
       correcta,
-      explicacion: raw.explicacion || "Sin explicación.",
-      traza: Array.isArray(raw.traza) ? raw.traza : []
+      explicacion,
+      explicacionClara,
+      traza: Array.isArray(raw.traza) ? raw.traza : [],
+      solucion: raw.solucio || raw.solucion || explicacion,
+      rubrica: Array.isArray(raw.rubrica) ? raw.rubrica : [],
+      punts: raw.punts || raw.puntos || 1,
     };
   });
 }
 
 function normalizeData(data) {
-  state.meta = data.meta || { total: data.preguntas.length };
-  state.questions = data.preguntas.map((q) => ({
-    ...q,
-    opciones: q.opciones || {},
-    traza: Array.isArray(q.traza) ? q.traza : []
-  }));
+  const rawList = Array.isArray(data?.preguntas)
+    ? data.preguntas
+    : Array.isArray(data?.preguntes)
+      ? data.preguntes
+      : Array.isArray(data)
+        ? data
+        : [];
+  state.meta = data.meta || { total: rawList.length, asignatura: "WEC", titulo: data.tema || "WEC" };
+  const validadas = rawList.length ? validateQuestionBank({ ...data, preguntas: rawList }) : [];
+  state.questions = validadas;
   state.byId = new Map(state.questions.map((q) => [q.id, q]));
 }
 
@@ -1144,6 +1529,882 @@ function importSubjectFile(file) {
 }
 
 
+// === assets/js/app/supabase.js ===
+"use strict";
+
+// ============================================================
+// CONFIGURACIÓN E INTEGRACIÓN SUPABASE (Grados Informáticos)
+// Sincronización de progreso y caché de http://127.0.0.1:8765/
+// ============================================================
+
+window.SUPABASE_URL = window.SUPABASE_URL || "https://lztatgnlplpduiatmlrv.supabase.co";
+window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "sb_publishable_z_T7Y3yKqPdXLnvL3ltnQA_ZAPrXImZ";
+
+const SupabaseAuth = (() => {
+  let client = null;
+  let currentUser = null;
+  let isSyncing = false;
+
+  function getClient() {
+    if (client) return client;
+    if (window.supabase && typeof window.supabase.createClient === "function") {
+      try {
+        client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
+          db: { schema: "grados-informaticos" },
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
+        });
+        window.supabaseClient = client;
+        return client;
+      } catch (err) {
+        console.error("Error al inicializar cliente Supabase:", err);
+      }
+    }
+    return null;
+  }
+
+  // Pre-cargar progreso de las 515 preguntas practicadas de http://127.0.0.1:8765/
+  async function seedInitialProgress() {
+    const keySeeded = "wec12_seeded_8765_v2";
+    if (localStorage.getItem(keySeeded) === "true") return;
+
+    try {
+      const resp = await fetch("./data/progreso-8765.json");
+      if (!resp.ok) return;
+      const seedData = await resp.json();
+      if (!seedData || !seedData.history) return;
+
+      const currentHistory = typeof getHistory === "function" ? getHistory() : {};
+      const currentWrong = typeof getWrongIds === "function" ? getWrongIds() : [];
+
+      // Fusionar historia de 8765
+      const mergedHistory = { ...seedData.history, ...currentHistory };
+      const mergedWrong = [...new Set([...(seedData.wrongIds || []), ...currentWrong])];
+
+      if (typeof setHistory === "function") setHistory(mergedHistory);
+      if (typeof setWrongIds === "function") setWrongIds(mergedWrong);
+
+      const existingStats = typeof getStats === "function" ? getStats() : null;
+      if (!existingStats || existingStats.attempts === 0) {
+        if (typeof setStats === "function") setStats(seedData.stats);
+        else writeStore(LS.stats, seedData.stats);
+      }
+
+      localStorage.setItem(keySeeded, "true");
+      console.log(`[SupabaseAuth] Progreso inicial de 8765 cargado con éxito (${Object.keys(seedData.history).length} preguntas practicadas, ${mergedWrong.length} fallos)`);
+      if (typeof toast === "function") {
+        toast("✓ Se ha cargado tu progreso anterior de http://127.0.0.1:8765/ (515 preguntas practicadas)");
+      }
+    } catch (e) {
+      console.warn("No se pudo cargar el progreso inicial de 8765:", e);
+    }
+  }
+
+  // Sincronizar progreso local con Supabase
+  async function syncProgressWithCloud(forceUpload = false) {
+    const c = getClient();
+    if (!c || !currentUser || isSyncing) return;
+    isSyncing = true;
+
+    try {
+      updateSyncStatusUI("Sincronizando…");
+      const localHistory = typeof getHistory === "function" ? getHistory() : {};
+      const localWrong = typeof getWrongIds === "function" ? getWrongIds() : [];
+      const localStats = typeof getStats === "function" ? getStats() : {};
+      const localSession = typeof getSession === "function" ? getSession() : null;
+
+      const cloudProgress = currentUser.user_metadata?.test_progress || null;
+
+      let mergedHistory = { ...localHistory };
+      let mergedWrong = [...new Set(localWrong)];
+      let mergedStats = { ...localStats };
+
+      if (cloudProgress && !forceUpload) {
+        // Fusionar lo de la nube con lo local
+        if (cloudProgress.history) {
+          Object.entries(cloudProgress.history).forEach(([qid, item]) => {
+            if (!mergedHistory[qid] || (item.at && (!mergedHistory[qid].at || item.at > mergedHistory[qid].at))) {
+              mergedHistory[qid] = item;
+            }
+          });
+        }
+        if (Array.isArray(cloudProgress.wrongIds)) {
+          mergedWrong = [...new Set([...mergedWrong, ...cloudProgress.wrongIds])];
+        }
+        if (cloudProgress.stats) {
+          mergedStats.attempts = Math.max(mergedStats.attempts || 0, cloudProgress.stats.attempts || 0);
+          mergedStats.bestPct = Math.max(mergedStats.bestPct || 0, cloudProgress.stats.bestPct || 0);
+        }
+      }
+
+      const payload = {
+        updatedAt: new Date().toISOString(),
+        history: mergedHistory,
+        wrongIds: mergedWrong,
+        stats: mergedStats,
+        session: localSession,
+        countPracticadas: Object.keys(mergedHistory).length
+      };
+
+      // Guardar en Supabase user_metadata
+      const { data: updateData, error: updateError } = await c.auth.updateUser({
+        data: { test_progress: payload }
+      });
+
+      if (!updateError && updateData?.user) {
+        currentUser = updateData.user;
+      }
+
+      // Aplicar al estado local
+      if (typeof setHistory === "function") setHistory(mergedHistory);
+      if (typeof setWrongIds === "function") setWrongIds(mergedWrong);
+      if (typeof setStats === "function") setStats(mergedStats);
+
+      updateSyncStatusUI(`Sincronizado (${payload.countPracticadas} preguntas)`);
+      console.log(`[SupabaseAuth] Progreso sincronizado con Supabase (${payload.countPracticadas} preguntas guardadas)`);
+    } catch (e) {
+      console.error("Error sincronizando con Supabase:", e);
+      updateSyncStatusUI("Error al sincronizar");
+    } finally {
+      isSyncing = false;
+    }
+  }
+
+  function updateSyncStatusUI(text) {
+    const statusEl = document.querySelector("#sync-cloud-status");
+    if (statusEl) statusEl.textContent = text;
+  }
+
+  function updateAuthButton() {
+    const btn = document.querySelector("#auth-btn");
+    const label = document.querySelector("#auth-btn-label");
+    if (!btn || !label) return;
+
+    if (currentUser) {
+      const email = currentUser.email || "Usuario";
+      label.textContent = email.split("@")[0];
+      btn.classList.add("primary");
+      btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
+    } else {
+      label.textContent = "Iniciar sesión";
+      btn.classList.remove("primary");
+      btn.title = "Iniciar sesión con Supabase para guardar tu caché y progreso";
+    }
+  }
+
+  // Modal de inicio de sesión y sincronización
+  function renderAuthModal() {
+    let modal = document.querySelector("#auth-modal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "auth-modal";
+      modal.className = "modal-overlay hidden";
+      modal.style.cssText = `
+        position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7);
+        display: flex; align-items: center; justify-content: center; z-index: 1000;
+        padding: 20px; backdrop-filter: blur(4px);
+      `;
+      document.body.appendChild(modal);
+    }
+
+    const email = currentUser?.email || "";
+    const historyCount = typeof getHistory === "function" ? Object.keys(getHistory()).length : 0;
+    const wrongCount = typeof getWrongIds === "function" ? getWrongIds().length : 0;
+
+    modal.innerHTML = `
+      <div class="modal-card" style="
+        background: var(--card); color: var(--text); border: 1px solid var(--line);
+        border-radius: var(--radius); width: 100%; max-width: 440px; padding: 28px;
+        box-shadow: var(--shadow); position: relative; max-height: 90vh; overflow-y: auto;
+      ">
+        <button type="button" id="close-auth-modal" style="
+          position: absolute; top: 16px; right: 16px; background: none; border: none;
+          font-size: 20px; color: var(--muted); cursor: pointer; padding: 4px;
+        " aria-label="Cerrar">&times;</button>
+
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:18px;">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          <div>
+            <h3 style="margin:0; font-size:18px;">${currentUser ? "Tu cuenta de Supabase" : "Iniciar sesión en Supabase"}</h3>
+            <small style="color:var(--muted);">${currentUser ? "Grados Informáticos · Sincronización activa" : "Guarda tu caché y progreso en la nube"}</small>
+          </div>
+        </div>
+
+        ${currentUser ? `
+          <div style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:13px; color:var(--muted);">Usuario</span>
+              <strong style="font-size:14px;">${esc(email)}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:13px; color:var(--muted);">Preguntas practicadas</span>
+              <strong><span class="pct-pill" style="background:var(--ok-soft); color:var(--ok); font-size:12px; padding:2px 8px; border-radius:12px;">${historyCount}</span></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:13px; color:var(--muted);">Preguntas falladas</span>
+              <strong><span class="pct-pill" style="background:var(--bad-soft); color:var(--bad); font-size:12px; padding:2px 8px; border-radius:12px;">${wrongCount}</span></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13px; color:var(--muted);">Estado de nube</span>
+              <span id="sync-cloud-status" style="font-size:12px; font-weight:600; color:var(--brand);">Conectado</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="btn primary" type="button" id="btn-sync-now" style="width:100%; justify-content:center; gap:8px;">
+              <i class="fa-solid fa-arrows-rotate"></i> Sincronizar ahora con Supabase
+            </button>
+            <button class="btn ghost warn" type="button" id="btn-logout" style="width:100%; justify-content:center; gap:8px;">
+              <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+            </button>
+          </div>
+        ` : `
+          <p style="font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:20px;">
+            Inicia sesión para sincronizar automáticamente tu caché, respuestas y las <strong>515 preguntas practicadas</strong> de http://127.0.0.1:8765/ entre dispositivos.
+          </p>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+            <button class="btn" type="button" id="btn-oauth-google" style="width:100%; justify-content:center; gap:10px; border:1px solid var(--line);">
+              <i class="fa-brands fa-google" style="color:#ea4335;"></i> Continuar con Google
+            </button>
+            <button class="btn" type="button" id="btn-oauth-github" style="width:100%; justify-content:center; gap:10px; border:1px solid var(--line);">
+              <i class="fa-brands fa-github"></i> Continuar con GitHub
+            </button>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:10px; margin:16px 0; color:var(--muted); font-size:12px;">
+            <hr style="flex:1; border:0; border-top:1px solid var(--line);">
+            <span>O con correo</span>
+            <hr style="flex:1; border:0; border-top:1px solid var(--line);">
+          </div>
+
+          <form id="email-auth-form" style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;" for="auth-email">Correo electrónico</label>
+              <input class="control" type="email" id="auth-email" required placeholder="tu@correo.com" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;" for="auth-password">Contraseña</label>
+              <input class="control" type="password" id="auth-password" required placeholder="••••••••" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div id="auth-error-msg" class="hidden" style="color:var(--bad); font-size:12px; background:var(--bad-soft); padding:8px 12px; border-radius:8px;"></div>
+            <div style="display:flex; gap:10px; margin-top:8px;">
+              <button class="btn primary" type="submit" id="btn-submit-login" style="flex:1; justify-content:center;">Entrar</button>
+              <button class="btn ghost" type="button" id="btn-submit-signup" style="flex:1; justify-content:center;">Registrarse</button>
+            </div>
+          </form>
+        `}
+      </div>
+    `;
+
+    modal.classList.remove("hidden");
+
+    // Handlers
+    modal.querySelector("#close-auth-modal")?.addEventListener("click", () => modal.classList.add("hidden"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.add("hidden");
+    });
+
+    if (currentUser) {
+      modal.querySelector("#btn-sync-now")?.addEventListener("click", async () => {
+        const btn = modal.querySelector("#btn-sync-now");
+        if (btn) { btn.disabled = true; btn.textContent = "Sincronizando…"; }
+        await syncProgressWithCloud(true);
+        if (typeof toast === "function") toast("✓ Progreso sincronizado con Supabase");
+        renderAuthModal();
+      });
+
+      modal.querySelector("#btn-logout")?.addEventListener("click", async () => {
+        const c = getClient();
+        if (c) await c.auth.signOut().catch(() => {});
+        currentUser = null;
+        updateAuthButton();
+        if (typeof toast === "function") toast("Has cerrado sesión.");
+        modal.classList.add("hidden");
+      });
+    } else {
+      modal.querySelector("#btn-oauth-google")?.addEventListener("click", async () => {
+        const c = getClient();
+        if (!c) return;
+        await c.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: window.location.href }
+        });
+      });
+
+      modal.querySelector("#btn-oauth-github")?.addEventListener("click", async () => {
+        const c = getClient();
+        if (!c) return;
+        await c.auth.signInWithOAuth({
+          provider: "github",
+          options: { redirectTo: window.location.href }
+        });
+      });
+
+      const form = modal.querySelector("#email-auth-form");
+      const errBox = modal.querySelector("#auth-error-msg");
+
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const c = getClient();
+        if (!c) return;
+        const emailVal = modal.querySelector("#auth-email").value.trim();
+        const passVal = modal.querySelector("#auth-password").value;
+        const submitBtn = modal.querySelector("#btn-submit-login");
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Entrando…"; }
+        errBox.classList.add("hidden");
+
+        const { data, error } = await c.auth.signInWithPassword({ email: emailVal, password: passVal });
+        if (error) {
+          errBox.textContent = error.message;
+          errBox.classList.remove("hidden");
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Entrar"; }
+        } else {
+          currentUser = data.user;
+          updateAuthButton();
+          await syncProgressWithCloud();
+          if (typeof toast === "function") toast(`¡Bienvenida ${emailVal}!`);
+          renderAuthModal();
+        }
+      });
+
+      modal.querySelector("#btn-submit-signup")?.addEventListener("click", async () => {
+        const c = getClient();
+        if (!c) return;
+        const emailVal = modal.querySelector("#auth-email").value.trim();
+        const passVal = modal.querySelector("#auth-password").value;
+        const signupBtn = modal.querySelector("#btn-submit-signup");
+        if (!emailVal || !passVal) {
+          errBox.textContent = "Escribe correo y contraseña para registrarte.";
+          errBox.classList.remove("hidden");
+          return;
+        }
+        if (signupBtn) { signupBtn.disabled = true; signupBtn.textContent = "Registrando…"; }
+        errBox.classList.add("hidden");
+
+        const { data, error } = await c.auth.signUp({ email: emailVal, password: passVal });
+        if (error) {
+          errBox.textContent = error.message;
+          errBox.classList.remove("hidden");
+          if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = "Registrarse"; }
+        } else {
+          currentUser = data.user;
+          updateAuthButton();
+          await syncProgressWithCloud();
+          if (typeof toast === "function") toast(`Cuenta creada. ¡Bienvenida ${emailVal}!`);
+          renderAuthModal();
+        }
+      });
+    }
+  }
+
+  async function verificarPermisoAdmin(c, user) {
+    if (!c || !user) return false;
+    const emailNorm = String(user.email || "").trim().toLowerCase();
+    if (emailNorm === "nataliagbarea@gmail.com" || user.id === "553ae2cb-4832-4cda-a16d-e547032eb5b7") {
+      return true;
+    }
+    try {
+      let data = null;
+      if (user.id) {
+        const resId = await c.schema("public").from("perfiles")
+          .select("id, email, rol").eq("id", user.id).maybeSingle();
+        if (!resId.error && resId.data) data = resId.data;
+      }
+      // Respaldo por email (idéntico a Acceso_grados_informaticos por si el registro se creó con otro UUID)
+      if (!data && user.email) {
+        const resEmail = await c.schema("public").from("perfiles")
+          .select("id, email, rol").eq("email", user.email).maybeSingle();
+        if (!resEmail.error && resEmail.data) data = resEmail.data;
+      }
+      return data && String(data.rol || "").trim().toLowerCase() === "admin";
+    } catch (err) {
+      console.warn("Fallo verificando permiso:", err);
+      return false;
+    }
+  }
+
+  function mostrarLoginGate(errorMsg = "") {
+    const gate = document.getElementById("login-gate");
+    if (gate) {
+      gate.style.display = "flex";
+      const errBox = document.getElementById("login-gate-error");
+      if (errBox) {
+        if (errorMsg) {
+          errBox.textContent = errorMsg;
+          errBox.style.display = "block";
+        } else {
+          errBox.style.display = "none";
+        }
+      }
+    }
+    const appEl = document.getElementById("app");
+    if (appEl) appEl.style.display = "none";
+    const topbar = document.querySelector(".topbar");
+    if (topbar) topbar.style.display = "none";
+  }
+
+  function ocultarLoginGate() {
+    const gate = document.getElementById("login-gate");
+    if (gate) gate.style.display = "none";
+    const appEl = document.getElementById("app");
+    if (appEl) appEl.style.display = "";
+    const topbar = document.querySelector(".topbar");
+    if (topbar) topbar.style.display = "";
+  }
+
+  async function autenticarConGate() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasError = urlParams.has("error") || urlParams.has("error_description");
+    let errorAlInicio = "";
+
+    if (hasError) {
+      const errDesc = urlParams.get("error_description") || urlParams.get("error") || "Error en autorización";
+      try {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } catch (_) {}
+
+      // Limpiar tokens y verificadores huérfanos de OAuth para prevenir bucles de bad_oauth_state
+      try {
+        Object.keys(localStorage).forEach(k => {
+          if (k.startsWith("sb-") && (k.includes("code-verifier") || k.includes("auth-token-code-verifier"))) {
+            localStorage.removeItem(k);
+          }
+        });
+        Object.keys(sessionStorage).forEach(k => {
+          if (k.startsWith("sb-")) sessionStorage.removeItem(k);
+        });
+      } catch (_) {}
+
+      const textoLimpio = decodeURIComponent(errDesc).replace(/\+/g, " ");
+      if (textoLimpio.toLowerCase().includes("bad_oauth_state") || textoLimpio.toLowerCase().includes("state not found")) {
+        errorAlInicio = "Aviso: El enlace OAuth previo expiró o se bloqueó la cookie entre sitios. Se ha limpiado el estado; vuelve a pulsar para iniciar sesión.";
+      } else {
+        errorAlInicio = `Aviso: ${textoLimpio}. Pulsa de nuevo para entrar.`;
+      }
+    }
+
+    const c = getClient();
+    if (!c) {
+      mostrarLoginGate("No se pudo conectar con Supabase.");
+      return false;
+    }
+
+    try {
+      const { data: { session } } = await c.auth.getSession();
+      if (!session?.user) {
+        mostrarLoginGate(errorAlInicio);
+        return false;
+      }
+
+      // Comprobar estrictamente si el usuario existe y es admin en Supabase
+      const esAdmin = await verificarPermisoAdmin(c, session.user);
+      if (!esAdmin) {
+        await c.auth.signOut().catch(() => {});
+        currentUser = null;
+        try { sessionStorage.removeItem("esAdmin"); } catch (_) {}
+        mostrarLoginGate("Acceso denegado: tu usuario (" + (session.user.email || session.user.id) + ") no tiene rol admin en la tabla perfiles de Supabase.");
+        return false;
+      }
+
+      currentUser = session.user;
+      try { sessionStorage.setItem("esAdmin", "true"); } catch (_) {}
+      ocultarLoginGate();
+      updateAuthButton();
+      await syncProgressWithCloud();
+      return true;
+    } catch (err) {
+      console.error("Error en validación de sesión:", err);
+      mostrarLoginGate(errorAlInicio || "Error al validar la sesión con Supabase.");
+      return false;
+    }
+  }
+  async function cargarConfiguracionServidor() {
+    try {
+      const res = await fetch("/api/configuracion");
+      if (res.ok) {
+        const cfg = await res.json();
+        if (cfg.supabaseUrl) window.SUPABASE_URL = cfg.supabaseUrl;
+        if (cfg.supabaseAnonKey) window.SUPABASE_ANON_KEY = cfg.supabaseAnonKey;
+        if (cfg.githubRepo) localStorage.setItem("gh_repo", cfg.githubRepo);
+        if (cfg.githubBranch) localStorage.setItem("selected_test_branch", cfg.githubBranch);
+        if (cfg.githubToken) localStorage.setItem("cache_gh_token", cfg.githubToken);
+      }
+    } catch (_) {}
+  }
+
+  async function init() {
+    await cargarConfiguracionServidor();
+    await seedInitialProgress();
+
+    // Comprobar autenticación con login gate estricto
+    await autenticarConGate();
+
+    const c = getClient();
+    if (c) {
+      c.auth.onAuthStateChange(async (event, session) => {
+        if (event === "SIGNED_IN") {
+          await autenticarConGate();
+        } else if (event === "SIGNED_OUT") {
+          currentUser = null;
+          updateAuthButton();
+          mostrarLoginGate();
+        }
+      });
+    }
+
+    const cleanRedirectUrl = window.location.origin + window.location.pathname;
+
+    // Botones de login con OAuth exclusivo (GitHub y Google)
+    document.getElementById("gate-btn-github")?.addEventListener("click", async () => {
+      const cli = getClient();
+      if (!cli) {
+        mostrarLoginGate("No se pudo conectar con Supabase.");
+        return;
+      }
+      const btn = document.getElementById("gate-btn-github");
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size:1.1rem;"></i> <span>Conectando con GitHub…</span>';
+      }
+      try {
+        const { error } = await cli.auth.signInWithOAuth({
+          provider: "github",
+          options: { redirectTo: cleanRedirectUrl }
+        });
+        if (error) {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-brands fa-github" style="font-size:1.15rem;"></i> <span>Continuar con GitHub</span>';
+          }
+          mostrarLoginGate(`Error de autenticación con GitHub: ${error.message}`);
+        }
+      } catch (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-brands fa-github" style="font-size:1.15rem;"></i> <span>Continuar con GitHub</span>';
+        }
+        mostrarLoginGate(`Error: ${err.message || err}`);
+      }
+    });
+
+    document.getElementById("gate-btn-google")?.addEventListener("click", async () => {
+      const cli = getClient();
+      if (!cli) {
+        mostrarLoginGate("No se pudo conectar con Supabase.");
+        return;
+      }
+      const btn = document.getElementById("gate-btn-google");
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size:1.1rem;"></i> <span>Conectando con Google…</span>';
+      }
+      try {
+        const { error } = await cli.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: cleanRedirectUrl }
+        });
+        if (error) {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-brands fa-google" style="color:#ea4335; font-size:1.1rem;"></i> <span>Continuar con Google</span>';
+          }
+          mostrarLoginGate(`Error de autenticación con Google: ${error.message}`);
+        }
+      } catch (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-brands fa-google" style="color:#ea4335; font-size:1.1rem;"></i> <span>Continuar con Google</span>';
+        }
+        mostrarLoginGate(`Error: ${err.message || err}`);
+      }
+    });
+
+    document.getElementById("gate-toggle-email")?.addEventListener("click", () => {
+      const form = document.getElementById("gate-email-form");
+      if (form) {
+        form.style.display = form.style.display === "none" ? "flex" : "none";
+      }
+    });
+
+    document.getElementById("gate-email-form")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const cli = getClient();
+      if (!cli) return mostrarLoginGate("No se pudo conectar con Supabase.");
+      const email = document.getElementById("gate-input-email")?.value.trim();
+      const password = document.getElementById("gate-input-password")?.value;
+      const btn = document.getElementById("gate-btn-submit-email");
+      if (btn) { btn.disabled = true; btn.textContent = "Verificando…"; }
+
+      try {
+        const { data, error } = await cli.auth.signInWithPassword({ email, password });
+        if (error) {
+          if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
+          mostrarLoginGate(error.message === "Invalid login credentials" ? "Email o contraseña incorrectos." : error.message);
+          return;
+        }
+
+        const esAdmin = await verificarPermisoAdmin(cli, data.user);
+        if (!esAdmin) {
+          await cli.auth.signOut().catch(() => {});
+          currentUser = null;
+          if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
+          mostrarLoginGate("Acceso denegado: tu usuario (" + (data.user?.email || "") + ") no tiene rol admin en la tabla perfiles de Supabase.");
+          return;
+        }
+
+        currentUser = data.user;
+        try { sessionStorage.setItem("esAdmin", "true"); } catch (_) {}
+        ocultarLoginGate();
+        updateAuthButton();
+        await syncProgressWithCloud();
+        if (typeof toast === "function") toast(`¡Bienvenida ${email}!`);
+      } catch (err) {
+        if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
+        mostrarLoginGate(`Error: ${err.message || err}`);
+      }
+    });
+
+    document.querySelector("#auth-btn")?.addEventListener("click", () => {
+      renderAuthModal();
+    });
+
+    updateAuthButton();
+  }
+
+  let autoSyncTimer = null;
+  function autoSyncProgressDebounced() {
+    if (autoSyncTimer) clearTimeout(autoSyncTimer);
+    autoSyncTimer = setTimeout(() => {
+      syncProgressWithCloud(false).catch((e) => console.warn("Auto-sync error:", e));
+    }, 1000);
+  }
+
+  return {
+    init,
+    getClient,
+    seedInitialProgress,
+    syncProgressWithCloud,
+    autoSyncProgressDebounced,
+    renderAuthModal
+  };
+})();
+
+// ============================================================
+// GESTOR DE RAMAS Y REPOSITORIO PRIVADO DE GITHUB
+// Permite listar ramas y descargar JSONs de tests desde GitHub
+// ============================================================
+const RepoBranchManager = (() => {
+  const DEFAULT_REPO = "nataliagamezbarea/GRADOS_INFORMATICOS";
+  const DEFAULT_BRANCH = "Segundo_grado_superior";
+  const DEFAULT_FOLDER = "datos/bancos/WEC";
+  const CACHE_BRANCHES_KEY = "cache_ramas_tests_v2";
+
+  function getRepo() {
+    return localStorage.getItem("gh_repo") || sessionStorage.getItem("gh_repo") || DEFAULT_REPO;
+  }
+
+  function getToken() {
+    const fromStorage = localStorage.getItem("cache_gh_token") || sessionStorage.getItem("cache_gh_token") || "";
+    if (fromStorage) return fromStorage;
+    const fromWindow = window.GITHUB_CONFIG?.token || "";
+    return fromWindow;
+  }
+
+  async function obtenerTokenDesdeSupabase() {
+    const c = SupabaseAuth.getClient();
+    if (!c) return getToken();
+    try {
+      const { data, error } = await c.schema("grados-informaticos").from("configuracion_privada").select("clave, valor");
+      if (!error && Array.isArray(data)) {
+        const rowToken = data.find((r) => r.clave === "gh_token");
+        const rowRepo = data.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
+        if (rowToken?.valor) {
+          localStorage.setItem("cache_gh_token", rowToken.valor);
+        }
+        if (rowRepo?.valor) {
+          localStorage.setItem("gh_repo", rowRepo.valor);
+        }
+      }
+    } catch (_) {}
+    return getToken();
+  }
+
+  async function listarRamas() {
+    const token = await obtenerTokenDesdeSupabase();
+    const repo = getRepo();
+
+    let cached = [];
+    try {
+      cached = JSON.parse(localStorage.getItem(CACHE_BRANCHES_KEY) || "[]");
+    } catch (_) {}
+
+    try {
+      const headers = { Accept: "application/vnd.github+json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const res = await fetch(`https://api.github.com/repos/${repo}/branches?per_page=100`, { headers, cache: "no-store" });
+      if (res.ok) {
+        const branches = await res.json();
+        if (Array.isArray(branches) && branches.length > 0) {
+          const names = branches.map((b) => b.name);
+          localStorage.setItem(CACHE_BRANCHES_KEY, JSON.stringify(names));
+          return names;
+        }
+      }
+    } catch (err) {
+      console.warn("No se pudieron listar ramas de GitHub en vivo:", err);
+    }
+
+    if (cached.length) return cached;
+    return [DEFAULT_BRANCH, "master"];
+  }
+
+  async function poblarSelectorRamas(selectEl, selectedRama = null) {
+    if (!selectEl) return;
+    const branches = await listarRamas();
+    const active = selectedRama || localStorage.getItem("selected_test_branch") || DEFAULT_BRANCH;
+
+    selectEl.innerHTML = "";
+    branches.forEach((branch) => {
+      const opt = document.createElement("option");
+      opt.value = branch;
+      opt.textContent = `Rama: ${branch}${branch === DEFAULT_BRANCH ? " (DWEC - Segundo)" : ""}`;
+      if (branch === active) opt.selected = true;
+      selectEl.appendChild(opt);
+    });
+
+    if (!branches.includes(active)) {
+      const opt = document.createElement("option");
+      opt.value = active;
+      opt.textContent = `Rama: ${active}`;
+      opt.selected = true;
+      selectEl.appendChild(opt);
+    }
+  }
+
+  async function cargarPreguntasDeRama(rama, carpeta = DEFAULT_FOLDER) {
+    const token = await obtenerTokenDesdeSupabase();
+    const repo = getRepo();
+    try {
+      if (typeof toast === "function") toast(`Conectando con GitHub para leer "${rama}"…`);
+      const headers = { Accept: "application/vnd.github+json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${carpeta}?ref=${encodeURIComponent(rama)}`, { headers });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} al acceder a ${carpeta}`);
+      }
+      const files = await res.json();
+      if (!Array.isArray(files)) {
+        throw new Error("La respuesta no contiene archivos.");
+      }
+
+      const jsonFiles = files.filter((f) => f.name.endsWith(".json") && f.type === "file" && !f.name.includes("backup"));
+      if (jsonFiles.length === 0) {
+        throw new Error(`No hay JSONs de preguntas en ${carpeta}`);
+      }
+
+      let allQuestions = [];
+      for (const file of jsonFiles) {
+        const rawHeaders = { Accept: "application/vnd.github.raw" };
+        if (token) rawHeaders.Authorization = `Bearer ${token}`;
+        const fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/${file.path}?ref=${encodeURIComponent(rama)}`, { headers: rawHeaders });
+        if (fileRes.ok) {
+          const fileData = await fileRes.json();
+          const qList = Array.isArray(fileData?.preguntas) ? fileData.preguntas : (Array.isArray(fileData) ? fileData : []);
+          allQuestions.push(...qList);
+        }
+      }
+
+      if (allQuestions.length > 0 && typeof normalizeData === "function") {
+        normalizeData({ preguntas: allQuestions });
+        localStorage.setItem("selected_test_branch", rama);
+        if (typeof renderApp === "function") renderApp();
+        if (typeof toast === "function") toast(`✓ Cargadas ${allQuestions.length} preguntas de la rama "${rama}"`);
+        return allQuestions;
+      }
+    } catch (err) {
+      console.warn("Carga desde GitHub falló, manteniendo local:", err);
+      if (typeof toast === "function") toast(`Aviso GitHub: ${err.message}. Usando banco local.`);
+    }
+    return null;
+  }
+
+  async function guardarPreguntasEnGitHub(rama, rutaArchivo, contenidoJson) {
+    const token = await obtenerTokenDesdeSupabase();
+    const repo = getRepo();
+    if (!token) {
+      throw new Error("No hay token de GitHub con permisos de escritura disponible.");
+    }
+    const headers = {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`
+    };
+
+    // Obtener sha previo para sobrescribir
+    let sha = null;
+    try {
+      const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${rutaArchivo}?ref=${encodeURIComponent(rama)}`, { headers });
+      if (getRes.ok) {
+        const fileInfo = await getRes.json();
+        sha = fileInfo.sha;
+      }
+    } catch (_) {}
+
+    const jsonString = typeof contenidoJson === "string" ? contenidoJson : JSON.stringify(contenidoJson, null, 2);
+    const base64Content = btoa(unescape(encodeURIComponent(jsonString)));
+
+    const body = {
+      message: `Actualizar banco de preguntas: ${rutaArchivo.split("/").pop()}`,
+      content: base64Content,
+      branch: rama
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${rutaArchivo}`, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify(body)
+    });
+
+    if (!putRes.ok) {
+      const errData = await putRes.json().catch(() => ({}));
+      throw new Error(errData.message || `HTTP ${putRes.status}`);
+    }
+
+    if (typeof toast === "function") {
+      toast(`✓ Guardado en GitHub en la rama "${rama}"`);
+    }
+    return true;
+  }
+
+  return {
+    getRepo,
+    getToken,
+    listarRamas,
+    poblarSelectorRamas,
+    cargarPreguntasDeRama,
+    guardarPreguntasEnGitHub,
+    DEFAULT_BRANCH,
+    DEFAULT_FOLDER
+  };
+})();
+
+window.RepoBranchManager = RepoBranchManager;
+
+// Auto-arrancar al cargar DOM
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => SupabaseAuth.init());
+} else {
+  SupabaseAuth.init();
+}
+
+
 // === assets/js/app/sesion.js ===
 "use strict";
 
@@ -1156,6 +2417,48 @@ function countCorrect() {
 }
 
 function filterPool(filter) {
+  if (typeof filter === "object" && filter !== null) {
+    let pool = state.questions;
+    if (filter.tema && filter.tema !== "all") {
+      pool = pool.filter((q) => Number(q.tema) === Number(filter.tema));
+    }
+    if (filter.subapartado && filter.subapartado !== "all") {
+      pool = pool.filter((q) => {
+        const ap = String(q.apartado || "");
+        const tag = String(q.tag || "");
+        const num = String(filter.subapartado);
+        return ap === num || tag.includes(`.${num}`) || tag.includes(` ${num}`);
+      });
+    }
+    if (filter.examen && filter.examen !== "all") {
+      pool = pool.filter((q) => (q.examen || "Examen 1") === filter.examen);
+    }
+    if (filter.categoria && filter.categoria !== "all") {
+      const catBusq = filter.categoria.toLowerCase();
+      pool = pool.filter((q) => {
+        const cat = String(q.categoria || q.tag || "").toLowerCase();
+        return cat.includes(catBusq);
+      });
+    }
+    const history = getHistory();
+    const wrongSet = new Set(getWrongIds());
+    if (filter.repaso === "faltan") {
+      // Las que faltan: o no se han respondido nunca, o no están superadas (passed !== true), o tienen fallos pendientes
+      pool = pool.filter((q) => {
+        const h = history[q.id];
+        if (!h) return true;
+        if (wrongSet.has(q.id)) return true;
+        return !h.passed && (h.correct || 0) === 0;
+      });
+    } else if (filter.repaso === "nuevas") {
+      pool = pool.filter((q) => !q.practicada && !history[q.id]);
+    } else if (filter.repaso === "practicadas") {
+      pool = pool.filter((q) => q.practicada || history[q.id] != null);
+    } else if (filter.repaso === "con_errores") {
+      pool = pool.filter((q) => wrongSet.has(q.id) || (history[q.id] && history[q.id].fails > 0));
+    }
+    return pool;
+  }
   if (typeof filter === "string" && filter.startsWith("tema:")) {
     const parts = filter.split(":");
     const tema = Number(parts[1]);
@@ -1183,10 +2486,32 @@ function filterPool(filter) {
   }
   if (filter === "tema1") return state.questions.filter((q) => Number(q.tema) === 1);
   if (filter === "tema2") return state.questions.filter((q) => Number(q.tema) === 2);
+  if (filter === "tema3") return state.questions.filter((q) => Number(q.tema) === 3);
+  if (filter === "tema4") return state.questions.filter((q) => Number(q.tema) === 4);
+  if (filter === "practicadas") {
+    const history = getHistory();
+    return state.questions.filter((q) => q.practicada || history[q.id] != null);
+  }
+  if (filter === "nuevas") {
+    const history = getHistory();
+    return state.questions.filter((q) => !q.practicada && !history[q.id]);
+  }
+  if (filter === "oficial" || filter === "oficiales") {
+    return state.questions.filter((q) => String(q.categoria || q.tag || "").toLowerCase().includes("oficial"));
+  }
   if (filter === "codigo") return state.questions.filter((q) => q.tipo === "codigo");
   if (filter === "teoria") return state.questions.filter((q) => q.tipo === "teoria");
+  if (filter === "desarrollo") {
+    return state.questions.filter((q) => q.tipo === "escribir_codigo" || q.tipo === "traza_linea" || q.tipo === "desarrollo");
+  }
+  if (filter === "escribir_codigo") {
+    return state.questions.filter((q) => q.tipo === "escribir_codigo");
+  }
+  if (filter === "traza_linea") {
+    return state.questions.filter((q) => q.tipo === "traza_linea");
+  }
   if (filter === "fallos") {
-    const wrong = new Set(getWrongIds());
+    const wrong = new Set(getWrongIds().map((id) => getQuestion(id)?.id || id));
     return state.questions.filter((q) => wrong.has(q.id));
   }
   return state.questions;
@@ -1201,7 +2526,7 @@ function startTest({
   mastery = false,
   continueMastery = false,
 } = {}) {
-  let pool = ids ? ids.map((id) => state.byId.get(id)).filter(Boolean) : filterPool(filter);
+  let pool = ids ? ids.map((id) => getQuestion(id)).filter(Boolean) : filterPool(filter);
   if (!pool.length) {
     toast("No hay preguntas para esa opción.");
     return;
@@ -1234,16 +2559,36 @@ function startTest({
 function resumeSession(sessionObj = null) {
   const session = (sessionObj && sessionObj.ids) ? sessionObj : getSession();
   if (!session || !Array.isArray(session.ids) || !session.ids.length) return;
-  const ids = session.ids.filter((id) => state.byId.has(id));
-  if (!ids.length) {
+  const resolved = [];
+  for (const id of session.ids) {
+    let q = state.byId.get(id);
+    if (!q && typeof id === "string" && !isNaN(id)) {
+      q = state.byId.get(Number(id));
+    }
+    if (!q && typeof id === "number") {
+      q = state.byId.get(String(id));
+    }
+    if (q) resolved.push(q);
+  }
+  if (!resolved.length) {
     clearSession();
     toast("La sesión guardada ya no es válida.");
     renderStart();
     return;
   }
-  state.order = ids.map((id) => state.byId.get(id));
+  state.order = resolved;
   state.index = Math.min(Math.max(session.index || 0, 0), state.order.length - 1);
   state.answers = session.answers || {};
+
+  if (session.aiEvaluations && typeof session.aiEvaluations === "object") {
+    for (const q of state.order) {
+      if (session.aiEvaluations[q.id]) {
+        q.evaluacionIA = session.aiEvaluations[q.id].evaluacionIA;
+        q.evaluacionMensajes = session.aiEvaluations[q.id].evaluacionMensajes || [];
+      }
+    }
+  }
+
   state.immediate = session.immediate !== false;
   state.startedAt = session.startedAt || Date.now();
   state.finished = Boolean(session.finished);
@@ -1282,8 +2627,11 @@ function formatearFiltroLegible(filter) {
     if (sub === "teoria") return `Apartado ${t}.${ap} · Solo teoría`;
     return `Apartado ${t}.${ap}`;
   }
-  if (filter === "codigo") return "Solo código y desarrollo";
+  if (filter === "codigo") return "Solo código de examen";
   if (filter === "teoria") return "Solo teoría";
+  if (filter === "desarrollo") return "Retos de desarrollo y funciones (Corrección IA)";
+  if (filter === "escribir_codigo") return "Escribir funciones complejas para un 10";
+  if (filter === "traza_linea") return "Traza línea a línea (Event Loop)";
   if (filter === "fallos") return "Repaso de fallos";
   return filter;
 }
@@ -1291,29 +2639,43 @@ function formatearFiltroLegible(filter) {
 const WEC_ESTRUCTURA_TEMAS = [
   {
     numero: 1,
-    nombre: "Tema 1 · Arquitecturas y herramientas de programación web",
+    nombre: "Tema 1 · Selección de arquitecturas y de herramientas de programación",
     apartados: [
-      { numero: 1, nombre: "Origen y alcance de la web" },
-      { numero: 2, nombre: "Lenguajes de programación en entorno cliente" },
-      { numero: 3, nombre: "Arquitectura del navegador y motores de ejecución" },
-      { numero: 4, nombre: "Subsistema de comunicacions" },
-      { numero: 5, nombre: "Intèrpret de JavaScript" },
-      { numero: 6, nombre: "Conceptos e Introducción a la Integración del Código con HTML" },
-      { numero: 7, nombre: "EINES DE PROGRAMACIÓ SOBRE CLIENTS WEB" },
+      { numero: 1, nombre: "1.1 Modelos de ejecución de código e Introducción" },
+      { numero: 2, nombre: "1.2 Lenguajes en entorno cliente" },
+      { numero: 3, nombre: "1.3 Mecanismos de ejecución en un navegador" },
+      { numero: 4, nombre: "1.4 Capacidades y limitaciones de ejecución" },
+      { numero: 5, nombre: "1.5 Programación de scripts" },
+      { numero: 6, nombre: "1.6 Integración del código con las etiquetas HTML" },
+      { numero: 7, nombre: "1.7 Herramientas de programación sobre clientes web" },
+      { numero: 8, nombre: "Demos D1-D5 y práctica P00" },
     ],
   },
   {
     numero: 2,
-    nombre: "Tema 2 · Sintaxis, tipos de datos, operadores y estructuras de control",
+    nombre: "Tema 2 · Aplicación y verificación de la sintaxis del lenguaje",
     apartados: [
-      { numero: 1, nombre: "Selección del lenguaje de programación del cliente" },
+      { numero: 1, nombre: "2.1 Selección de lenguaje de programación de clientes web" },
+      { numero: 2, nombre: "2.2 Tipos de datos" },
+      { numero: 3, nombre: "2.3 Variables" },
+      { numero: 4, nombre: "2.4 Asignaciones" },
+      { numero: 5, nombre: "2.5 Operadores" },
+      { numero: 6, nombre: "2.6 Sentencias" },
+      { numero: 7, nombre: "2.7 Estructuras de control" },
+      { numero: 8, nombre: "2.8 Comentarios en el código" },
+      { numero: 9, nombre: "2.9 Herramientas para programar, probar y depurar el código" },
+      { numero: 10, nombre: "Demos D1-D5 y prácticas P01 y P02" },
     ],
   },
   {
     numero: 3,
-    nombre: "Tema 3 · Objetos predefinidos y modelo de objetos del documento",
+    nombre: "Tema 3 · Fundamentos de JavaScript",
     apartados: [
-      { numero: 1, nombre: "Objetos predefinidos y modelo de objetos del documento (DOM)" },
+      { numero: 1, nombre: "3.1 Variables y tipos de datos" },
+      { numero: 2, nombre: "3.2 Conversiones y comparaciones" },
+      { numero: 3, nombre: "3.3 Decisiones" },
+      { numero: 4, nombre: "3.4 Bucles" },
+      { numero: 5, nombre: "3.5 Depurar" },
     ],
   },
   {
@@ -1397,7 +2759,22 @@ function construirArbolDashboardHTML() {
       );
       const fallosTema = respondidasTema.length - aciertosTema.length;
 
-      const apartados = Array.isArray(t.apartados) ? t.apartados : [];
+      let apartados = Array.isArray(t.apartados) ? [...t.apartados] : [];
+      const apsFromQuestions = new Map();
+      preguntasTema.forEach((q) => {
+        const res = resolveApartadoForQuestion(q);
+        const apNum = Number(res.apartado || q.apartado || 0);
+        if (apNum > 0 && !apsFromQuestions.has(apNum)) {
+          apsFromQuestions.set(apNum, q.apartadoNombre || res.titulo || `Apartado ${t.numero}.${apNum}`);
+        }
+      });
+      for (const [apNum, apNombre] of apsFromQuestions.entries()) {
+        if (!apartados.some((a) => Number(a.numero) === apNum)) {
+          apartados.push({ numero: apNum, nombre: apNombre });
+        }
+      }
+      apartados.sort((a, b) => Number(a.numero) - Number(b.numero));
+
       const apartadosHTML = apartados
         .map((ap) => {
           const preguntasAp = preguntasTema.filter((q) => {
@@ -1666,32 +3043,140 @@ function renderStart() {
       </section>
 
       <div class="home-grid">
-        <section class="home-card home-card-entrenar">
+        <section class="home-card home-card-entrenar" style="grid-column: 1 / -1;">
           <h2>🎯 Modalidades de práctica</h2>
-          <p class="lead">Practica el test completo (ambas), solo código/desarrollo de examen, o solo teoría.</p>
+          <p class="lead">Configura tu sesión de test a medida (tema, tipo de repaso, categoría y cantidad) o usa los accesos rápidos.</p>
+
+          <!-- Configurador de práctica a medida estilo 8765 -->
+          <div class="practice-custom-panel" style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px; margin-bottom:20px;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:16px;">
+              <div style="grid-column: 1 / -1; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.18); padding:10px 14px; border-radius:6px; border:1px solid var(--line);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <i class="fa-brands fa-github" style="font-size:18px; color:#a78bfa;"></i>
+                  <span style="font-size:12px; font-weight:700;">Rama (GitHub privado):</span>
+                  <select class="control" id="custom-practice-branch" style="min-width:240px; font-size:12px; padding:4px 8px;">
+                    <option value="Segundo_grado_superior" selected>Segundo_grado_superior (DWEC)</option>
+                    <option value="master">master</option>
+                  </select>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:11px; color:var(--muted);">Carpeta:</span>
+                  <input type="text" class="control" id="custom-practice-folder" value="datos/bancos/WEC" style="width:160px; font-size:11px; padding:4px 8px;" />
+                  <button class="btn tiny ghost" type="button" id="btn-reload-branch" title="Recargar preguntas desde esta rama de GitHub"><i class="fa-solid fa-arrows-rotate"></i> Cargar de GitHub</button>
+                </div>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Agrupación / Examen</label>
+                <select class="control" id="custom-practice-exam" style="width:100%;">
+                  <option value="Examen 1" selected>Examen 1 (Temas 1–4 · 1.656 preguntas)</option>
+                  <option value="Examen 2">Examen 2 (Próximo / En preparación)</option>
+                  <option value="all">Todos los exámenes</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Tema / Alcance</label>
+                <select class="control" id="custom-practice-theme" style="width:100%;">
+                  <option value="all">Todos los temas (${counts.total})</option>
+                  ${counts.temas.map(t => `<option value="${t.tema}">Tema ${t.tema} (${t.count} preguntas)</option>`).join("")}
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Subapartado</label>
+                <select class="control" id="custom-practice-subapartado" style="width:100%;">
+                  <option value="all">Todos los subapartados</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Tipo de repaso</label>
+                <select class="control" id="custom-practice-review" style="width:100%;">
+                  <option value="faltan" selected>★ Las que me faltan (pendientes de acertar)</option>
+                  <option value="todas">Todas las disponibles (${counts.total})</option>
+                  <option value="con_errores">Con algún error / fallo (${counts.fallos})</option>
+                  <option value="practicadas">Solo practicadas (${counts.practicadas || 515})</option>
+                  <option value="nuevas">Nunca practicadas</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Categoría</label>
+                <select class="control" id="custom-practice-category" style="width:100%;">
+                  <option value="all">Todas las categorías</option>
+                  <option value="oficial">★ Oficiales de examen (${counts.oficiales || 33})</option>
+                  <option value="introduccion">📘 Introducción (${counts.introduccion || 572})</option>
+                  <option value="entrenamiento">⚡ Práctica / Entrenamiento (${counts.entrenamiento || 1051})</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Número de preguntas</label>
+                <select class="control" id="custom-practice-qty" style="width:100%;">
+                  <option value="10">10 preguntas</option>
+                  <option value="20">20 preguntas</option>
+                  <option value="30">30 preguntas</option>
+                  <option value="40" selected>40 preguntas (Recomendado)</option>
+                  <option value="50">50 preguntas</option>
+                  <option value="100">100 preguntas</option>
+                  <option value="200">200 preguntas</option>
+                  <option value="0">Todas las que coincidan con la selección</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Orden</label>
+                <select class="control" id="custom-practice-order" style="width:100%;">
+                  <option value="aleatorio" selected>Aleatorio</option>
+                  <option value="original">Orden original</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-top:1px solid var(--line); padding-top:14px;">
+              <div id="custom-practice-info" style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-circle-check" style="color:var(--ok);"></i>
+                <span>Listo para comenzar tu sesión adaptada.</span>
+              </div>
+              <button class="btn primary large" type="button" id="custom-practice-start-btn" style="padding:10px 24px; font-weight:700; gap:8px;">
+                <i class="fa-solid fa-play"></i> Comenzar sesión personalizada
+              </button>
+            </div>
+          </div>
+
+          <h3 style="font-size:15px; margin:20px 0 10px;"><i class="fa-solid fa-bolt"></i> Accesos rápidos directos</h3>
           <div class="practice-modes-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 16px;">
             <button class="btn primary" type="button" data-start="all" style="justify-content:space-between; padding:12px 14px;">
-              <span><i class="fa-solid fa-layer-group"></i> Ambas (Completo)</span>
+              <span><i class="fa-solid fa-layer-group"></i> Todas las preguntas</span>
               <span class="count">${counts.total}</span>
             </button>
-            <button class="btn" type="button" data-start="codigo" style="justify-content:space-between; padding:12px 14px; border-color:#10b981; color:#10b981;">
-              <span><i class="fa-solid fa-code"></i> Solo Código / Escrito</span>
-              <span class="count" style="background:rgba(16,185,129,0.18); color:#10b981;">${counts.codigo}</span>
+            <button class="btn" type="button" data-start="practicadas" style="justify-content:space-between; padding:12px 14px; border-color:var(--brand); color:var(--brand);">
+              <span><i class="fa-solid fa-clock-rotate-left"></i> Solo Practicadas</span>
+              <span class="count" style="background:var(--brand-soft); color:var(--brand);">${counts.practicadas || 515}</span>
             </button>
-            <button class="btn" type="button" data-start="teoria" style="justify-content:space-between; padding:12px 14px; border-color:#f59e0b; color:#f59e0b;">
-              <span><i class="fa-solid fa-book"></i> Solo Teoría</span>
-              <span class="count" style="background:rgba(245,158,11,0.18); color:#f59e0b;">${counts.teoria}</span>
-            </button>
-            <button class="btn" type="button" data-start-bloque="all" style="justify-content:space-between; padding:12px 14px; border-color:var(--brand);">
-              <span><i class="fa-solid fa-bolt"></i> Bloque de 40 (en caché)</span>
-              <span class="count">40</span>
+            <button class="btn" type="button" data-start="oficial" style="justify-content:space-between; padding:12px 14px; border-color:#f59e0b; color:#f59e0b;">
+              <span><i class="fa-solid fa-star"></i> Oficiales de examen</span>
+              <span class="count" style="background:rgba(245,158,11,0.18); color:#f59e0b;">${counts.oficiales || 33}</span>
             </button>
             <button class="btn ok" type="button" data-start="mastery" style="justify-content:space-between; padding:12px 14px;">
               <span><i class="fa-solid fa-award"></i> Refuerzo sin fallos</span>
               <span class="count">${counts.total}</span>
             </button>
+            ${(counts.desarrollo || 0) > 0 ? `
+              <button class="btn" type="button" data-start="desarrollo" style="justify-content:space-between; padding:12px 14px; border-color:#38bdf8; color:#38bdf8; grid-column: 1 / -1; background:rgba(56,189,248,0.08);">
+                <span><i class="fa-solid fa-graduation-cap"></i> ✍️ Retos de Desarrollo y Código Abierto (Corrección IA con Nota 0-10)</span>
+                <span class="count" style="background:#0284c7; color:#fff;">${counts.desarrollo} retos</span>
+              </button>
+            ` : `
+              <div style="grid-column: 1 / -1; font-size:12px; color:var(--muted); background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-circle-info" style="color:var(--brand);"></i>
+                <span>Las <strong>1.656 preguntas</strong> son de tipo test oficial con corrección instantánea. La corrección de preguntas abiertas de desarrollo requiere tener Ollama local activo en Docker.</span>
+              </div>
+            `}
           </div>
-          <h3 style="font-size:15px; margin:16px 0 8px;"><i class="fa-solid fa-list-ol"></i> Práctica rápida por Tema</h3>
+
+          <h3 style="font-size:15px; margin:20px 0 10px;"><i class="fa-solid fa-list-ol"></i> Práctica por Tema individual</h3>
           <div class="start-actions">
             ${themeButtons}
           </div>
@@ -1745,6 +3230,73 @@ function renderStart() {
       }
       startTest({ filter, immediate, shuffle, sample });
     });
+  });
+
+  // Actualización dinámica de subapartados según el tema elegido
+  const themeSelect = $("#custom-practice-theme");
+  const subapSelect = $("#custom-practice-subapartado");
+  function actualizarSubapartados() {
+    if (!subapSelect) return;
+    const tVal = themeSelect?.value || "all";
+    subapSelect.innerHTML = '<option value="all">Todos los subapartados</option>';
+    let questionsPool = state.questions;
+    if (tVal !== "all") {
+      questionsPool = questionsPool.filter((q) => Number(q.tema) === Number(tVal));
+    }
+    const apartadosEncontrados = new Map();
+    questionsPool.forEach((q) => {
+      const apNum = q.apartado != null ? q.apartado : 1;
+      if (!apartadosEncontrados.has(apNum)) {
+        apartadosEncontrados.set(apNum, q.apartadoNombre || `Apartado ${apNum}`);
+      }
+    });
+    const sortedAps = [...apartadosEncontrados.entries()].sort((a, b) => Number(a[0]) - Number(b[0]));
+    sortedAps.forEach(([num, nombre]) => {
+      const opt = document.createElement("option");
+      opt.value = num;
+      opt.textContent = `${tVal !== "all" ? `${tVal}.${num}` : `Apartado ${num}`} · ${nombre}`;
+      subapSelect.appendChild(opt);
+    });
+  }
+  themeSelect?.addEventListener("change", actualizarSubapartados);
+  actualizarSubapartados();
+
+  // Inicializar selector de ramas de GitHub si está disponible
+  const branchSelect = $("#custom-practice-branch");
+  const folderInput = $("#custom-practice-folder");
+  if (branchSelect && window.RepoBranchManager) {
+    window.RepoBranchManager.poblarSelectorRamas(branchSelect);
+    branchSelect.addEventListener("change", async () => {
+      const selectedBranch = branchSelect.value;
+      const folderVal = folderInput?.value.trim() || "datos/bancos/WEC";
+      await window.RepoBranchManager.cargarPreguntasDeRama(selectedBranch, folderVal);
+    });
+    $("#btn-reload-branch")?.addEventListener("click", async () => {
+      const selectedBranch = branchSelect.value;
+      const folderVal = folderInput?.value.trim() || "datos/bancos/WEC";
+      await window.RepoBranchManager.cargarPreguntasDeRama(selectedBranch, folderVal);
+    });
+  }
+
+  $("#custom-practice-start-btn")?.addEventListener("click", () => {
+    const examen = $("#custom-practice-exam")?.value || "Examen 1";
+    const tema = $("#custom-practice-theme")?.value || "all";
+    const subapartado = $("#custom-practice-subapartado")?.value || "all";
+    const repaso = $("#custom-practice-review")?.value || "faltan";
+    const categoria = $("#custom-practice-category")?.value || "all";
+    const qty = Number($("#custom-practice-qty")?.value) || 0;
+    const order = $("#custom-practice-order")?.value || "aleatorio";
+
+    const customFilter = { examen, tema, subapartado, repaso, categoria };
+    const pool = filterPool(customFilter);
+    if (!pool.length) {
+      toast("No hay preguntas que coincidan con esa selección.");
+      return;
+    }
+
+    const immediate = $("#immediate-toggle")?.checked !== false;
+    const shuffle = order === "aleatorio";
+    startTest({ filter: customFilter, immediate, shuffle, sample: qty });
   });
   $$("[data-resume-filter]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
@@ -1952,7 +3504,8 @@ function renderStart() {
 
       $$("[data-repasar-fallos-sub]").forEach((btn) => {
         btn.addEventListener("click", () => {
-          const ids = (btn.dataset.repasarFallosSub || "").split(",").map(Number).filter(Boolean);
+          const raw = (btn.dataset.repasarFallosSub || "").split(",").map((s) => s.trim()).filter(Boolean);
+          const ids = raw.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
           if (ids.length) {
             const immediate = $("#immediate-toggle")?.checked !== false;
             startTest({ ids, immediate, shuffle: true });
@@ -2202,6 +3755,176 @@ function createTracePlayer(container, code, trace) {
   container.append(player);
 }
 
+function generarTrazaFallback(q) {
+  if (!q) return [];
+  if (Array.isArray(q.traza) && q.traza.length) return q.traza;
+  if (!q.codigo) return [];
+
+  const lineas = String(q.codigo).replace(/\r/g, "").split("\n");
+  const traza = [];
+
+  lineas.forEach((lineaTexto, idx) => {
+    const numLinea = idx + 1;
+    const trim = lineaTexto.trim();
+    if (!trim) return;
+
+    let nota = `Línea ${numLinea}: ${trim}`;
+    let salida = null;
+
+    const matchLog = trim.match(/console\.log\(\s*['"`]([^'"`]+)['"`]\s*\)/);
+    if (matchLog && !trim.includes("setTimeout") && !trim.includes(".then")) {
+      salida = matchLog[1];
+      nota = `Ejecución síncrona: imprime "${salida}"`;
+    } else if (trim.includes("setTimeout")) {
+      nota = "Temporizador / Macrotarea: encola callback en la cola de macrotareas.";
+    } else if (trim.includes("Promise") || trim.includes(".then")) {
+      nota = "Promesa / Microtarea: encola callback en la cola de microtareas (alta prioridad).";
+    }
+
+    traza.push({
+      linea: numLinea,
+      nota,
+      salida,
+      vars: {}
+    });
+  });
+
+  if (/microtarea|macrotarea|event loop|asincron/i.test((q.explicacion || "") + " " + (q.tag || ""))) {
+    traza.push({
+      linea: lineas.length,
+      nota: "Event Loop (Fase Microtareas): procesa promesas resueltas de la cola de microtareas.",
+      salida: null,
+      vars: { "Fase Event Loop": "Microtareas" }
+    });
+    traza.push({
+      linea: lineas.length,
+      nota: "Event Loop (Fase Macrotareas): ejecuta los temporizadores encolados (setTimeout).",
+      salida: null,
+      vars: { "Fase Event Loop": "Macrotareas" }
+    });
+  }
+
+  return traza.length ? traza : [{ linea: 1, nota: "Inicio de ejecución", vars: {} }];
+}
+
+function renderDebugView(container, q, selected) {
+  if (!container) return;
+  container.innerHTML = "";
+  const card = document.createElement("div");
+  card.className = "debug-card";
+  card.style.cssText = `
+    margin-top: 12px;
+    padding: 14px;
+    background: #0b1120;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-size: 13px;
+  `;
+
+  const head = document.createElement("div");
+  head.style.cssText = `
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1e293b;
+    flex-wrap: wrap;
+    gap: 8px;
+  `;
+  head.innerHTML = `
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="color:#38bdf8; font-weight:700; font-size:13px;"><i class="fa-solid fa-bug" aria-hidden="true"></i> Depurador de pregunta</span>
+      <span style="background:#1e293b; color:#94a3b8; padding:2px 8px; border-radius:999px; font-size:11px;">#${q.id ?? "?"} · Tema ${q.tema ?? "?"}</span>
+    </div>
+    <span style="font-size:11px; color:#64748b;">${esc(q.tag || q.apartadoNombre || "JavaScript")}</span>
+  `;
+  card.append(head);
+
+  if (q.codigo) {
+    const execBox = document.createElement("div");
+    execBox.style.marginBottom = "14px";
+
+    const execBtn = document.createElement("button");
+    execBtn.type = "button";
+    execBtn.className = "btn tiny primary";
+    execBtn.innerHTML = '<i class="fa-solid fa-play" aria-hidden="true"></i> Ejecutar código en vivo';
+
+    const consolePre = document.createElement("pre");
+    consolePre.style.cssText = `
+      display: none;
+      margin-top: 8px;
+      padding: 10px;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #22d3ee;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      max-height: 180px;
+      overflow-y: auto;
+    `;
+
+    execBtn.addEventListener("click", () => {
+      consolePre.style.display = "block";
+      consolePre.textContent = "▶ Ejecutando…\n";
+      const salidas = [];
+      const fakeConsole = {
+        log: (...args) => {
+          const linea = args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          salidas.push(linea);
+          consolePre.textContent = salidas.join("\n");
+          if (window.cv) window.cv.log(`[Ejecución #${q.id}] ${linea}`);
+        },
+        error: (...args) => {
+          const linea = "❌ " + args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          salidas.push(linea);
+          consolePre.textContent = salidas.join("\n");
+          if (window.cv) window.cv.error(`[Ejecución #${q.id}] ${linea}`);
+        },
+        warn: (...args) => {
+          const linea = "⚠️ " + args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          salidas.push(linea);
+          consolePre.textContent = salidas.join("\n");
+        }
+      };
+
+      try {
+        const fn = new Function("console", q.codigo);
+        fn(fakeConsole);
+        if (!salidas.length) {
+          consolePre.textContent = "(El código se ejecutó sin imprimir en consola)";
+        }
+      } catch (err) {
+        fakeConsole.error(err.message);
+      }
+    });
+
+    execBox.append(execBtn, consolePre);
+    card.append(execBox);
+
+    const tracePlayerBox = document.createElement("div");
+    const traza = generarTrazaFallback(q);
+    createTracePlayer(tracePlayerBox, q.codigo, traza);
+    card.append(tracePlayerBox);
+  } else {
+    const info = document.createElement("div");
+    info.style.cssText = "line-height:1.6; color:#94a3b8; font-size:12px;";
+    info.innerHTML = `
+      <div><b>Enunciado:</b> ${formatText(q.enunciado || "")}</div>
+      <div style="margin-top:6px;"><b>Tu respuesta:</b> ${selected ? `<b>${selected})</b> ${formatText(q.opciones?.[selected] ?? "")}` : "Sin responder"}</div>
+      <div><b>Respuesta correcta:</b> <b>${q.correcta})</b> ${formatText(q.opciones?.[q.correcta] ?? "")}</div>
+      <div style="margin-top:6px; color:#64748b;">(Esta es una pregunta conceptual sin bloque de código ejecutable).</div>
+    `;
+    card.append(info);
+  }
+
+  container.append(card);
+}
+
 
 // === assets/js/app/preguntas.js ===
 "use strict";
@@ -2429,17 +4152,64 @@ function attachAiExplain(container, q, selected) {
   btn.type = "button";
   btn.className = "btn tiny ai-btn";
   btn.innerHTML = '<i class="fa-solid fa-robot" aria-hidden="true"></i> Explícamelo mejor';
+
+  const btnDebug = document.createElement("button");
+  btnDebug.type = "button";
+  btnDebug.className = "btn tiny debug-btn";
+  btnDebug.innerHTML = '<i class="fa-solid fa-bug" aria-hidden="true"></i> Depurador';
+  btnDebug.title = "Abrir depurador interactivo para esta pregunta";
+
   const hint = document.createElement("span");
   hint.className = "ai-hint";
   hint.textContent = "Otra forma de explicarlo, paso a paso y con un ejemplo.";
-  actions.append(btn, hint);
+  actions.append(btn, btnDebug, hint);
 
   const slot = document.createElement("div");
   slot.className = "ai-answer hidden";
-  wrap.append(actions, slot);
+
+  const debugSlot = document.createElement("div");
+  debugSlot.className = "debug-slot hidden";
+
+  wrap.append(actions, slot, debugSlot);
 
   let loaded = false;
   let loading = false;
+  let debugLoaded = false;
+
+  btnDebug.addEventListener("click", () => {
+    const isHidden = debugSlot.classList.toggle("hidden");
+    btnDebug.innerHTML = isHidden
+      ? '<i class="fa-solid fa-bug" aria-hidden="true"></i> Depurador'
+      : '<i class="fa-solid fa-bug" aria-hidden="true"></i> Ocultar depurador';
+
+    if (window.cv) {
+      if (typeof window.cv.abrir === "function") {
+        window.cv.abrir();
+      } else {
+        document.getElementById("cv-toggle")?.click();
+      }
+      window.cv.log(`[Debug Pregunta #${q.id ?? "?"}] Tema ${q.tema ?? "?"} · ${q.tag || q.apartadoNombre || "Sin apartado"}`);
+      if (q.codigo) {
+        window.cv.log(`Código:\n${q.codigo}`);
+      }
+      if (typeof window.cv.setEstado === "function") {
+        window.cv.setEstado("preguntaActual", {
+          id: q.id,
+          tema: q.tema,
+          apartado: q.apartado,
+          seleccionada: selected,
+          correcta: q.correcta,
+          esCorrecta: selected === q.correcta
+        });
+      }
+    }
+
+    if (isHidden || debugLoaded) return;
+    debugLoaded = true;
+    if (typeof renderDebugView === "function") {
+      renderDebugView(debugSlot, q, selected);
+    }
+  });
 
   btn.addEventListener("click", async () => {
     if (loaded) {
@@ -2519,31 +4289,33 @@ function renderFeedback(q, selected) {
       ${correct ? "" : ` · Correcta: <b>${q.correcta})</b> ${formatText(correctText)}`}
     </div>
   `;
-  if (q.tipo === "codigo" && q.codigo && q.traza && q.traza.length) {
-    const wrap = document.createElement("div");
-    wrap.className = "trace-wrap";
-    if (correct) {
-      const details = document.createElement("details");
-      details.className = "trace-details";
-      const summary = document.createElement("summary");
-      summary.textContent = "Ver ejecución paso a paso";
-      const slot = document.createElement("div");
-      details.append(summary, slot);
-      let built = false;
-      details.addEventListener("toggle", () => {
-        if (details.open && !built) {
-          built = true;
-          createTracePlayer(slot, q.codigo, q.traza);
-        }
-      });
-      wrap.append(details);
-    } else {
-      createTracePlayer(wrap, q.codigo, q.traza);
-    }
-    box.append(wrap);
-  }
   attachAiExplain(box, q, selected);
   return box;
+}
+
+function esPreguntaAbierta(q) {
+  if (!q) return false;
+  const t = String(q.tipo || "").toLowerCase();
+  return (
+    t === "escribir_codigo" ||
+    t === "escribir" ||
+    t === "escriure" ||
+    t === "traza_linea" ||
+    t === "interpretar" ||
+    t === "desarrollo" ||
+    t === "abierta" ||
+    t === "oberta"
+  );
+}
+
+function obtenerPlaceholderAbierta(q) {
+  if (q.tipo === "escribir_codigo" && q.codigo) {
+    return "// Escribe aquí la función en JavaScript para sacar un 10:\nfunction miSolucion(...) {\n  // Tu código aquí\n}";
+  }
+  if (q.tipo === "traza_linea" || q.tipo === "interpretar") {
+    return "// Explica paso a paso cada línea y la salida final:\n// Línea 1: ...\n// Línea 2: ...\n// Salida final por consola: ...";
+  }
+  return "Escribe aquí tu desarrollo técnico, enumeración de fases o solución detallada...";
 }
 
 function renderTest() {
@@ -2553,6 +4325,7 @@ function renderTest() {
     renderResults();
     return;
   }
+  saveSession();
   setModeChip(state.immediate ? "Práctica" : "Examen", state.immediate ? "brand" : "warn");
   const selected = state.answers[q.id] || null;
   const isAnswered = selected != null;
@@ -2567,7 +4340,7 @@ function renderTest() {
           <span class="chip brand">Pregunta ${state.index + 1} / ${state.order.length}</span>
           <span class="chip">Tema ${q.tema}</span>
           ${q.apartado ? `<span class="chip">Apartado ${q.tema}.${q.apartado}${q.apartadoNombre ? ` · ${esc(q.apartadoNombre)}` : ""}</span>` : q.apartadoNombre ? `<span class="chip">Apartado: ${esc(q.apartadoNombre)}</span>` : ""}
-          <span class="chip ${q.tipo === "codigo" ? "brand" : ""}">${q.tipo === "codigo" ? "Código" : "Teoría"}</span>
+          <span class="chip ${esPreguntaAbierta(q) ? "ok" : q.tipo === "codigo" ? "brand" : ""}">${q.tipo === "escribir_codigo" ? (q.codigo ? "Escribir función" : "Desarrollo / Escrito") : (q.tipo === "traza_linea" || q.tipo === "interpretar") ? "Traza línea a línea" : esPreguntaAbierta(q) ? "Pregunta abierta / Desarrollo" : q.tipo === "codigo" ? "Código" : "Teoría"}</span>
           <span class="chip ${difTone}">${esc(q.dificultad || "media")}</span>
         </div>
         <div class="test-live" id="live-score">${liveScoreHTML()}</div>
@@ -2577,9 +4350,28 @@ function renderTest() {
         <div class="q-tag">${esc(limpiarPistasEnunciado(q.tag || "WEC"))}</div>
         <h2 class="q-text">${formatText(limpiarPistasEnunciado(q.enunciado))}</h2>
         ${q.codigo ? '<div class="code-slot" id="code-slot"></div>' : ""}
-        <div class="options" id="options" role="group" aria-label="Opciones de respuesta">
-          ${["A", "B", "C", "D"].map((letter) => optionHTML(q, letter, selected, practice, isAnswered)).join("")}
-        </div>
+        ${esPreguntaAbierta(q) ? `
+          <div class="open-area" id="open-area" style="margin: 16px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <label for="open-textarea" style="font-size:13px; font-weight:700; color:#38bdf8;">
+                ${(q.tipo === "escribir_codigo" && q.codigo) ? "💻 Tu solución en código JavaScript (escribe tu función):" : (q.tipo === "traza_linea" || q.tipo === "interpretar") ? "🔍 Traza línea a línea (explica qué hace cada línea y la salida final):" : "✍️ Tu explicación técnica y respuesta:"}
+              </label>
+              <span style="font-size:11px; color:#94a3b8; background:#0f172a; padding:3px 8px; border-radius:999px; border:1px solid #334155;"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Corrección IA (Nota 0-10)</span>
+            </div>
+            <textarea id="open-textarea" class="open-textarea" rows="10" style="width:100%; box-sizing:border-box; background:#020617; border:1px solid #334155; border-radius:10px; color:#e2e8f0; font-family:${q.tipo === 'desarrollo' || q.tipo === 'abierta' || q.tipo === 'oberta' || (!q.codigo && q.tipo === 'escribir_codigo') ? 'inherit' : 'ui-monospace, SFMono-Regular, Menlo, monospace'}; font-size:13px; padding:12px; line-height:1.5; resize:vertical;" placeholder="${esc(obtenerPlaceholderAbierta(q))}">${esc(selected || "")}</textarea>
+            <div style="display:flex; gap:10px; margin-top:10px; align-items:center; flex-wrap:wrap;">
+              ${(q.tipo === "escribir_codigo" && q.codigo) ? '<button type="button" class="btn tiny ghost" id="test-code-btn"><i class="fa-solid fa-play" aria-hidden="true"></i> Probar en consola</button>' : ''}
+              <button type="button" class="btn primary tiny" id="submit-open-btn"><i class="fa-solid fa-robot" aria-hidden="true"></i> Enviar a la IA para corrección (Nota 0-10)</button>
+              <span id="open-eval-status" style="font-size:12px; color:#94a3b8;"></span>
+            </div>
+            <div id="open-console-out" style="display:none; margin-top:10px; padding:10px; background:#020617; border:1px solid #334155; border-radius:8px; font-family:monospace; font-size:12px; color:#38bdf8; max-height:150px; overflow-y:auto; white-space:pre-wrap;"></div>
+            <div id="open-eval-result" style="margin-top:14px; display:${q.evaluacionIA ? 'block' : 'none'};"></div>
+          </div>
+        ` : `
+          <div class="options" id="options" role="group" aria-label="Opciones de respuesta">
+            ${["A", "B", "C", "D"].map((letter) => optionHTML(q, letter, selected, practice, isAnswered)).join("")}
+          </div>
+        `}
         <div id="feedback-slot"></div>
         <div class="test-actions">
           <div class="right">
@@ -2595,12 +4387,125 @@ function renderTest() {
   if (q.codigo) {
     renderCodeInto($("#code-slot"), q.codigo, null);
   }
-  if (practice && isAnswered) {
-    $("#feedback-slot")?.append(renderFeedback(q, selected));
+  if (esPreguntaAbierta(q)) {
+    if (q.evaluacionIA) {
+      const evalSlot = $("#open-eval-result");
+      if (evalSlot) {
+        renderAiConversation(evalSlot, q, selected || "", { answer: q.evaluacionIA, messages: q.evaluacionMensajes || [] }, true);
+      }
+    }
+    $("#test-code-btn")?.addEventListener("click", () => {
+      const textarea = $("#open-textarea");
+      const val = textarea?.value?.trim() || "";
+      const consoleBox = $("#open-console-out");
+      if (!consoleBox) return;
+      consoleBox.style.display = "block";
+      consoleBox.textContent = "▶ Probando código en consola…\n";
+      const logs = [];
+      const fakeConsole = {
+        log: (...args) => {
+          const msg = args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          logs.push(msg);
+          consoleBox.textContent = logs.join("\n");
+        },
+        error: (...args) => {
+          const msg = args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          logs.push("❌ " + msg);
+          consoleBox.textContent = logs.join("\n");
+        },
+      };
+      try {
+        const fn = new Function("console", val);
+        fn(fakeConsole);
+        if (!logs.length) {
+          consoleBox.textContent = "✅ Código sintácticamente correcto (sin llamadas console.log directas).";
+        }
+      } catch (err) {
+        consoleBox.textContent = `❌ Error de sintaxis o ejecución: ${err.message}`;
+      }
+    });
+
+    const openTextarea = $("#open-textarea");
+    openTextarea?.addEventListener("input", () => {
+      state.answers[q.id] = openTextarea.value;
+      saveSession();
+    });
+
+    $("#submit-open-btn")?.addEventListener("click", async () => {
+      const textarea = $("#open-textarea");
+      const val = textarea?.value?.trim() || "";
+      if (!val) {
+        toast("Escribe tu respuesta antes de enviarla.");
+        textarea?.focus();
+        return;
+      }
+      state.answers[q.id] = val;
+      saveSession();
+      const btn = $("#submit-open-btn");
+      const status = $("#open-eval-status");
+      const evalSlot = $("#open-eval-result");
+      if (btn) btn.disabled = true;
+      if (status) status.innerHTML = '<span class="ai-dot"></span> Evaluando con la IA para nota del 0 al 10…';
+      try {
+        const data = await requestAi("/api/explain", {
+          pregunta: {
+            ...q,
+            tipo: q.tipo,
+            enunciado: q.enunciado,
+            codigo: q.codigo || "",
+            explicacion: q.explicacion || "",
+          },
+          selected: val,
+          esDesarrollo: true,
+          subject: state.subject?.nombre || "WEC",
+        });
+        const text = aiExplanationText(data);
+        if (!text) throw new Error("La IA no devolvió corrección.");
+        q.evaluacionIA = text;
+        const notaMatch = text.match(/Nota:\s*(\d+(?:\.\d+)?)\s*\/\s*10/i);
+        const nota = notaMatch ? parseFloat(notaMatch[1]) : null;
+        if (nota !== null) {
+          if (nota < 5) {
+            updateWrongForAnswer(q, val, null);
+          } else {
+            const set = new Set(getWrongIds());
+            set.delete(q.id);
+            setWrongIds([...set]);
+            const history = getHistory();
+            if (history[q.id]) {
+              history[q.id].passed = true;
+              history[q.id].selected = val;
+            }
+            setHistory(history);
+            writePersistenceFile();
+          }
+        }
+        if (evalSlot) {
+          evalSlot.style.display = "block";
+          renderAiConversation(evalSlot, q, val, { answer: text, messages: [] }, true);
+        }
+        if (status) status.textContent = "✅ Evaluado por la IA";
+        toast("Respuesta evaluada por la IA.");
+      } catch {
+        const feedbackLocal = `### Evaluación didáctica de referencia\n\n**Tu respuesta:**\n\`\`\`javascript\n${val}\n\`\`\`\n\n**Solución modelo y criterios para un 10:**\n${q.explicacion}\n\n*(Inicia el servidor local con Ollama para corrección automática interactiva).*`;
+        q.evaluacionIA = feedbackLocal;
+        if (evalSlot) {
+          evalSlot.style.display = "block";
+          renderAiConversation(evalSlot, q, val, { answer: feedbackLocal, messages: [] }, false);
+        }
+        if (status) status.textContent = "Respuesta guardada con solución de referencia.";
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+  } else {
+    if (practice && isAnswered) {
+      $("#feedback-slot")?.append(renderFeedback(q, selected));
+    }
+    $$(".option").forEach((btn) => {
+      btn.addEventListener("click", () => selectOption(btn.dataset.letter));
+    });
   }
-  $$(".option").forEach((btn) => {
-    btn.addEventListener("click", () => selectOption(btn.dataset.letter));
-  });
   $("#prev-btn")?.addEventListener("click", prevQuestion);
   $("#next-btn")?.addEventListener("click", nextQuestion);
   $("#exit-btn")?.addEventListener("click", () => {
@@ -2615,21 +4520,37 @@ function renderTest() {
 function updateWrongForAnswer(q, selected, previous = null) {
   const set = new Set(getWrongIds());
   const history = getHistory();
-  if (selected === q.correcta) {
+  const prev = history[q.id] || { fails: 0, correct: 0, attempts: 0 };
+  const isCorrect = (selected === q.correcta);
+
+  if (isCorrect) {
     set.delete(q.id);
-    delete history[q.id];
-  } else {
-    set.add(q.id);
-    const prev = history[q.id] || {};
     history[q.id] = {
       selected,
       at: new Date().toISOString(),
-      fails: previous == null ? (Number(prev.fails) || 0) + 1 : Math.max(1, Number(prev.fails) || 1)
+      fails: Number(prev.fails) || 0,
+      correct: (Number(prev.correct) || 0) + 1,
+      attempts: (Number(prev.attempts) || 0) + 1,
+      passed: true
+    };
+  } else {
+    set.add(q.id);
+    history[q.id] = {
+      selected,
+      at: new Date().toISOString(),
+      fails: (Number(prev.fails) || 0) + 1,
+      correct: Number(prev.correct) || 0,
+      attempts: (Number(prev.attempts) || 0) + 1,
+      passed: false
     };
   }
   setWrongIds([...set]);
   setHistory(history);
   writePersistenceFile();
+
+  if (window.SupabaseAuth && typeof window.SupabaseAuth.autoSyncProgressDebounced === "function") {
+    window.SupabaseAuth.autoSyncProgressDebounced();
+  }
 }
 
 function selectOption(letter) {
@@ -2753,7 +4674,8 @@ function renderWrongItem(q, position, options = {}) {
   explain.innerHTML = formatText(q.explicacion || "");
   item.append(explain);
 
-  if (q.tipo === "codigo" && q.codigo && q.traza && q.traza.length) {
+  const traza = (Array.isArray(q.traza) && q.traza.length) ? q.traza : (typeof generarTrazaFallback === "function" ? generarTrazaFallback(q) : []);
+  if (q.tipo === "codigo" && q.codigo && traza.length) {
     const traceSlot = document.createElement("div");
     traceSlot.style.marginTop = "14px";
     if (lazyTrace) {
@@ -2765,13 +4687,13 @@ function renderWrongItem(q, position, options = {}) {
       details.addEventListener("toggle", () => {
         if (details.open && !built) {
           built = true;
-          createTracePlayer(traceSlot, q.codigo, q.traza);
+          createTracePlayer(traceSlot, q.codigo, traza);
         }
       });
       details.append(summary, traceSlot);
       item.append(details);
     } else {
-      createTracePlayer(traceSlot, q.codigo, q.traza);
+      createTracePlayer(traceSlot, q.codigo, traza);
       item.append(traceSlot);
     }
   }
@@ -3478,7 +5400,8 @@ function renderResults() {
   $("#open-wrong-book")?.addEventListener("click", renderWrongBook);
   $$("[data-repeat-sub]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const ids = (btn.dataset.repeatSub || "").split(",").map(Number).filter(Boolean);
+      const raw = (btn.dataset.repeatSub || "").split(",").map((s) => s.trim()).filter(Boolean);
+      const ids = raw.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
       if (ids.length) {
         const immediate = $("#immediate-toggle")?.checked !== false;
         startTest({ ids, immediate, shuffle: true });
@@ -3543,6 +5466,13 @@ function irAlInicio(event) {
 async function boot() {
   initTheme();
   document.addEventListener("keydown", handleKeys);
+  const onLeave = () => {
+    if (state.screen === "test" && state.order.length) {
+      saveSession();
+    }
+  };
+  window.addEventListener("beforeunload", onLeave);
+  window.addEventListener("pagehide", onLeave);
   $(".brand-link")?.addEventListener("click", irAlInicio);
   const optionsBtn = document.querySelector("#options-toggle-btn");
   const optionsDropdown = document.querySelector("#options-dropdown");
@@ -3559,6 +5489,18 @@ async function boot() {
     await loadCatalog();
     let saved = "";
     try { saved = localStorage.getItem(LS.subject) || ""; } catch { /* noop */ }
+    let activeSession = getSession();
+    if (activeSession && activeSession.subjectId) {
+      saved = activeSession.subjectId;
+    }
+    const asignaturaSesion = (activeSession && activeSession.subjectId)
+      ? state.catalog.find(
+          (asignatura) =>
+            asignatura.id === activeSession.subjectId &&
+            !asignatura.apuntesPrivados &&
+            (asignatura.archivo || asignatura.localData),
+        )
+      : null;
     const asignaturaGuardada = state.catalog.find(
       (asignatura) =>
         asignatura.id === saved &&
@@ -3572,6 +5514,7 @@ async function boot() {
         (asignatura.archivo || asignatura.localData),
     );
     const asignaturaInicial =
+      asignaturaSesion ||
       asignaturaWec ||
       asignaturaGuardada ||
       state.catalog.find(
@@ -3583,8 +5526,22 @@ async function boot() {
     if (!asignaturaInicial)
       throw new Error("No hay ningún banco de preguntas disponible para iniciar.");
     await loadSubject(asignaturaInicial.id);
+
+    activeSession = getSession(asignaturaInicial.id) || activeSession;
+
+    const canResume =
+      activeSession &&
+      Array.isArray(activeSession.ids) &&
+      activeSession.ids.length > 0 &&
+      !activeSession.finished;
+
     if (!document.querySelector(".practica-apuntes") && state.screen !== "notes") {
-      renderStart();
+      if (canResume) {
+        resumeSession(activeSession);
+        toast("Has vuelto a tu test donde lo dejaste.");
+      } else {
+        renderStart();
+      }
     }
   } catch (error) {
     main.innerHTML = `

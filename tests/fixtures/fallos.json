@@ -1,0 +1,19 @@
+{
+  "app": "test-wec-fixtures",
+  "schema": 1,
+  "exportedAt": "2026-11-13T00:00:00.000Z",
+  "asignatura": { "id": "wec", "nombre": "WEC" },
+  "totalPreguntas": 4,
+  "wrongIds": [2, 4],
+  "history": {
+    "2": { "selected": "B", "at": "2026-11-13T00:05:00.000Z", "fails": 2 },
+    "4": { "selected": "D", "at": "2026-11-13T00:07:00.000Z", "fails": 1 }
+  },
+  "stats": {
+    "attempts": 2,
+    "bestPct": 75,
+    "lastPct": 50,
+    "lastTotal": 4,
+    "lastDate": "2026-11-13T00:07:00.000Z"
+  }
+}

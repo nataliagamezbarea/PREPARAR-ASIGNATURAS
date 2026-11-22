@@ -1,0 +1,74 @@
+{
+  "id": "wec",
+  "meta": {
+    "total": 4,
+    "generado": "2026-11-13T00:00:00.000Z",
+    "fuente": "tests/fixtures"
+  },
+  "preguntas": [
+    {
+      "id": 1,
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "Concepto",
+      "dificultad": "baja",
+      "enunciado": "¿Qué es una página web?",
+      "opciones": {
+        "A": "Un documento HTML accesible por el navegador",
+        "B": "Un programa compilado en C",
+        "C": "Un cable de red",
+        "D": "Un tipo de impresora"
+      },
+      "correcta": "A",
+      "explicacion": "Una página web es un documento HTML que se sirve a través de HTTP y se renderiza en el navegador."
+    },
+    {
+      "id": 2,
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "Concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué hace el motor de JavaScript del navegador?",
+      "opciones": {
+        "A": "Ejecuta el código JavaScript de la página",
+        "B": "Dibuja los píxeles de la pantalla",
+        "C": "Gestiona la conexión a Internet",
+        "D": "Almacena contraseñas en el disco"
+      },
+      "correcta": "A",
+      "explicacion": "El motor JS (por ejemplo V8) interpreta y ejecuta el código JavaScript de la página web."
+    },
+    {
+      "id": 3,
+      "tema": 2,
+      "tipo": "codigo",
+      "tag": "Estructuras de control",
+      "dificultad": "media",
+      "enunciado": "¿Qué imprime este código?\\n\\nfor (let i = 0; i < 3; i++) { console.log(i); }",
+      "opciones": {
+        "A": "0 1 2",
+        "B": "1 2 3",
+        "C": "0 1 2 3",
+        "D": "nada"
+      },
+      "correcta": "A",
+      "explicacion": "El bucle comienza en 0 y se repite mientras i sea menor que 3, imprimiendo 0, 1 y 2."
+    },
+    {
+      "id": 4,
+      "tema": 2,
+      "tipo": "teoria",
+      "tag": "Tipos de datos",
+      "dificultad": "baja",
+      "enunciado": "¿Cuál de estos es un tipo de dato primitivo en JavaScript?",
+      "opciones": {
+        "A": "string",
+        "B": "Array",
+        "C": "Map",
+        "D": "Set"
+      },
+      "correcta": "D",
+      "explicacion": "Set es un tipo primitivo-like collection... "
+    }
+  ]
+}

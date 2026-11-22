@@ -1,0 +1,27 @@
+{
+  "asignaturas": [
+    {
+      "id": "wec",
+      "nombre": "WEC",
+      "archivo": "./tests/fixtures/preguntas.json",
+      "descripcion": "Fixture de prueba · temas 1 y 2",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Arquitecturas y herramientas de programación web",
+          "apartados": [
+            { "numero": 1, "nombre": "Origen y alcance de la web" },
+            { "numero": 2, "nombre": "Lenguajes de programación en entorno cliente" }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Sintaxis, tipos de datos, operadores y estructuras de control",
+          "apartados": [
+            { "numero": 1, "nombre": "Selección del lenguaje de programación del cliente" }
+          ]
+        }
+      ]
+    }
+  ]
+}

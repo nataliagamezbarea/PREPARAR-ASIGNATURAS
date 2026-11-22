@@ -1,0 +1,10 @@
+{
+  "puerto": 8124,
+  "modeloIA": "qwen2.5vl:7b",
+  "tiempoIA": 900,
+  "maxCaracteresBloque": 10000,
+  "supabase": {
+    "url": "https://TU_PROYECTO.supabase.co",
+    "anonKey": "TU_ANON_KEY_AQUI"
+  }
+}

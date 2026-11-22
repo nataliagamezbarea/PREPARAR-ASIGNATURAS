@@ -5,11 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Test interactivo</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="./assets/css/app.css">
-<link rel="stylesheet" href="./assets/css/practicar-apuntes.css">
+<link rel="stylesheet" href="./assets/css/app.css?v=2.3">
+<link rel="stylesheet" href="./assets/css/practicar-apuntes.css?v=2.3">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<div class="topbar">
+
+<!-- PANTALLA DE LOGIN OBLIGATORIA (ESTILO ACCESO AULA GRADOS INFORMATICOS) -->
+<div id="login-gate" style="position:fixed; inset:0; z-index:999999; background:radial-gradient(circle at 50% 20%, #ffffff 0%, #f1f5f9 100%); display:flex; align-items:center; justify-content:center; padding:16px; font-family:'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <div style="width:100%; max-width:400px; background:#ffffff; border-radius:20px; padding:32px 28px; box-shadow:0 10px 30px -5px rgba(0,0,0,0.08), 0 0 1px 1px rgba(0,0,0,0.04); border:1px solid rgba(226,232,240,0.8); text-align:center; display:flex; flex-direction:column; align-items:stretch;">
+    <div style="font-size:48px; line-height:1; margin-bottom:8px;">🎯</div>
+    <h1 style="font-size:1.65rem; font-weight:700; color:#0f172a; margin:4px 0 2px; letter-spacing:-0.02em;">Preparar tests</h1>
+    <p style="color:#64748b; font-size:0.84rem; font-weight:400; margin:0 0 18px;">Tests adaptativos con apuntes e IA · Grados Informáticos</p>
+    
+    <div id="login-gate-error" style="color:#ef4444; font-size:0.82rem; font-weight:500; margin:0 0 12px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:8px 12px; display:none;"></div>
+    
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+      <button id="gate-btn-google" type="button" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:11px 16px; background:#ffffff; color:#1e293b; font-weight:600; font-size:0.88rem; border:1.5px solid #cbd5e1; border-radius:10px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:all 0.2s ease;">
+        <i class="fa-brands fa-google" style="color:#ea4335; font-size:1.1rem;"></i>
+        <span>Continuar con Google</span>
+      </button>
+      <button id="gate-btn-github" type="button" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:11px 16px; background:#24292f; color:#ffffff; font-weight:600; font-size:0.88rem; border:1px solid #24292f; border-radius:10px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.1); transition:all 0.2s ease;">
+        <i class="fa-brands fa-github" style="font-size:1.15rem;"></i>
+        <span>Continuar con GitHub</span>
+      </button>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:10px; margin:4px 0 14px; color:#94a3b8; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px;">
+      <hr style="flex:1; border:0; border-top:1px solid #e2e8f0;">
+      <span>o con correo y contraseña</span>
+      <hr style="flex:1; border:0; border-top:1px solid #e2e8f0;">
+    </div>
+
+    <form id="gate-email-form" style="display:flex; flex-direction:column; gap:12px; margin-top:2px; text-align:left;">
+      <div>
+        <label for="gate-input-email" style="display:block; font-size:0.8rem; color:#475569; font-weight:600; margin-bottom:4px;">Usuario / Email</label>
+        <input id="gate-input-email" type="email" placeholder="tu-email@ejemplo.com" required style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.88rem; box-sizing:border-box; outline:none;" autocomplete="username">
+      </div>
+      <div>
+        <label for="gate-input-password" style="display:block; font-size:0.8rem; color:#475569; font-weight:600; margin-bottom:4px;">Contraseña</label>
+        <input id="gate-input-password" type="password" placeholder="••••••••" required style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.88rem; box-sizing:border-box; outline:none;" autocomplete="current-password">
+      </div>
+      <button id="gate-btn-submit-email" type="submit" style="width:100%; padding:11px 16px; margin-top:6px; background:#0284c7; color:#fff; font-weight:600; font-size:0.9rem; border:none; border-radius:10px; cursor:pointer; box-shadow:0 2px 6px rgba(2,132,199,0.25);">
+        Iniciar sesión
+      </button>
+    </form>
+
+    <p style="font-size:0.72rem; color:#64748b; margin-top:16px; text-align:center; line-height:1.45;">
+      Acceso protegido. Solo se permite el acceso a usuarios autorizados.
+    </p>
+  </div>
+</div>
+
+<div class="topbar" style="display:none;">
   <div class="topbar-inner">
     <a class="brand brand-link" href="/" aria-label="Volver al inicio">
       <div class="logo" id="brand-logo">T</div>
@@ -20,6 +68,10 @@
     </a>
     <div class="top-actions">
       <span class="chip brand hidden" id="mode-chip"></span>
+      <button class="btn tiny" id="auth-btn" type="button" style="display:inline-flex;align-items:center;gap:6px;" title="Iniciar sesión con Supabase">
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+        <span id="auth-btn-label">Iniciar sesión</span>
+      </button>
       <button class="icon-btn generation-notification hidden" id="generation-notification" type="button" title="Ver progreso de generación" aria-label="Hay una generación en curso; ver progreso">
         <span aria-hidden="true">🔔</span><span class="generation-notification-dot" aria-hidden="true"></span>
       </button>
@@ -43,10 +95,11 @@
     </div>
   </div>
 </div>
-<main id="main"></main>
-<footer class="footer" id="footer">Cargando preguntas…</footer>
+<main id="main" style="display:none;"></main>
+<footer class="footer" id="footer" style="display:none;">Cargando preguntas…</footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="./assets/js/app.js" defer></script>
+<script src="./assets/js/app.js?v=2.4" defer></script>
+<script type="module" src="./assets/js/app/consola-vivo.js"></script>
 <script type="module" src="./assets/js/practicar-apuntes.js"></script>
 </body>
 </html>
