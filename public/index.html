@@ -66,16 +66,21 @@
         <div class="brand-sub" id="brand-sub">Cargando preguntas…</div>
       </div>
     </a>
-    <div class="topbar-rama-wrap" style="display:inline-flex; align-items:center; gap:6px; margin:0 10px;">
+    <div class="topbar-rama-wrap" style="display:inline-flex; align-items:center; gap:6px; margin:0 6px;">
       <i class="fa-solid fa-code-branch" style="color:var(--brand); font-size:0.9rem;" title="Grado / Rama"></i>
       <select id="navbar-branch-select" aria-label="Seleccionar grado o rama" style="font-weight:600; font-size:0.84rem; padding:5px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; outline:none;">
-        <option value="Segundo_grado_medio">Segundo grado medio</option>
-        <option value="Primer_grado_medio">Primer grado medio</option>
-        <option value="Primer_grado_superior_DAW">Primer grado superior DAW</option>
-        <option value="todas">Todas las ramas</option>
+      </select>
+    </div>
+    <div class="topbar-asig-wrap" style="display:inline-flex; align-items:center; gap:6px; margin:0 6px;">
+      <i class="fa-solid fa-book" style="color:var(--brand); font-size:0.9rem;" title="Asignatura actual"></i>
+      <select id="navbar-subject-select" aria-label="Seleccionar asignatura" style="font-weight:600; font-size:0.84rem; padding:5px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; outline:none; max-width:210px; text-overflow:ellipsis;">
       </select>
     </div>
     <div class="top-actions">
+      <button class="btn tiny ok" id="btn-navbar-apuntes" type="button" style="display:inline-flex;align-items:center;gap:6px;" title="Practicar tests desde tus apuntes privados">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        <span>Tests desde apuntes</span>
+      </button>
       <button class="btn tiny" id="btn-gestionar-asignaturas" type="button" style="display:inline-flex;align-items:center;gap:6px;" title="Crear asignatura y subir tests JSON">
         <i class="fa-solid fa-folder-plus" aria-hidden="true"></i>
         <span>Asignaturas y Tests</span>

@@ -3291,27 +3291,16 @@ function renderStart() {
 
       <div class="home-grid">
         <section class="home-card home-card-entrenar" style="grid-column: 1 / -1;">
-          <h2>🎯 Modalidades de práctica</h2>
-          <p class="lead">Configura tu sesión de test a medida (tema, tipo de repaso, categoría y cantidad) o usa los accesos rápidos.</p>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+            <div>
+              <h2 style="margin:0; font-size:1.35rem;"><i class="fa-solid fa-sliders"></i> Crear sesión de test · Modalidades de práctica</h2>
+              <p class="lead" style="margin:4px 0 0;">Configura tu sesión de test a medida (tema, tipo de repaso, categoría y cantidad) o usa los accesos rápidos.</p>
+            </div>
+          </div>
 
-          <!-- Configurador de práctica a medida estilo 8765 -->
+          <!-- Configurador de práctica a medida sin carpetas expuestas -->
           <div class="practice-custom-panel" style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px; margin-bottom:20px;">
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:16px;">
-              <div style="grid-column: 1 / -1; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.18); padding:10px 14px; border-radius:6px; border:1px solid var(--line);">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <i class="fa-brands fa-github" style="font-size:18px; color:#a78bfa;"></i>
-                  <span style="font-size:12px; font-weight:700;">Rama (GitHub privado):</span>
-                  <select class="control" id="custom-practice-branch" style="min-width:240px; font-size:12px; padding:4px 8px;">
-                    <option value="Segundo_grado_superior" selected>Segundo_grado_superior (DWEC)</option>
-                    <option value="master">master</option>
-                  </select>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <span style="font-size:11px; color:var(--muted);">Carpeta:</span>
-                  <input type="text" class="control" id="custom-practice-folder" value="datos/bancos/WEC" style="width:160px; font-size:11px; padding:4px 8px;" />
-                  <button class="btn tiny ghost" type="button" id="btn-reload-branch" title="Recargar preguntas desde esta rama de GitHub"><i class="fa-solid fa-arrows-rotate"></i> Cargar de GitHub</button>
-                </div>
-              </div>
 
               <div>
                 <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Agrupación / Examen</label>
@@ -3795,10 +3784,42 @@ function renderStart() {
 }
 
 function initNavbarYGestionAsignaturas() {
-  const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
+  // 1. Filtrar ramas que realmente tienen tests en el catálogo
+  const ramasConTests = new Set();
+  for (const s of state.catalog) {
+    if (s.totalPreguntas > 0 || s.archivo || s.localData) {
+      const g = s.grado || "Segundo_grado_medio";
+      ramasConTests.add(g);
+    }
+  }
+
+  const nombresRamas = {
+    "Segundo_grado_medio": "Segundo grado medio",
+    "Primer_grado_medio": "Primer grado medio",
+    "Primer_grado_superior_DAW": "Primer grado superior DAW",
+  };
+
   const branchSelect = document.getElementById("navbar-branch-select");
   if (branchSelect) {
+    let htmlRamas = "";
+    for (const [clave, label] of Object.entries(nombresRamas)) {
+      if (ramasConTests.has(clave)) {
+        htmlRamas += `<option value="${clave}">${label}</option>`;
+      }
+    }
+    if (ramasConTests.size > 1) {
+      htmlRamas += `<option value="todas">Todas las ramas</option>`;
+    }
+    branchSelect.innerHTML = htmlRamas || `<option value="Segundo_grado_medio">Segundo grado medio</option>`;
+
+    let branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "";
+    if (!ramasConTests.has(branchSelected) && branchSelected !== "todas") {
+      branchSelected = [...ramasConTests][0] || "Segundo_grado_medio";
+      state.ramaActual = branchSelected;
+      try { localStorage.setItem("rama_actual", branchSelected); } catch (_) {}
+    }
     branchSelect.value = branchSelected;
+
     if (!branchSelect.dataset.attached) {
       branchSelect.dataset.attached = "true";
       branchSelect.addEventListener("change", async (e) => {
@@ -3810,10 +3831,53 @@ function initNavbarYGestionAsignaturas() {
           await loadSubject(matching[0].id);
         }
         renderStart();
-        const nombreRama = val === "Segundo_grado_medio" ? "Segundo grado medio" : (val === "Primer_grado_medio" ? "Primer grado medio" : (val === "Primer_grado_superior_DAW" ? "Primer grado superior DAW" : "Todas las ramas"));
+        const nombreRama = nombresRamas[val] || "Todas las ramas";
         toast(`Grado activo: ${nombreRama}`);
       });
     }
+  }
+
+  // 2. Selector de asignaturas en la barra superior (topbar)
+  const navbarSubjectSelect = document.getElementById("navbar-subject-select");
+  if (navbarSubjectSelect) {
+    const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
+    const matchingSubjects = state.catalog.filter(s => {
+      if (branchSelected === "todas" || branchSelected === "TODAS LAS RAMAS") return true;
+      return s.grado === branchSelected || (!s.grado && branchSelected === "Segundo_grado_medio");
+    });
+    const listToRender = matchingSubjects.length ? matchingSubjects : state.catalog;
+    navbarSubjectSelect.innerHTML = listToRender.map(s => {
+      const label = s.etiqueta || s.nombre;
+      return `<option value="${esc(s.id)}" ${s.id === state.subjectId ? "selected" : ""}>${esc(label)}</option>`;
+    }).join("");
+
+    if (!navbarSubjectSelect.dataset.attached) {
+      navbarSubjectSelect.dataset.attached = "true";
+      navbarSubjectSelect.addEventListener("change", async (e) => {
+        const id = e.target.value;
+        const seleccion = state.catalog.find(s => s.id === id);
+        if (seleccion?.apuntesPrivados) {
+          window.abrirPracticaDesdeApuntes?.(seleccion.nombreApuntes);
+          return;
+        }
+        try {
+          await loadSubject(id);
+          renderStart();
+          toast(`Asignatura: ${state.subject?.nombre || id}`);
+        } catch (error) {
+          toast(`No se pudo cargar: ${error.message}`);
+        }
+      });
+    }
+  }
+
+  // 3. Botón de tests desde apuntes en la navbar
+  const btnNavbarApuntes = document.getElementById("btn-navbar-apuntes");
+  if (btnNavbarApuntes && !btnNavbarApuntes.dataset.attached) {
+    btnNavbarApuntes.dataset.attached = "true";
+    btnNavbarApuntes.addEventListener("click", () => {
+      window.abrirPracticaDesdeApuntes?.();
+    });
   }
 
   const modal = document.getElementById("modal-gestionar-asignaturas");
