@@ -154,6 +154,16 @@ async function loadCatalog() {
       state.errorCatalogoApuntes = "";
     }
   }
+
+  // Cargar asignaturas creadas por el usuario localmente (offline / GitHub Pages)
+  try {
+    const custom = JSON.parse(localStorage.getItem("preparar_tests_custom_subjects") || "[]");
+    for (const c of custom) {
+      if (c && c.id && !catalog.some((s) => s.id === c.id)) {
+        catalog.push(c);
+      }
+    }
+  } catch {}
   const byId = new Map();
   catalog
     .filter((s) => s && s.id && (s.archivo || s.localData))

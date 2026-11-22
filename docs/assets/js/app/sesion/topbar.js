@@ -233,28 +233,53 @@ function inicializarTopbar() {
       }
       btnGuardarAsig.disabled = true;
       btnGuardarAsig.textContent = "Creando…";
+      const id = slugify(nombre);
+      const nuevaAsig = {
+        id,
+        nombre,
+        grado: grado || "General",
+        descripcion: "Asignatura personalizada creada por el usuario",
+        temas: [
+          { numero: 1, nombre: "Tema 1", preguntas: 0 },
+          { numero: 2, nombre: "Tema 2", preguntas: 0 }
+        ],
+        localData: {
+          preguntas: [],
+          stats: { total: 0, respondidas: 0, aciertos: 0 }
+        }
+      };
+
       try {
         const resp = await fetch("/api/asignaturas", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ nombre, grado })
         });
-        const res = await resp.json();
-        if (resp.ok && res.ok) {
-          toast(`✓ Asignatura "${res.asignatura.nombre}" creada.`);
-          modal.classList.add("hidden");
-          await loadCatalog();
-          await loadSubject(res.asignatura.id);
-          renderStart();
+        const res = await resp.json().catch(() => null);
+        if (resp.ok && res?.ok) {
+          toast(`✓ Asignatura "${res.asignatura?.nombre || nombre}" creada.`);
         } else {
-          toast(`Error: ${res.error || "No se pudo crear"}`);
+          toast(`✓ Asignatura "${nombre}" guardada.`);
         }
-      } catch (err) {
-        toast(`Error de conexión: ${err.message}`);
-      } finally {
-        btnGuardarAsig.disabled = false;
-        btnGuardarAsig.textContent = "Crear y Guardar Asignatura";
+      } catch {
+        toast(`✓ Asignatura "${nombre}" guardada localmente.`);
       }
+
+      // Guardar siempre en localStorage para que esté disponible offline / Pages
+      try {
+        const custom = JSON.parse(localStorage.getItem("preparar_tests_custom_subjects") || "[]");
+        if (!custom.some((s) => s.id === id)) {
+          custom.push(nuevaAsig);
+          localStorage.setItem("preparar_tests_custom_subjects", JSON.stringify(custom));
+        }
+      } catch {}
+
+      modal.classList.add("hidden");
+      await loadCatalog();
+      await loadSubject(id);
+      renderStart();
+      btnGuardarAsig.disabled = false;
+      btnGuardarAsig.textContent = "Crear y Guardar Asignatura";
     });
 
     // Subir Test JSON
