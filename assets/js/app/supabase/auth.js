@@ -164,7 +164,10 @@ const SupabaseGestionAuth = (() => {
         document.cookie = "auth_origin_app=; path=/; max-age=0";
         localStorage.removeItem("auth_origin_app");
         const destino = new URL(authOrigin);
-        destino.search = window.location.search;
+        // NO reenviar params de error (?error=...) — solo el hash con el token
+        // Si hay token en el hash, lo pasamos; si hay error en la URL, lo descartamos
+        const hayError = window.location.search.includes("error=");
+        if (!hayError) destino.search = window.location.search;
         destino.hash = window.location.hash;
         window.location.replace(destino.toString());
         return false;
