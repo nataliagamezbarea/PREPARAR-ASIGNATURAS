@@ -1552,6 +1552,7 @@ const SupabaseAuth = (() => {
         client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
           db: { schema: "grados-informaticos" },
           auth: {
+            flowType: "implicit",
             persistSession: true,
             autoRefreshToken: true,
             detectSessionInUrl: true
