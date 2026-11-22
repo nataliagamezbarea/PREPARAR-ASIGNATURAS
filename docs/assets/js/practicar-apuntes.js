@@ -69,6 +69,9 @@ async function consultarAPI(ruta, opciones = {}) {
     ...opciones,
     headers: {
       ...(opciones.body ? { "content-type": "application/json" } : {}),
+      ...(typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")
+        ? { "x-nvidia-api-key": localStorage.getItem("preparar_tests_nvidia_key") }
+        : {}),
       ...opciones.headers,
     },
   });

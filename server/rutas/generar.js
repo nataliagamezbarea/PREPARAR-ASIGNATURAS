@@ -107,6 +107,7 @@ async function ejecutarGeneracion(identificador, solicitud, material) {
         prompt,
         instruccionesSistema: INSTRUCCIONES_SISTEMA,
         signal: controlador.signal,
+        apiKey: solicitud.apiKeyNvidia,
       });
       registrarLlamadaIA(identificador, Date.now() - inicioLlamada);
 
@@ -162,6 +163,7 @@ export async function manejarGenerar(peticion, respuesta, url, responderJson, re
     try {
       datos = await leerJson(peticion);
       const solicitud = validarSolicitudGeneracion(datos);
+      solicitud.apiKeyNvidia = datos.nvidiaApiKey || peticion.headers?.["x-nvidia-api-key"] || "";
       const material = await obtenerMaterialSeleccionado(solicitud);
       const tarea = crearTarea({
         asignatura: solicitud.asignatura,

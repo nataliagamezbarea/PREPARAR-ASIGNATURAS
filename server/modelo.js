@@ -38,9 +38,10 @@ async function consultarNvidia({
   instruccionesSistema,
   soloJson = true,
   opcionesIA = {},
+  apiKey = "",
 }) {
-  const apiKey = configuracion.nvidiaApiKey;
-  if (!apiKey) throw new Error("Falta NVIDIA_API_KEY en el archivo .env");
+  const clave = apiKey || configuracion.nvidiaApiKey;
+  if (!clave) throw new Error("Falta NVIDIA_API_KEY. Configúrala en las opciones de la aplicación o en las variables de entorno.");
   const modelo = configuracion.nvidiaModelo || "meta/llama-3.1-8b-instruct";
   const limite = AbortSignal.timeout(configuracion.tiempoMaximoMs);
   const senal = controlador ? AbortSignal.any([controlador.signal, limite]) : limite;
@@ -71,7 +72,7 @@ async function consultarNvidia({
       method: "POST",
       headers: {
         "content-type": "application/json",
-        authorization: `Bearer ${apiKey}`,
+        authorization: `Bearer ${clave}`,
       },
       body: JSON.stringify(body),
       signal: senal,
@@ -105,15 +106,16 @@ async function consultarNvidia({
   };
 }
 
-export async function comprobarModelo() {
+export async function comprobarModelo(apiKey = "") {
+  const clave = apiKey || configuracion.nvidiaApiKey;
   const usarNvidia =
     configuracion.proveedorIA === "nvidia" ||
-    (configuracion.proveedorIA === "auto" && Boolean(configuracion.nvidiaApiKey));
+    (configuracion.proveedorIA === "auto" && Boolean(clave));
 
   if (usarNvidia) {
     return {
-      conectado: Boolean(configuracion.nvidiaApiKey),
-      modeloDisponible: Boolean(configuracion.nvidiaApiKey),
+      conectado: Boolean(clave),
+      modeloDisponible: Boolean(clave),
       proveedor: "nvidia",
       modelo: configuracion.nvidiaModelo,
       modelos: [
@@ -145,7 +147,7 @@ export async function comprobarModelo() {
     };
   } catch (error) {
     // Si Ollama falla pero hay NVIDIA_API_KEY configurada, fallback automático a NVIDIA NIM
-    if (configuracion.nvidiaApiKey) {
+    if (clave) {
       return {
         conectado: true,
         modeloDisponible: true,
@@ -171,10 +173,12 @@ export async function generarConIA({
   instruccionesSistema,
   soloJson = true,
   opcionesIA = {},
+  apiKey = "",
 }) {
+  const claveNvidia = apiKey || configuracion.nvidiaApiKey;
   const usarNvidia =
     configuracion.proveedorIA === "nvidia" ||
-    (configuracion.proveedorIA === "auto" && Boolean(configuracion.nvidiaApiKey));
+    (configuracion.proveedorIA === "auto" && Boolean(claveNvidia));
 
   if (usarNvidia) {
     progreso?.(`Consultando NVIDIA NIM (${configuracion.nvidiaModelo})…`);
@@ -184,6 +188,7 @@ export async function generarConIA({
       instruccionesSistema,
       soloJson,
       opcionesIA,
+      apiKey: claveNvidia,
     });
   }
 
@@ -229,7 +234,8 @@ export async function generarConIA({
     };
   } catch (error) {
     // Si Ollama falla y tenemos clave de NVIDIA, fallback a NVIDIA NIM
-    if (configuracion.nvidiaApiKey) {
+    const claveFallback = apiKey || configuracion.nvidiaApiKey;
+    if (claveFallback) {
       progreso?.(`Ollama no respondió, cambiando automáticamente a NVIDIA NIM (${configuracion.nvidiaModelo})…`);
       return consultarNvidia({
         prompt,
@@ -237,6 +243,7 @@ export async function generarConIA({
         instruccionesSistema,
         soloJson,
         opcionesIA,
+        apiKey: claveFallback,
       });
     }
     throw error;

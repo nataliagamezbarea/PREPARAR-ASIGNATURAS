@@ -51,9 +51,12 @@ async function requestAi(endpoint, payload, timeoutMs = 180000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
+    const headers = { "Content-Type": "application/json" };
+    const nvKey = localStorage.getItem("preparar_tests_nvidia_key");
+    if (nvKey) headers["x-nvidia-api-key"] = nvKey;
     const res = await fetch(`${window.location.origin}${endpoint}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(payload),
       signal: controller.signal
     });

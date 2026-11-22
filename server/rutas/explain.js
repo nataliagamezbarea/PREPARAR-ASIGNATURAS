@@ -34,6 +34,7 @@ export async function manejarExplain(peticion, respuesta, url, responderJson, re
 
   try {
     const datos = await leerJson(peticion);
+    const apiKeyNvidia = datos.nvidiaApiKey || peticion.headers?.["x-nvidia-api-key"] || "";
     const preguntaRecibida = datos.pregunta ?? datos.question;
     if (!preguntaRecibida || typeof preguntaRecibida !== "object")
       return responderError(respuesta, 422, "Falta la pregunta que quieres aclarar.");
@@ -126,6 +127,7 @@ export async function manejarExplain(peticion, respuesta, url, responderJson, re
     const respuestaIA = await generarConIA({
       soloJson: false,
       instruccionesSistema,
+      apiKey: apiKeyNvidia,
       opcionesIA: {
         num_predict: esSeguimiento ? 180 : esCorreccionDesarrollo ? 240 : 300,
         num_ctx: 2048,

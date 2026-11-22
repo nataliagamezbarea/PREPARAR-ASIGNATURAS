@@ -158,7 +158,8 @@ async function procesarApi(peticion, respuesta, url) {
 
   if (peticion.method === "GET" && url.pathname === "/api/salud") {
     log("api", "ruta /api/salud");
-    const modelo = await comprobarModelo();
+    const key = url.searchParams.get("nvidia_key") || peticion.headers?.["x-nvidia-api-key"] || "";
+    const modelo = await comprobarModelo(key);
     return responderJson(respuesta, modelo.conectado ? 200 : 503, {
       servicio: "Preparar tests",
       ...modelo,

@@ -1,7 +1,26 @@
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const raizProyecto = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+function resolverRaizApuntes() {
+  const candidatas = [
+    process.env.RUTA_APUNTES,
+    "/data/apuntes",
+    "/home/natalia/Escritorio/GRADOS_INFORMATICOS/apuntes_privados",
+    "/home/natalia/Escritorio/GRADOS_INFORMATICOS/apuntes",
+    "/home/natalia/Escritorio/apuntes-privados",
+    path.resolve(raizProyecto, "apuntes_privados")
+  ].filter(Boolean);
+
+  for (const c of candidatas) {
+    try {
+      if (fs.existsSync(c)) return path.resolve(c);
+    } catch (_) {}
+  }
+  return path.resolve(process.env.RUTA_APUNTES ?? "/data/apuntes");
+}
 
 function enteroEntorno(nombre, predeterminado, minimo, maximo = Number.MAX_SAFE_INTEGER) {
   const valor = Number.parseInt(process.env[nombre] ?? "", 10);
@@ -77,7 +96,7 @@ export const configuracion = {
       ["data/ejemplo-fallos.json", "application/json; charset=utf-8"],
     ],
   ]),
-  raizApuntes: path.resolve(process.env.RUTA_APUNTES ?? "/data/apuntes"),
+  raizApuntes: resolverRaizApuntes(),
   raizBancos: path.resolve(
     raizProyecto,
     process.env.RUTA_BANCOS ?? "datos/bancos",

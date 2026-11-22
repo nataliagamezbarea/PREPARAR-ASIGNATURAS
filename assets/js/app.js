@@ -3524,6 +3524,21 @@ function inicializarTopbar() {
     }
   }
 
+  // 5.b Token de NVIDIA NIM
+  const inputNvidia = document.getElementById("input-nvidia-token");
+  const btnGuardarNvidia = document.getElementById("btn-guardar-nvidia-token");
+  if (inputNvidia) {
+    inputNvidia.value = localStorage.getItem("preparar_tests_nvidia_key") || "";
+  }
+  if (btnGuardarNvidia && !btnGuardarNvidia.dataset.attached) {
+    btnGuardarNvidia.dataset.attached = "true";
+    btnGuardarNvidia.addEventListener("click", () => {
+      const val = (inputNvidia?.value || "").trim();
+      localStorage.setItem("preparar_tests_nvidia_key", val);
+      toast(val ? "✓ Token NVIDIA guardado" : "Token NVIDIA eliminado");
+    });
+  }
+
   // 6. Modal Gestionar Asignaturas y Tests
   const modal = document.getElementById("modal-gestionar-asignaturas");
   const btnAbrir = document.getElementById("btn-gestionar-asignaturas");
@@ -4343,9 +4358,12 @@ async function requestAi(endpoint, payload, timeoutMs = 180000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
+    const headers = { "Content-Type": "application/json" };
+    const nvKey = localStorage.getItem("preparar_tests_nvidia_key");
+    if (nvKey) headers["x-nvidia-api-key"] = nvKey;
     const res = await fetch(`${window.location.origin}${endpoint}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(payload),
       signal: controller.signal
     });
