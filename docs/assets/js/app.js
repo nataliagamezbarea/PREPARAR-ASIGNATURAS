@@ -1425,8 +1425,8 @@ function clearSession() {
 // CONFIGURACIÓN E INICIALIZACIÓN CLIENTE SUPABASE (Grados Informáticos)
 // ============================================================
 
-window.SUPABASE_URL = window.SUPABASE_URL || "";
-window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
+window.SUPABASE_URL = window.SUPABASE_URL || "https://lztatgnlplpduiatmlrv.supabase.co";
+window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "sb_publishable_z_T7Y3yKqPdXLnvL3ltnQA_ZAPrXImZ";
 
 const SupabaseConfig = (() => {
   let client = null;
