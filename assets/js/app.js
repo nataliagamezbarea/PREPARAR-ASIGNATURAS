@@ -1799,10 +1799,16 @@ const SupabaseGestionAuth = (() => {
   }
 
   async function autenticarConGate() {
-    // Si el usuario inició autenticación desde generador-apuntes y Supabase redirigió aquí por Site URL
+    // Si el usuario inició autenticación desde generador-apuntes y Supabase redirigió aquí por Site URL.
+    // localStorage NO se comparte entre puertos — usamos cookie como puente entre localhost:8002 y localhost:3000.
     try {
-      const authOrigin = localStorage.getItem("auth_origin_app");
-      if (authOrigin && authOrigin.includes("generador-apuntes")) {
+      function leerCookie(nombre) {
+        const m = document.cookie.match(new RegExp("(?:^|; )" + nombre + "=([^;]*)"));
+        return m ? decodeURIComponent(m[1]) : null;
+      }
+      const authOrigin = localStorage.getItem("auth_origin_app") || leerCookie("auth_origin_app");
+      if (authOrigin && (authOrigin.includes("generador-apuntes") || authOrigin.includes(":8002"))) {
+        document.cookie = "auth_origin_app=; path=/; max-age=0";
         localStorage.removeItem("auth_origin_app");
         const destino = new URL(authOrigin);
         destino.search = window.location.search;
