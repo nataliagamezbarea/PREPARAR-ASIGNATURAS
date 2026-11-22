@@ -2068,7 +2068,17 @@ const SupabaseAuth = (() => {
     }
 
     try {
-      const { data: { session } } = await c.auth.getSession();
+      let { data: { session } } = await c.auth.getSession();
+      if (!session && (window.location.hash.includes("access_token") || window.location.search.includes("code="))) {
+        for (let i = 0; i < 30; i++) {
+          await new Promise((r) => setTimeout(r, 100));
+          const res = await c.auth.getSession();
+          if (res.data?.session) {
+            session = res.data.session;
+            break;
+          }
+        }
+      }
       if (!session?.user) {
         mostrarLoginGate(errorAlInicio);
         return false;
@@ -2139,13 +2149,15 @@ const SupabaseAuth = (() => {
         mostrarLoginGate("No se pudo conectar con Supabase.");
         return;
       }
+      const errBox = document.getElementById("login-gate-error");
+      if (errBox) errBox.style.display = "none";
       const btn = document.getElementById("gate-btn-github");
       if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size:1.1rem;"></i> <span>Conectando con GitHub…</span>';
       }
       try {
-        const { error } = await cli.auth.signInWithOAuth({
+        const { data, error } = await cli.auth.signInWithOAuth({
           provider: "github",
           options: { redirectTo: cleanRedirectUrl }
         });
@@ -2155,6 +2167,10 @@ const SupabaseAuth = (() => {
             btn.innerHTML = '<i class="fa-brands fa-github" style="font-size:1.15rem;"></i> <span>Continuar con GitHub</span>';
           }
           mostrarLoginGate(`Error de autenticación con GitHub: ${error.message}`);
+          return;
+        }
+        if (data?.url) {
+          window.location.assign(data.url);
         }
       } catch (err) {
         if (btn) {
@@ -2171,13 +2187,15 @@ const SupabaseAuth = (() => {
         mostrarLoginGate("No se pudo conectar con Supabase.");
         return;
       }
+      const errBox = document.getElementById("login-gate-error");
+      if (errBox) errBox.style.display = "none";
       const btn = document.getElementById("gate-btn-google");
       if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size:1.1rem;"></i> <span>Conectando con Google…</span>';
       }
       try {
-        const { error } = await cli.auth.signInWithOAuth({
+        const { data, error } = await cli.auth.signInWithOAuth({
           provider: "google",
           options: { redirectTo: cleanRedirectUrl }
         });
@@ -2187,6 +2205,10 @@ const SupabaseAuth = (() => {
             btn.innerHTML = '<i class="fa-brands fa-google" style="color:#ea4335; font-size:1.1rem;"></i> <span>Continuar con Google</span>';
           }
           mostrarLoginGate(`Error de autenticación con Google: ${error.message}`);
+          return;
+        }
+        if (data?.url) {
+          window.location.assign(data.url);
         }
       } catch (err) {
         if (btn) {
