@@ -142,16 +142,13 @@ async function procesarApi(peticion, respuesta, url) {
   // 1. Configuración y salud
   if (peticion.method === "GET" && url.pathname === "/api/configuracion") {
     responderJson(respuesta, 200, {
-      supabaseUrl: process.env.SUPABASE_URL || "https://lztatgnlplpduiatmlrv.supabase.co",
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY || "sb_publishable_z_T7Y3yKqPdXLnvL3ltnQA_ZAPrXImZ",
-      githubRepo: process.env.GITHUB_REPOSITORY || "nataliagamezbarea/GRADOS_INFORMATICOS",
-      githubBranch: process.env.GITHUB_BRANCH || "Segundo_grado_superior",
-      githubFolder: process.env.GITHUB_FOLDER || "datos/bancos/WEC",
+      supabaseUrl: (process.env.SUPABASE_URL ?? "").trim(),
+      supabaseAnonKey: (process.env.SUPABASE_ANON_KEY ?? "").trim(),
       proveedorIA: configuracion.proveedorIA,
       nvidiaModelo: configuracion.nvidiaModelo,
       hasNvidiaKey: Boolean(configuracion.nvidiaApiKey),
-      hasGithubToken: Boolean(process.env.GH_TOKEN),
-      githubToken: process.env.GH_TOKEN || ""
+      // githubRepo, githubBranch, githubFolder y gh_token se leen de Supabase (tabla configuracion_privada)
+      // El cliente frontend los obtiene directamente de Supabase con la sesión autenticada.
     });
     return;
   }

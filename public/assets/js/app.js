@@ -2143,6 +2143,14 @@ const RepoBranchManager = (() => {
     return localStorage.getItem("gh_repo") || sessionStorage.getItem("gh_repo") || DEFAULT_REPO;
   }
 
+  function getFolder() {
+    return localStorage.getItem("gh_folder") || sessionStorage.getItem("gh_folder") || DEFAULT_FOLDER;
+  }
+
+  function getBranch() {
+    return localStorage.getItem("selected_test_branch") || sessionStorage.getItem("selected_test_branch") || DEFAULT_BRANCH;
+  }
+
   function getToken() {
     const fromStorage = localStorage.getItem("cache_gh_token") || sessionStorage.getItem("cache_gh_token") || "";
     if (fromStorage) return fromStorage;
@@ -2152,7 +2160,6 @@ const RepoBranchManager = (() => {
 
   async function obtenerTokenDesdeSupabase() {
     let token = getToken();
-    if (token) return token;
 
     const supabaseUrl = window.SUPABASE_URL;
     const anonKey = window.SUPABASE_ANON_KEY;
@@ -2165,6 +2172,8 @@ const RepoBranchManager = (() => {
         if (!error && Array.isArray(data) && data.length > 0) {
           const rowToken = data.find((r) => r.clave === "gh_token" || r.clave === "gh_token_general");
           const rowRepo = data.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
+          const rowFolder = data.find((r) => r.clave === "gh_folder" || r.clave === "folder_tests");
+          const rowBranch = data.find((r) => r.clave === "gh_branch" || r.clave === "branch_tests");
           if (rowToken?.valor) {
             token = rowToken.valor;
             localStorage.setItem("cache_gh_token", token);
@@ -2172,12 +2181,18 @@ const RepoBranchManager = (() => {
           if (rowRepo?.valor) {
             localStorage.setItem("gh_repo", rowRepo.valor);
           }
+          if (rowFolder?.valor) {
+            localStorage.setItem("gh_folder", rowFolder.valor);
+          }
+          if (rowBranch?.valor) {
+            localStorage.setItem("selected_test_branch", rowBranch.valor);
+          }
         }
       } catch (_) {}
     }
 
-    // 2. Si aún no hay token, consultar vía REST pasando el token de sesión autenticada
-    if (!token && supabaseUrl && anonKey) {
+    // 2. Si aún falta info, consultar vía REST pasando el token de sesión autenticada
+    if (supabaseUrl && anonKey) {
       try {
         let accessToken = anonKey;
         if (c?.auth?.getSession) {
@@ -2187,7 +2202,7 @@ const RepoBranchManager = (() => {
           }
         }
 
-        const url = `${supabaseUrl}/rest/v1/configuracion_privada?select=clave,valor&clave=in.(gh_repo,gh_repo_general,gh_token,gh_token_general)`;
+        const url = `${supabaseUrl}/rest/v1/configuracion_privada?select=clave,valor&clave=in.(gh_repo,gh_repo_general,gh_token,gh_token_general,gh_folder,folder_tests,gh_branch,branch_tests)`;
         const resp = await fetch(url, {
           headers: {
             apikey: anonKey,
@@ -2202,6 +2217,31 @@ const RepoBranchManager = (() => {
           const filas = await resp.json();
           if (Array.isArray(filas) && filas.length > 0) {
             const rowToken = filas.find((r) => r.clave === "gh_token" || r.clave === "gh_token_general");
+            const rowRepo = filas.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
+            const rowFolder = filas.find((r) => r.clave === "gh_folder" || r.clave === "folder_tests");
+            const rowBranch = filas.find((r) => r.clave === "gh_branch" || r.clave === "branch_tests");
+            if (rowToken?.valor) {
+              token = rowToken.valor;
+              localStorage.setItem("cache_gh_token", token);
+            }
+            if (rowRepo?.valor) {
+              localStorage.setItem("gh_repo", rowRepo.valor);
+            }
+            if (rowFolder?.valor) {
+              localStorage.setItem("gh_folder", rowFolder.valor);
+            }
+            if (rowBranch?.valor) {
+              localStorage.setItem("selected_test_branch", rowBranch.valor);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Fallo leyendo configuracion_privada de Supabase:", err);
+      }
+    }
+
+    return token || getToken();
+  }
             const rowRepo = filas.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
             if (rowToken?.valor) {
               token = rowToken.valor;
@@ -2272,7 +2312,7 @@ const RepoBranchManager = (() => {
     }
   }
 
-  async function cargarPreguntasDeRama(rama, carpeta = DEFAULT_FOLDER) {
+  async function cargarPreguntasDeRama(rama, carpeta = getFolder()) {
     const token = await obtenerTokenDesdeSupabase();
     const repo = getRepo();
     try {

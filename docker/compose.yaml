@@ -14,8 +14,8 @@ services:
       NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
       NVIDIA_MODELO: ${NVIDIA_MODELO:-meta/llama-3.1-8b-instruct}
       NVIDIA_BASE_URL: ${NVIDIA_BASE_URL:-https://integrate.api.nvidia.com/v1}
-      SUPABASE_URL: ${SUPABASE_URL:-https://lztatgnlplpduiatmlrv.supabase.co}
-      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-sb_publishable_z_T7Y3yKqPdXLnvL3ltnQA_ZAPrXImZ}
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
       GITHUB_REPOSITORY: ${GITHUB_REPOSITORY:-nataliagamezbarea/GRADOS_INFORMATICOS}
       GITHUB_BRANCH: ${GITHUB_BRANCH:-Segundo_grado_superior}
       GITHUB_FOLDER: ${GITHUB_FOLDER:-datos/bancos/WEC}
