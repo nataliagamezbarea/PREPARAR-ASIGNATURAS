@@ -1949,8 +1949,10 @@ const SupabaseAuth = (() => {
         }
       }
     }
-    const appEl = document.getElementById("app");
-    if (appEl) appEl.style.display = "none";
+    const mainEl = document.getElementById("main") || document.getElementById("app");
+    if (mainEl) mainEl.style.display = "none";
+    const footer = document.getElementById("footer");
+    if (footer) footer.style.display = "none";
     const topbar = document.querySelector(".topbar");
     if (topbar) topbar.style.display = "none";
   }
@@ -1958,10 +1960,15 @@ const SupabaseAuth = (() => {
   function ocultarLoginGate() {
     const gate = document.getElementById("login-gate");
     if (gate) gate.style.display = "none";
-    const appEl = document.getElementById("app");
-    if (appEl) appEl.style.display = "";
+    const mainEl = document.getElementById("main") || document.getElementById("app");
+    if (mainEl) mainEl.style.display = "";
+    const footer = document.getElementById("footer");
+    if (footer) footer.style.display = "";
     const topbar = document.querySelector(".topbar");
     if (topbar) topbar.style.display = "";
+    if (typeof window.renderizarInicioTests === "function" && mainEl && !mainEl.innerHTML.trim()) {
+      window.renderizarInicioTests();
+    }
   }
 
   async function autenticarConGate() {
@@ -1969,6 +1976,10 @@ const SupabaseAuth = (() => {
       currentUser = { id: "invitado", email: "invitado@local" };
       ocultarLoginGate();
       updateAuthButton();
+      if (typeof window.renderizarInicioTests === "function") {
+        const mainEl = document.getElementById("main") || document.getElementById("app");
+        if (mainEl && !mainEl.innerHTML.trim()) window.renderizarInicioTests();
+      }
       return true;
     }
 
@@ -2189,6 +2200,9 @@ const SupabaseAuth = (() => {
       currentUser = { id: "invitado", email: "invitado@local" };
       ocultarLoginGate();
       updateAuthButton();
+      if (typeof window.renderizarInicioTests === "function") {
+        window.renderizarInicioTests();
+      }
       if (typeof toast === "function") toast("Has entrado en modo Invitado");
     });
 
