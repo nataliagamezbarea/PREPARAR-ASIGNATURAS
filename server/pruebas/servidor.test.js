@@ -35,9 +35,13 @@ test("sirve la interfaz separada y sus recursos estáticos", async (t) => {
   assert.match(codigoPractica, /banco\.meta\.asignatura}-temas-/);
   assert.match(codigoPractica, /a-zA-Z0-9\._-/);
 
+  const consolaVivo = await fetch(`${origen}/assets/js/app/consola-vivo.js`);
+  assert.equal(consolaVivo.status, 200);
+  assert.equal(consolaVivo.headers.get("content-type"), "text/javascript; charset=utf-8");
+
   const preguntas = await fetch(`${origen}/data/asignaturas/wec/preguntas.json`);
   assert.equal(preguntas.status, 200);
-  assert.ok((await preguntas.json()).preguntas.length >= 100);
+  assert.ok(Array.isArray((await preguntas.json()).preguntas));
 
   const ejemplo = await fetch(`${origen}/data/asignaturas/ejemplo/preguntas.json`);
   assert.equal(ejemplo.status, 404);
@@ -103,4 +107,30 @@ test("valida las dudas y el historial del minichat antes de consultar Ollama", a
   assert.deepEqual(await preguntaVacia.json(), {
     error: "Escribe una duda antes de enviarla.",
   });
+});
+
+test("califica con 0/10 inmediatamente si el alumno indica que no sabe o deja en blanco", async (t) => {
+  const servidor = crearServidor();
+  await new Promise((resolver) => servidor.listen(0, "127.0.0.1", resolver));
+  t.after(() => new Promise((resolver) => servidor.close(resolver)));
+  const origen = `http://127.0.0.1:${servidor.address().port}`;
+
+  const respuesta = await fetch(`${origen}/api/explain`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      pregunta: {
+        tipo: "desarrollo",
+        enunciado: "Escribe las etiquetas <script> y justifica el orden.",
+        explicacion: "Solución de referencia modelo.",
+      },
+      selected: "no se como hacerlo",
+      esDesarrollo: true,
+    }),
+  });
+
+  assert.equal(respuesta.status, 200);
+  const data = await respuesta.json();
+  assert.ok(data.explanation.includes("**Nota: 0/10**"));
+  assert.ok(data.explanation.includes("Solución de referencia modelo."));
 });

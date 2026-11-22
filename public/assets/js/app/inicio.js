@@ -43,6 +43,13 @@ function irAlInicio(event) {
 async function boot() {
   initTheme();
   document.addEventListener("keydown", handleKeys);
+  const onLeave = () => {
+    if (state.screen === "test" && state.order.length) {
+      saveSession();
+    }
+  };
+  window.addEventListener("beforeunload", onLeave);
+  window.addEventListener("pagehide", onLeave);
   $(".brand-link")?.addEventListener("click", irAlInicio);
   const optionsBtn = document.querySelector("#options-toggle-btn");
   const optionsDropdown = document.querySelector("#options-dropdown");
@@ -59,6 +66,18 @@ async function boot() {
     await loadCatalog();
     let saved = "";
     try { saved = localStorage.getItem(LS.subject) || ""; } catch { /* noop */ }
+    let activeSession = getSession();
+    if (activeSession && activeSession.subjectId) {
+      saved = activeSession.subjectId;
+    }
+    const asignaturaSesion = (activeSession && activeSession.subjectId)
+      ? state.catalog.find(
+          (asignatura) =>
+            asignatura.id === activeSession.subjectId &&
+            !asignatura.apuntesPrivados &&
+            (asignatura.archivo || asignatura.localData),
+        )
+      : null;
     const asignaturaGuardada = state.catalog.find(
       (asignatura) =>
         asignatura.id === saved &&
@@ -72,6 +91,7 @@ async function boot() {
         (asignatura.archivo || asignatura.localData),
     );
     const asignaturaInicial =
+      asignaturaSesion ||
       asignaturaWec ||
       asignaturaGuardada ||
       state.catalog.find(
@@ -83,8 +103,22 @@ async function boot() {
     if (!asignaturaInicial)
       throw new Error("No hay ningún banco de preguntas disponible para iniciar.");
     await loadSubject(asignaturaInicial.id);
+
+    activeSession = getSession(asignaturaInicial.id) || activeSession;
+
+    const canResume =
+      activeSession &&
+      Array.isArray(activeSession.ids) &&
+      activeSession.ids.length > 0 &&
+      !activeSession.finished;
+
     if (!document.querySelector(".practica-apuntes") && state.screen !== "notes") {
-      renderStart();
+      if (canResume) {
+        resumeSession(activeSession);
+        toast("Has vuelto a tu test donde lo dejaste.");
+      } else {
+        renderStart();
+      }
     }
   } catch (error) {
     main.innerHTML = `

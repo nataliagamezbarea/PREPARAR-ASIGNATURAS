@@ -12,7 +12,7 @@ const LS = {
 };
 
 const DEFAULT_CATALOG = [
-  { id: "wec", nombre: "WEC", archivo: "./data/asignaturas/wec/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · 3000 preguntas de teoría, código y examen" }
+  { id: "wec", nombre: "WEC", archivo: "./data/asignaturas/wec/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · Banco de preguntas" }
 ];
 
 const state = {
@@ -55,11 +55,120 @@ function esc(value) {
 }
 
 function formatText(value) {
-  let out = esc(value);
-  out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
-  out = out.replace(/\n/g, "<br>");
-  return out;
+  if (value == null) return "";
+  let text = String(value);
+
+  // 1. Extraer bloques de código multilínea (1 a 4 backticks, con o sin espacios/salto previo)
+  const codeBlocks = [];
+  const codeRegex = /(^|\n|:\s*)[ \t]*(`{1,4})([a-zA-Z0-9_-]*)[ \t]*\r?\n([\s\S]*?)(?:\r?\n[ \t]*\2[ \t]*(?:\r?\n|$)|(?:\r?\n[ \t]*`{1,4}[ \t]*(?:\r?\n|$))|$)/g;
+  text = text.replace(codeRegex, (match, prefix, fence, lang, code) => {
+    const idx = codeBlocks.length;
+    const escapedCode = String(code)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .trim();
+    const langHtml = lang ? `<div class="md-code-header"><span class="md-code-lang">${esc(lang)}</span></div>` : "";
+    codeBlocks.push(
+      `<div class="md-code-wrapper">${langHtml}<pre class="md-code-block"><code>${escapedCode}</code></pre></div>`
+    );
+    return `${prefix ? prefix.trimEnd() : ""}\n@@@MDCODE${idx}@@@\n`;
+  });
+
+  // 2. Extraer código inline `code`
+  const inlineCodes = [];
+  text = text.replace(/`([^`\n]+)`/g, (_, code) => {
+    const idx = inlineCodes.length;
+    inlineCodes.push(`<code class="md-inline-code">${esc(code)}</code>`);
+    return `@@@MDINL${idx}@@@`;
+  });
+
+  // 3. Escapar el resto del texto antes de formatear etiquetas
+  text = esc(text);
+
+  // 4. Negritas y cursivas
+  text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  text = text.replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, "$1<em>$2</em>$3");
+  text = text.replace(/(^|[^_])_([^_]+)_([^_]|$)/g, "$1<em>$2</em>$3");
+
+  // 5. Procesar líneas para markdown estructurado
+  const lines = text.split(/\r?\n/);
+  const outLines = [];
+  let inOl = false;
+  let inUl = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
+    const trimmed = rawLine.trim();
+
+    if (trimmed.includes("@@@MDCODE")) {
+      if (inOl) { outLines.push("</ol>"); inOl = false; }
+      if (inUl) { outLines.push("</ul>"); inUl = false; }
+      outLines.push(trimmed);
+      continue;
+    }
+
+    const mOl = trimmed.match(/^(\d+)[.)]\s+(.*)$/);
+    if (mOl) {
+      if (!inOl) {
+        if (inUl) { outLines.push("</ul>"); inUl = false; }
+        outLines.push('<ol class="md-list">');
+        inOl = true;
+      }
+      outLines.push(`<li>${mOl[2]}</li>`);
+      continue;
+    } else if (inOl) {
+      outLines.push("</ol>");
+      inOl = false;
+    }
+
+    const mUl = trimmed.match(/^[-*•+]\s+(.*)$/);
+    if (mUl) {
+      if (!inUl) {
+        if (inOl) { outLines.push("</ol>"); inOl = false; }
+        outLines.push('<ul class="md-list">');
+        inUl = true;
+      }
+      outLines.push(`<li>${mUl[1]}</li>`);
+      continue;
+    } else if (inUl) {
+      outLines.push("</ul>");
+      inUl = false;
+    }
+
+    const mH4 = trimmed.match(/^####\s+(.*)$/);
+    const mH3 = trimmed.match(/^###\s+(.*)$/);
+    const mH2 = trimmed.match(/^##\s+(.*)$/);
+    const mH1 = trimmed.match(/^#\s+(.*)$/);
+
+    if (mH4) {
+      outLines.push(`<h5 class="md-heading md-h4">${mH4[1]}</h5>`);
+    } else if (mH3) {
+      outLines.push(`<h4 class="md-heading md-h3">${mH3[1]}</h4>`);
+    } else if (mH2) {
+      outLines.push(`<h3 class="md-heading md-h2">${mH2[1]}</h3>`);
+    } else if (mH1) {
+      outLines.push(`<h2 class="md-heading md-h1">${mH1[1]}</h2>`);
+    } else if (trimmed.startsWith("&gt;")) {
+      outLines.push(`<blockquote class="md-quote">${trimmed.replace(/^&gt;\s*/, "")}</blockquote>`);
+    } else if (trimmed === "---" || trimmed === "***" || trimmed === "___") {
+      outLines.push('<hr class="md-divider">');
+    } else if (!trimmed) {
+      outLines.push('<div class="md-spacer"></div>');
+    } else {
+      outLines.push(`<div class="md-p">${rawLine}</div>`);
+    }
+  }
+
+  if (inOl) outLines.push("</ol>");
+  if (inUl) outLines.push("</ul>");
+
+  let result = outLines.join("");
+  result = result.replace(/@@@MDINL(\d+)@@@/g, (_, idx) => inlineCodes[Number(idx)] || "");
+  result = result.replace(/@@@MDCODE(\d+)@@@/g, (_, idx) => codeBlocks[Number(idx)] || "");
+
+  return result;
 }
 
 function letterIndex(letter) {
@@ -85,6 +194,65 @@ function toast(message) {
   toastEl.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+}
+
+// --- Caché persistente IndexedDB para funcionamiento sin conexión ---
+const DB_CACHE_OFFLINE = "preparar-tests-offline-cache-v1";
+const ALMACEN_CACHE_OFFLINE = "almacen";
+
+function abrirDbOffline() {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === "undefined") {
+      return reject(new Error("IndexedDB no disponible"));
+    }
+    const req = indexedDB.open(DB_CACHE_OFFLINE, 1);
+    req.onupgradeneeded = () => {
+      req.result.createObjectStore(ALMACEN_CACHE_OFFLINE);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error ?? new Error("Error abriendo IndexedDB"));
+  });
+}
+
+async function guardarEnCacheOffline(clave, valor) {
+  try {
+    const db = await abrirDbOffline();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(ALMACEN_CACHE_OFFLINE, "readwrite");
+      tx.objectStore(ALMACEN_CACHE_OFFLINE).put(valor, clave);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  } catch {
+    try {
+      const str = JSON.stringify(valor);
+      if (str.length < 500000) {
+        localStorage.setItem(`pt_offline_${clave}`, str);
+      }
+    } catch {}
+  }
+}
+
+async function obtenerDeCacheOffline(clave) {
+  try {
+    const db = await abrirDbOffline();
+    const resultado = await new Promise((resolve, reject) => {
+      const tx = db.transaction(ALMACEN_CACHE_OFFLINE, "readonly");
+      const req = tx.objectStore(ALMACEN_CACHE_OFFLINE).get(clave);
+      req.onsuccess = () => resolve(req.result ?? null);
+      req.onerror = () => reject(req.error);
+    });
+    db.close();
+    if (resultado) return resultado;
+  } catch {}
+
+  try {
+    const raw = localStorage.getItem(`pt_offline_${clave}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
 }
 
 function readJSON(key, fallback) {
@@ -120,9 +288,51 @@ function removeStore(base) {
   try { localStorage.removeItem(base); } catch { /* noop */ }
 }
 
+function hasQuestion(id) {
+  if (id == null) return false;
+  if (state.byId.has(id)) return true;
+  if (typeof id === "string" && !isNaN(id) && state.byId.has(Number(id))) return true;
+  if (typeof id === "number" && state.byId.has(String(id))) return true;
+  return false;
+}
+
+function getQuestion(id) {
+  if (id == null) return null;
+  if (state.byId.has(id)) return state.byId.get(id);
+  if (typeof id === "string" && !isNaN(id) && state.byId.has(Number(id))) return state.byId.get(Number(id));
+  if (typeof id === "number" && state.byId.has(String(id))) return state.byId.get(String(id));
+  return null;
+}
+
 function getWrongIds() {
   const ids = readStore(LS.wrong, []);
-  return Array.isArray(ids) ? ids.filter((id) => Number.isInteger(id)) : [];
+  const valid = new Set();
+  if (Array.isArray(ids)) {
+    ids.forEach((id) => {
+      if (id != null && String(id).trim() !== "") {
+        valid.add(id);
+      }
+    });
+  }
+
+  const history = getHistory();
+  if (history && typeof history === "object") {
+    Object.entries(history).forEach(([key, entry]) => {
+      if (!entry) return;
+      const q = getQuestion(key);
+      if (q) {
+        if (entry.selected && entry.selected !== q.correcta) {
+          valid.add(q.id);
+        } else if (entry.fails > 0 && entry.selected !== q.correcta) {
+          valid.add(q.id);
+        }
+      } else if (entry.fails > 0) {
+        valid.add(key);
+      }
+    });
+  }
+
+  return [...valid];
 }
 
 function setWrongIds(ids) {
@@ -140,10 +350,22 @@ function setHistory(history) {
 
 function dataCounts() {
   const themes = new Map();
+  const history = getHistory();
+  let practicadas = 0;
+  let oficiales = 0;
+  let introduccion = 0;
+  let entrenamiento = 0;
+
   state.questions.forEach((q) => {
     const key = Number(q.tema);
     themes.set(key, (themes.get(key) || 0) + 1);
+    if (q.practicada || history[q.id] != null) practicadas++;
+    const cat = String(q.categoria || q.tag || "").toLowerCase();
+    if (cat.includes("oficial")) oficiales++;
+    else if (cat.includes("introduc")) introduccion++;
+    else if (cat.includes("entren") || cat.includes("pract")) entrenamiento++;
   });
+
   return {
     total: state.questions.length,
     temas: [...themes.entries()]
@@ -151,13 +373,20 @@ function dataCounts() {
       .map(([tema, count]) => ({ tema, count })),
     teoria: state.questions.filter((q) => q.tipo === "teoria").length,
     codigo: state.questions.filter((q) => q.tipo === "codigo").length,
-    fallos: getWrongIds().filter((id) => state.byId.has(id)).length
+    desarrollo: state.questions.filter((q) => q.tipo === "escribir_codigo" || q.tipo === "traza_linea" || q.tipo === "desarrollo").length,
+    escribir_codigo: state.questions.filter((q) => q.tipo === "escribir_codigo").length,
+    traza_linea: state.questions.filter((q) => q.tipo === "traza_linea").length,
+    fallos: getWrongIds().filter((id) => hasQuestion(id)).length,
+    practicadas,
+    oficiales,
+    introduccion,
+    entrenamiento
   };
 }
 
 function wrongQuestions() {
   return getWrongIds()
-    .map((id) => state.byId.get(id))
+    .map((id) => getQuestion(id))
     .filter(Boolean);
 }
 
@@ -296,7 +525,7 @@ function resolveApartadoForQuestion(q) {
 }
 
 function getWeakSubapartados(topN = 20) {
-  const wrong = new Set(getWrongIds().filter((id) => state.byId.has(id)));
+  const wrong = new Set(getWrongIds().map((id) => getQuestion(id)?.id || id));
   const history = getHistory();
   const bySub = new Map();
 
@@ -385,9 +614,7 @@ function getWeakSubapartadosByTema() {
 }
 
 function getWeakConcepts(topN = 8) {
-  const wrong = new Set(
-    getWrongIds().filter((id) => state.byId.has(id)),
-  );
+  const wrong = new Set(getWrongIds().map((id) => getQuestion(id)?.id || id));
   const history = getHistory();
   const byTag = new Map();
   state.questions.forEach((q) => {
@@ -464,21 +691,22 @@ function applyImportedData(data) {
   if (!data || typeof data !== "object") throw new Error("El archivo no contiene un objeto JSON válido.");
   const rawIds = Array.isArray(data.wrongIds) ? data.wrongIds : Array.isArray(data.fallos) ? data.fallos : null;
   if (!rawIds) throw new Error("El archivo no tiene la lista wrongIds.");
-  const incomingIds = rawIds.map(Number).filter((id) => Number.isInteger(id) && state.byId.has(id));
+  const incomingIds = rawIds.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
   const incomingHistory = data.history && typeof data.history === "object" && !Array.isArray(data.history) ? data.history : {};
 
-  const mergedWrong = new Set(getWrongIds().filter((id) => state.byId.has(id)));
+  const mergedWrong = new Set(getWrongIds().filter((id) => hasQuestion(id)));
   incomingIds.forEach((id) => mergedWrong.add(id));
   const mergedHistory = getHistory();
   Object.entries(incomingHistory).forEach(([key, entry]) => {
-    const id = Number(key);
-    if (Number.isInteger(id) && state.byId.has(id) && isWrongEntry(entry)) {
-      mergedHistory[id] = {
+    const q = getQuestion(key);
+    const resolvedId = q ? q.id : key;
+    if (hasQuestion(resolvedId) && isWrongEntry(entry)) {
+      mergedHistory[resolvedId] = {
         selected: String(entry.selected).charAt(0).toUpperCase(),
         at: typeof entry.at === "string" ? entry.at : new Date().toISOString(),
         fails: Math.max(1, Number(entry.fails) || 1)
       };
-      if (!mergedWrong.has(id)) mergedWrong.add(id);
+      if (!mergedWrong.has(resolvedId)) mergedWrong.add(resolvedId);
     }
   });
   setWrongIds([...mergedWrong]);
@@ -708,30 +936,79 @@ function saveSessionForFilter(filterKey, sessionData) {
   writeJSON(LS_SESSIONS_MAP, allMaps);
 }
 
-function getSession() {
+function getSession(specificSubjectId = null) {
+  const target = specificSubjectId || state.subjectId;
+  if (target) {
+    const scoped = readJSON(`${LS.session}:${target}`, null);
+    if (scoped && Array.isArray(scoped.ids) && scoped.ids.length) {
+      return scoped;
+    }
+  }
+  const globalSession = readJSON(LS.session, null);
+  if (globalSession && Array.isArray(globalSession.ids) && globalSession.ids.length) {
+    if (!target || globalSession.subjectId === target) {
+      return globalSession;
+    }
+  }
+  const defaultScoped = readJSON(`${LS.session}:default`, null);
+  if (defaultScoped && Array.isArray(defaultScoped.ids) && defaultScoped.ids.length) {
+    if (!target || defaultScoped.subjectId === target) {
+      return defaultScoped;
+    }
+  }
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(`${LS.session}:`)) {
+        const item = readJSON(key, null);
+        if (item && Array.isArray(item.ids) && item.ids.length && !item.finished) {
+          if (!target || item.subjectId === target) {
+            return item;
+          }
+        }
+      }
+    }
+  } catch { /* noop */ }
   return readStore(LS.session, null);
 }
 
 function saveSession() {
   if (!state.order.length) return;
   const filterKey = state.selectedFilter || "all";
+  const aiEvaluations = {};
+  for (const q of state.order) {
+    if (q && q.evaluacionIA) {
+      aiEvaluations[q.id] = {
+        evaluacionIA: q.evaluacionIA,
+        evaluacionMensajes: q.evaluacionMensajes || []
+      };
+    }
+  }
   const sessionData = {
     filter: filterKey,
+    subjectId: state.subjectId,
     ids: state.order.map((q) => q.id),
     index: state.index,
     answers: state.answers,
+    aiEvaluations,
     immediate: state.immediate,
     startedAt: state.startedAt,
     finished: state.finished,
+    screen: state.screen,
     masteryMode: state.masteryMode,
-    masteryRound: state.masteryRound
+    masteryRound: state.masteryRound,
+    updatedAt: Date.now()
   };
   writeStore(LS.session, sessionData);
+  writeJSON(LS.session, sessionData);
   saveSessionForFilter(filterKey, sessionData);
+  guardarEnCacheOffline("ultima_sesion", sessionData);
+  guardarEnCacheOffline(`preguntas_sesion_${state.subjectId || "default"}`, state.order);
 }
 
 function clearSession() {
   removeStore(LS.session);
+  try { localStorage.removeItem(LS.session); } catch { /* noop */ }
   if (state.selectedFilter) {
     saveSessionForFilter(state.selectedFilter, null);
   }
@@ -806,8 +1083,16 @@ async function loadCatalog() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     catalog = Array.isArray(data.asignaturas) ? data.asignaturas : [];
+    if (catalog.length) {
+      guardarEnCacheOffline("catalogo", catalog);
+    }
   } catch {
-    catalog = getCatalogFallback().asignaturas;
+    const catalogoCache = await obtenerDeCacheOffline("catalogo");
+    if (Array.isArray(catalogoCache) && catalogoCache.length) {
+      catalog = catalogoCache;
+    } else {
+      catalog = getCatalogFallback().asignaturas;
+    }
   }
   const esEntornoEstatico =
     typeof window !== "undefined" &&
@@ -849,7 +1134,7 @@ async function loadCatalog() {
       byId.set(s.id, {
         ...s,
         nombre: s.nombre || s.id,
-        etiqueta: `${s.nombre || s.id} (Banco de examen · ${s.id === "wec" ? "3.000 preguntas" : "preguntas"})`,
+        etiqueta: `${s.nombre || s.id} (Banco de preguntas)`,
       });
     });
 
@@ -886,6 +1171,7 @@ async function fetchSubjectData(entry) {
     return entry.localData;
   }
   const primaryUrl = (entry.archivo || "").startsWith("/") ? `.${entry.archivo}` : (entry.archivo || "");
+  const cacheKey = `banco_${entry.id}`;
   try {
     let res = null;
     try {
@@ -896,8 +1182,17 @@ async function fetchSubjectData(entry) {
     }
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     state.source = "json";
-    return await res.json();
+    const data = await res.json();
+    if (data && Array.isArray(data.preguntas)) {
+      guardarEnCacheOffline(cacheKey, data);
+    }
+    return data;
   } catch (error) {
+    const dataCache = await obtenerDeCacheOffline(cacheKey);
+    if (dataCache && Array.isArray(dataCache.preguntas)) {
+      state.source = "offline-cache";
+      return dataCache;
+    }
     throw new Error(`No se pudo cargar "${entry.archivo}". Comprueba que el archivo de preguntas esté disponible.`);
   }
 }
@@ -906,7 +1201,7 @@ async function loadSubject(subjectId) {
   const entry = state.catalog.find((s) => s.id === subjectId) || state.catalog[0];
   if (!entry) throw new Error("No hay asignaturas disponibles.");
   const data = await fetchSubjectData(entry);
-  if (!data || !Array.isArray(data.preguntas) || !data.preguntas.length) {
+  if (!data || !Array.isArray(data.preguntas)) {
     throw new Error(`La asignatura "${entry.nombre}" no tiene preguntas válidas.`);
   }
   state.subjectId = entry.id;
@@ -933,47 +1228,137 @@ function slugify(text) {
 }
 
 function validateQuestionBank(data) {
-  if (!data || !Array.isArray(data.preguntas) || !data.preguntas.length) {
+  const rawList = Array.isArray(data?.preguntas)
+    ? data.preguntas
+    : Array.isArray(data?.preguntes)
+      ? data.preguntes
+      : Array.isArray(data)
+        ? data
+        : [];
+  if (!rawList.length) {
     throw new Error("El JSON debe tener un array preguntas con al menos una pregunta.");
   }
   const ids = new Set();
-  return data.preguntas.map((raw, index) => {
+  const apartatsMap = data.apartats || {};
+  return rawList.map((raw, index) => {
     if (!raw || typeof raw !== "object") throw new Error(`La pregunta ${index + 1} no es un objeto.`);
-    const opciones = raw.opciones || {};
-    for (const letter of ["A", "B", "C", "D"]) {
-      if (typeof opciones[letter] !== "string" || !opciones[letter].trim()) {
-        throw new Error(`La pregunta ${index + 1} necesita las opciones A, B, C y D.`);
+
+    const enunciado = String(raw.enunciado || raw.q || "").trim();
+    const codigo = String(raw.codigo || raw.codi || "").trim();
+    const explicacion = String(raw.explicacion || raw.exp || raw.solucio || raw.solucion || "Sin explicación.").trim();
+    const explicacionClara = String(raw.explicacionClara || explicacion).trim();
+
+    let tipoRaw = String(raw.tipo || raw.tipus || "teoria").toLowerCase();
+    const tipoMap = {
+      codi: "codigo",
+      codigo: "codigo",
+      código: "codigo",
+      error: "teoria",
+      teoria: "teoria",
+      teoría: "teoria",
+      escriure: "escribir_codigo",
+      escribir: "escribir_codigo",
+      escribir_codigo: "escribir_codigo",
+      interpretar: "traza_linea",
+      traza: "traza_linea",
+      traza_linea: "traza_linea",
+      oberta: "desarrollo",
+      abierta: "desarrollo",
+      desarrollo: "desarrollo",
+    };
+    const tipo = tipoMap[tipoRaw] || tipoRaw;
+
+    let opciones = {};
+    if (raw.opciones && typeof raw.opciones === "object" && !Array.isArray(raw.opciones)) {
+      opciones = { ...raw.opciones };
+    } else if (Array.isArray(raw.op || raw.opciones)) {
+      const arr = raw.op || raw.opciones;
+      const letters = ["A", "B", "C", "D"];
+      arr.forEach((texto, i) => {
+        if (i < 4) opciones[letters[i]] = String(texto);
+      });
+    }
+
+    const esAbierta = tipo === "escribir_codigo" || tipo === "traza_linea" || tipo === "desarrollo";
+    if (esAbierta && Object.keys(opciones).length < 4) {
+      opciones = { A: opciones.A || "-", B: opciones.B || "-", C: opciones.C || "-", D: opciones.D || "-" };
+    } else if (!esAbierta) {
+      for (const letter of ["A", "B", "C", "D"]) {
+        if (!opciones[letter] || typeof opciones[letter] !== "string" || !opciones[letter].trim()) {
+          opciones[letter] = opciones[letter] || `Opción ${letter}`;
+        }
       }
     }
-    const correcta = String(raw.correcta || "").trim().toUpperCase().charAt(0);
-    if (!["A", "B", "C", "D"].includes(correcta)) {
-      throw new Error(`La pregunta ${index + 1} tiene una respuesta correcta inválida.`);
+
+    let correcta = "A";
+    if (typeof raw.ok === "number" && raw.ok >= 0 && raw.ok < 4) {
+      correcta = ["A", "B", "C", "D"][raw.ok];
+    } else if (raw.correcta) {
+      correcta = String(raw.correcta).trim().toUpperCase().charAt(0);
+    } else if (typeof raw.ok === "string") {
+      correcta = String(raw.ok).trim().toUpperCase().charAt(0);
     }
-    let id = Number(raw.id);
-    if (!Number.isInteger(id) || id <= 0 || ids.has(id)) id = index + 1;
+    if (!["A", "B", "C", "D"].includes(correcta)) correcta = "A";
+
+    let id = raw.id;
+    if (id == null || ids.has(id)) {
+      id = index + 1;
+    }
     ids.add(id);
+
+    let tema = Number(raw.tema || 0);
+    if (!tema) {
+      const matchTema = String(raw.tema || raw.id || raw.apartat || raw.apartado || "").match(/T(\d+)|tema\s*(\d+)/i);
+      tema = matchTema ? Number(matchTema[1] || matchTema[2]) : 1;
+    }
+
+    const apRaw = String(raw.apartat || raw.apartado || "");
+    let apartadoNombre = raw.apartadoNombre || (apartatsMap ? apartatsMap[apRaw] : "") || "";
+    let apartado = Number(raw.apartado || 0);
+    if (!apartado) {
+      if (apRaw === "intro") apartado = 1;
+      else if (apRaw === "pract") apartado = tema === 2 ? 10 : 8;
+      else {
+        const match = apRaw.match(/\d+\.(\d+)/);
+        if (match) apartado = Number(match[1]);
+        else apartado = 1;
+      }
+    }
+
     return {
       ...raw,
       id,
-      tema: Number(raw.tema) || 1,
-      tipo: raw.tipo === "codigo" ? "codigo" : "teoria",
+      tema,
+      apartado,
+      apartadoNombre,
+      tipo,
       dificultad: raw.dificultad || "media",
-      tag: raw.tag || "Generado",
+      tag: raw.tag || (tipoRaw === "error" ? "Detección de errores" : tipo === "codigo" ? "Código" : esAbierta ? "Desarrollo" : "Teoría"),
+      enunciado,
+      codigo,
       opciones,
       correcta,
-      explicacion: raw.explicacion || "Sin explicación.",
-      traza: Array.isArray(raw.traza) ? raw.traza : []
+      explicacion,
+      explicacionClara,
+      traza: Array.isArray(raw.traza) ? raw.traza : [],
+      solucion: raw.solucio || raw.solucion || explicacion,
+      rubrica: Array.isArray(raw.rubrica) ? raw.rubrica : [],
+      punts: raw.punts || raw.puntos || 1,
     };
   });
 }
 
 function normalizeData(data) {
-  state.meta = data.meta || { total: data.preguntas.length };
-  state.questions = data.preguntas.map((q) => ({
-    ...q,
-    opciones: q.opciones || {},
-    traza: Array.isArray(q.traza) ? q.traza : []
-  }));
+  const rawList = Array.isArray(data?.preguntas)
+    ? data.preguntas
+    : Array.isArray(data?.preguntes)
+      ? data.preguntes
+      : Array.isArray(data)
+        ? data
+        : [];
+  state.meta = data.meta || { total: rawList.length, asignatura: "WEC", titulo: data.tema || "WEC" };
+  const validadas = rawList.length ? validateQuestionBank({ ...data, preguntas: rawList }) : [];
+  state.questions = validadas;
   state.byId = new Map(state.questions.map((q) => [q.id, q]));
 }
 

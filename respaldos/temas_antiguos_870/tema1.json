@@ -1,0 +1,4490 @@
+{
+  "tema": "Tema 1 · Selección de arquitecturas y de herramientas de programación",
+  "modul": "0612 · Desarrollo web en entorno cliente",
+  "versio": 2,
+  "apartats": {
+    "intro": "Introducción",
+    "1.1": "1.1 Modelos de ejecución de código",
+    "1.2": "1.2 Lenguajes en entorno cliente",
+    "1.3": "1.3 Mecanismos de ejecución en un navegador",
+    "1.4": "1.4 Capacidades y limitaciones de ejecución",
+    "1.5": "1.5 Programación de scripts",
+    "1.6": "1.6 Integración del código con las etiquetas HTML",
+    "1.7": "1.7 Herramientas de programación sobre clientes web",
+    "pract": "Demos D1-D5 y práctica P00"
+  },
+  "preguntes": [
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "En los orígenes de la web, qué hacía falta para crear una página?",
+      "codi": "",
+      "op": [
+        "HTML, CSS y una base de datos",
+        "Un lenguaje de servidor y HTML",
+        "HTML y JavaScript",
+        "Solo HTML"
+      ],
+      "ok": 3,
+      "exp": "Con las marcas d'HTML se creaba un documento senzill que cualquier navegador podía visualizar.",
+      "id": "T1-intro-01"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Dónde se alojaban las páginas web?",
+      "codi": "",
+      "op": [
+        "En un servidor connectat 24 horas al día y 365 días a el año",
+        "Al consorcio W3C",
+        "En un cliente FTP",
+        "Al navegador de cada usuario"
+      ],
+      "ok": 0,
+      "exp": "Es transmetien desde del servidor a los equipos que las demanaven.",
+      "id": "T1-intro-02"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Qué es el hipertexto?",
+      "codi": "",
+      "op": [
+        "Una palabra o frase que, al acceder a ella, nos lleva a información relacionada",
+        "Un texto escrito solo con HTML",
+        "Un documento muy llarg con muchas páginas",
+        "Un tipo de base de datos"
+      ],
+      "ok": 0,
+      "exp": "La web se basa en el hipertexto.",
+      "id": "T1-intro-03"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Qué organismo se creó ante el auge de la web para desarrollar y mantener los estándares?",
+      "codi": "",
+      "op": [
+        "FTP Consortium",
+        "Mozilla Foundation",
+        "W3C",
+        "ISO"
+      ],
+      "ok": 2,
+      "exp": "El W3C es el consorcio responsable de los estándares web.",
+      "id": "T1-intro-04"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Por qué se creó el W3C?",
+      "codi": "",
+      "op": [
+        "Por alojar páginas web",
+        "Por inventar JavaScript",
+        "Por vendre navegadores",
+        "Pel grande auge de la web"
+      ],
+      "ok": 3,
+      "exp": "Ante el enorme auge de la web se creó el consorcio.",
+      "id": "T1-intro-05"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Cuál es la primera fase de un proyecto web?",
+      "codi": "",
+      "op": [
+        "La presentación final",
+        "Elaborar prototipos",
+        "Captar las necesidades del cliente",
+        "Desarrollar la interfaz gráfica"
+      ],
+      "ok": 2,
+      "exp": "Primero s'entén qué necesita el cliente.",
+      "id": "T1-intro-06"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Cuál es el orden correcto de las fases de un proyecto web?",
+      "codi": "",
+      "op": [
+        "Presentación final → interfaz → necesidades → objetivos",
+        "Interfaz gráfica → necesidades → prototipos → objetivos",
+        "Necesidades del cliente → objetivos y estrategia → interfaz gráfica → prototipos y presentación final",
+        "Prototipos → objetivos → necesidades → presentación final"
+      ],
+      "ok": 2,
+      "exp": "Es imprescindible conocer el orden de cada fase.",
+      "id": "T1-intro-07"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Por qué se dice que el desarrollo web es un campo multidisciplinar?",
+      "codi": "",
+      "op": [
+        "Porque el programador debe dominar todas las fases de un proyecto",
+        "Porque no hay que respectar el orden de las fases",
+        "Porque solo s'usa un lenguaje",
+        "Porque todo es hace en el servidor"
+      ],
+      "ok": 0,
+      "exp": "Fue desde las necesidades del cliente hasta a la presentación final.",
+      "id": "T1-intro-08"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Cuál de estas NO es una fase de un proyecto web según el tema?",
+      "codi": "",
+      "op": [
+        "Captar las necesidades del cliente",
+        "Compilar el programa a binario por instal·lar-lo",
+        "Definir objetivos y estrategia",
+        "Elaborar prototipos"
+      ],
+      "ok": 1,
+      "exp": "El tema no esmenta compilar binaris.",
+      "id": "T1-intro-09"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Qué fase fue justo después de definir objetivos y estrategia?",
+      "codi": "",
+      "op": [
+        "Poner el sitio en un servidor",
+        "Captar necesidades",
+        "Desarrollar la interfaz gráfica",
+        "La presentación final"
+      ],
+      "ok": 2,
+      "exp": "L'orden es necesidades, objetivos, interfaz, prototipos, presentación.",
+      "id": "T1-intro-10"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Qué son las «marcas» con las que se crea un documento HTML?",
+      "codi": "",
+      "op": [
+        "Las cabeceras HTTP",
+        "Las etiquetas",
+        "Las cookies",
+        "Los scripts"
+      ],
+      "ok": 1,
+      "exp": "Las marcas (etiquetas) defineixen el documento.",
+      "id": "T1-intro-11"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Sobre qué se basa la web?",
+      "codi": "",
+      "op": [
+        "Los controles ActiveX",
+        "Los applets de Java",
+        "L'hipertexto",
+        "El código compilado a binario"
+      ],
+      "ok": 2,
+      "exp": "Una palabra o frase que nos duu a información relacionada.",
+      "id": "T1-intro-12"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "Qué hace un servidor web con las páginas que aloja?",
+      "codi": "",
+      "op": [
+        "Las transmet a los equipos que las demanen",
+        "Las guarda sin enviar-las nunca",
+        "Las ejecuta al navegador del cliente",
+        "Las borra cuando s'acaben de visualizar"
+      ],
+      "ok": 0,
+      "exp": "El servidor sirve las páginas.",
+      "id": "T1-intro-13"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "teoría",
+      "q": "El W3C es...",
+      "codi": "",
+      "op": [
+        "Un servidor web",
+        "Un lenguaje de programación",
+        "Un navegador",
+        "Una organización que desarrolla y mantiene los estándares web"
+      ],
+      "ok": 3,
+      "exp": "Consorcio responsable de los estándares.",
+      "id": "T1-intro-14"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "escribir",
+      "titol": "Fases de un proyecto",
+      "q": "Enumera en orden las fases de un proyecto web que debe dominar un programador y explica en una frase por qué el desarrollo web es multidisciplinar.",
+      "codi": "",
+      "solucio": "1) Captar las necesidades del cliente; 2) definir objetivos y estrategia; 3) desarrollar la interfaz gráfica; 4) elaborar prototipos; 5) presentación final. Es multidisciplinar porque el programador debe dominar todas las fases, no solo programar.",
+      "rubrica": [
+        "Las 5 fases (0,2 por fase)",
+        "Orden correcto (0,5)",
+        "Justificació de multidisciplinar (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-intro-15"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "escribir",
+      "titol": "HTML y hipertexto",
+      "q": "Explica qué es el hipertexto y qué papel tiene el W3C en la web.",
+      "codi": "",
+      "solucio": "Hipertexto: palabra o frase que al acceder a ella nos lleva a información relacionada; la web se basa en ell. El W3C es el consorcio creado pel grande auge de la web que desarrolla y mantiene los estándares web.",
+      "rubrica": [
+        "Definició d'hipertexto (1)",
+        "W3C: estándares (1)"
+      ],
+      "punts": 2,
+      "id": "T1-intro-16"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Qué NO es uno de los cuatro campos del diseño web del tema?",
+      "codi": "",
+      "op": [
+        "Propósito",
+        "Distribución",
+        "Visual",
+        "Seguridad"
+      ],
+      "ok": 3,
+      "exp": "Los cuatro son visual, tecnología, distribución y propósito.",
+      "id": "T1-1.1-01"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Cuál es el objetivo del campo visual?",
+      "codi": "",
+      "op": [
+        "La comunicació y atraer los clientes",
+        "Elegir la base de datos",
+        "Assegurar la velocidad de transmisión",
+        "Difundir un evento"
+      ],
+      "ok": 0,
+      "exp": "Una buena sensación hace que los visitantes tornin.",
+      "id": "T1-1.1-02"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Decidir si el sitio será estático o dinámico y qué bases de datos se usarán corresponde al campo de...",
+      "codi": "",
+      "op": [
+        "Tecnología",
+        "Visual",
+        "Distribución",
+        "Propósito"
+      ],
+      "ok": 0,
+      "exp": "Tecnología: cómo s'implementarà el sitio.",
+      "id": "T1-1.1-03"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Qué campo trata de la velocidad y la fiabilidad de la transmisión de datos?",
+      "codi": "",
+      "op": [
+        "Tecnología",
+        "Propósito",
+        "Visual",
+        "Distribución"
+      ],
+      "ok": 3,
+      "exp": "Distribución = velocidad y fiabilidad.",
+      "id": "T1-1.1-04"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Una botiga en línea quiere vendre más. Qué campo reflecteix esta finalidad?",
+      "codi": "",
+      "op": [
+        "Tecnología",
+        "Distribución",
+        "Propósito (económico)",
+        "Visual"
+      ],
+      "ok": 2,
+      "exp": "En la mayoría de los casos la finalidad es económica.",
+      "id": "T1-1.1-05"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Difundir un acto o evento d'interés general es un propósito...",
+      "codi": "",
+      "op": [
+        "Visual",
+        "Informativo",
+        "Económico",
+        "Tecnològic"
+      ],
+      "ok": 1,
+      "exp": "Propósito informativo.",
+      "id": "T1-1.1-06"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Queremos que la página carregui rápido y sin talls. Qué campo estem cuidant?",
+      "codi": "",
+      "op": [
+        "Visual",
+        "Propósito",
+        "Distribución",
+        "Tecnología"
+      ],
+      "ok": 2,
+      "exp": "Velocidad y fiabilidad de la transmisión.",
+      "id": "T1-1.1-07"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Quants elementos comuns tiene el modelo cliente-servidor del tema?",
+      "codi": "",
+      "op": [
+        "Tres",
+        "Dos",
+        "Cuatro",
+        "Cinco"
+      ],
+      "ok": 0,
+      "exp": "Servidor, máquina cliente y conectividad de la red.",
+      "id": "T1-1.1-08"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Cuáles son los tres elementos del modelo cliente-servidor?",
+      "codi": "",
+      "op": [
+        "Servidor, máquina cliente y conectividad de la red",
+        "Navegador, base de datos y HTML",
+        "Cliente, W3C y servidor",
+        "Servidor, CSS y JavaScript"
+      ],
+      "ok": 0,
+      "exp": "Tres elementos comuns.",
+      "id": "T1-1.1-09"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Por implementar las tecnologies web en el servidor, el tema aconsella un lenguaje que suporti...",
+      "codi": "",
+      "op": [
+        "Multi fils",
+        "Controles ActiveX",
+        "Ningún restricció",
+        "Solo HTML"
+      ],
+      "ok": 0,
+      "exp": "Lenguaje con soporte multi fils.",
+      "id": "T1-1.1-10"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Dónde se implementen los programas que hacen la petición en el servidor?",
+      "codi": "",
+      "op": [
+        "A la máquina de conectividad",
+        "A la máquina cliente",
+        "A la máquina servidor",
+        "Al W3C"
+      ],
+      "ok": 1,
+      "exp": "Los navegadores de la máquina cliente hacen la petición.",
+      "id": "T1-1.1-11"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Los navegadores han de soportar las tecnologies del sitio web. Qué cita el tema?",
+      "codi": "",
+      "op": [
+        "HTML y bases de datos",
+        "HTML, CSS, JavaScript y controles ActiveX",
+        "Solo HTML",
+        "PHP, Python y SQL"
+      ],
+      "ok": 1,
+      "exp": "Lista de la diapositiva del modelo cliente-servidor.",
+      "id": "T1-1.1-12"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Cuál es el objetivo de un navegador?",
+      "codi": "",
+      "op": [
+        "Guardar las datos de los usuarios",
+        "Alojar las páginas web",
+        "Ejecutar solo lenguajes de servidor",
+        "Presentar la información, escrita normalmente en HTML y alojada en un servidor"
+      ],
+      "ok": 3,
+      "exp": "Presenta; el servidor aloja.",
+      "id": "T1-1.1-13"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "«El funcionamiento de un navegador se encarga d'alojar una página web por responder a las solicitudes recibidas.» Esta afirmación es...",
+      "codi": "",
+      "op": [
+        "Cierta solo por a HTML",
+        "Falsa: alojar lo hace el servidor",
+        "Cierta",
+        "Falsa: lo hace la conectividad"
+      ],
+      "ok": 1,
+      "exp": "El navegador presenta; el servidor aloja.",
+      "id": "T1-1.1-14"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Quién debe tener instal·lat el servicio web?",
+      "codi": "",
+      "op": [
+        "El servidor",
+        "El navegador",
+        "El W3C",
+        "La máquina cliente"
+      ],
+      "ok": 0,
+      "exp": "Servidor con el servicio web instal·lat.",
+      "id": "T1-1.1-15"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Qué incluye el servidor según el tema?",
+      "codi": "",
+      "op": [
+        "Elementos de maquinari y programari, tècniques incrustades y lenguajes de programación",
+        "Solo el navegador",
+        "Solo bases de datos",
+        "Los programas de petición"
+      ],
+      "ok": 0,
+      "exp": "Descripció del servidor.",
+      "id": "T1-1.1-16"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Hoy día, la arquitectura de los sitios web se basa en el modelo...",
+      "codi": "",
+      "op": [
+        "Solo servidor",
+        "Cliente-servidor",
+        "Solo cliente",
+        "Peer-to-peer"
+      ],
+      "ok": 1,
+      "exp": "Modelo cliente-servidor.",
+      "id": "T1-1.1-17"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "Qué elemento del modelo cliente-servidor NO es una máquina, sinó una característica de la red?",
+      "codi": "",
+      "op": [
+        "Conectividad de la red",
+        "Navegador",
+        "Servidor",
+        "Máquina cliente"
+      ],
+      "ok": 0,
+      "exp": "La conectividad son las característiques de la red utilitzades.",
+      "id": "T1-1.1-18"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "teoría",
+      "q": "El navegador sol·licita una página. Quién recibe esta petición?",
+      "codi": "",
+      "op": [
+        "El componente CSS",
+        "El W3C",
+        "Un otro navegador",
+        "El servidor"
+      ],
+      "ok": 3,
+      "exp": "El servidor atén las solicitudes.",
+      "id": "T1-1.1-19"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA sobre el modelo cliente-servidor.",
+      "codi": "",
+      "op": [
+        "El servidor aloja las páginas",
+        "El cliente hace la petición en el servidor",
+        "El servidor es en se ejecutan los navegadores",
+        "La conectividad de la red es uno de los tres elementos"
+      ],
+      "ok": 2,
+      "exp": "Los navegadores son a la máquina cliente.",
+      "id": "T1-1.1-20"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA sobre los campos del diseño web.",
+      "codi": "",
+      "op": [
+        "La distribución afecta velocidad y fiabilidad",
+        "El visual busca atraer los clientes",
+        "La tecnología solo tiene a veure con los colores de la página",
+        "El propósito sol ser económico"
+      ],
+      "ok": 2,
+      "exp": "Tecnología = cómo s'implementa el sitio, no los colores.",
+      "id": "T1-1.1-21"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "escribir",
+      "titol": "Cliente-servidor",
+      "q": "Explica el modelo cliente-servidor: los tres elementos comuns y qué hace cada un.",
+      "codi": "",
+      "solucio": "Servidor: tiene maquinari y programari, tècniques incrustades y lenguajes de programación (recomanable multi fils) y aloja las páginas. Máquina cliente: los programas (navegadores) que hacen la petición y que han de soportar HTML, CSS, JavaScript y ActiveX. Conectividad de la red: las característiques de la red utilitzades pel sitio.",
+      "rubrica": [
+        "Servidor (1)",
+        "Cliente y navegadores (1)",
+        "Conectividad (0,5)",
+        "Navegador presenta, servidor aloja (0,5)"
+      ],
+      "punts": 3,
+      "id": "T1-1.1-22"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "escribir",
+      "titol": "Cuatro campos",
+      "q": "Nombra los cuatro campos del diseño web y pone un ejemplo de decisión de cada un.",
+      "codi": "",
+      "solucio": "Visual (colores, impressió a los visitantes); Tecnología (página estática o dinámica, base de datos); Distribución (velocidad y fiabilidad de transmisión); Propósito (económico o informativo).",
+      "rubrica": [
+        "4 campos (0,25 c/u)",
+        "4 ejemplos coherents (0,25 c/u)"
+      ],
+      "punts": 2,
+      "id": "T1-1.1-23"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Los lenguajes d'entorno cliente son los que...",
+      "codi": "",
+      "op": [
+        "Solo guarden datos",
+        "Se ejecutan a los clientes, normalmente en un navegador web",
+        "Se ejecutan en el servidor",
+        "Solo se utilizan por a bases de datos"
+      ],
+      "ok": 1,
+      "exp": "Entorno cliente = navegador.",
+      "id": "T1-1.2-01"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Los lenguajes d'entorno servidor son los que...",
+      "codi": "",
+      "op": [
+        "Se ejecutan en el servidor",
+        "Solo es veuen con Ctrl+U",
+        "Solo dan estilo",
+        "Se ejecutan al navegador"
+      ],
+      "ok": 0,
+      "exp": "Entorno servidor = servidor.",
+      "id": "T1-1.2-02"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Por qué sorgeix la necessitat de un lenguaje que interactuï con el usuarioo?",
+      "codi": "",
+      "op": [
+        "Por estalviar memoria",
+        "Porque la página sigui más atractiva y s'adapti a las necesidades de los usuarios",
+        "Por sustituir el HTML",
+        "Porque el servidor lo exigeix"
+      ],
+      "ok": 1,
+      "exp": "Interacción = página más atractiva.",
+      "id": "T1-1.2-03"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Quién sol tener la última palabra en elegir el lenguaje web de una página?",
+      "codi": "",
+      "op": [
+        "El navegador",
+        "El W3C",
+        "El servidor",
+        "El desarrollador, según el lenguaje con qué mejor es desembolica"
+      ],
+      "ok": 3,
+      "exp": "Cada lenguaje tiene ventajas y inconvenientes.",
+      "id": "T1-1.2-04"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "En las páginas web dinámicas, los lenguajes de cliente y de servidor...",
+      "codi": "",
+      "op": [
+        "S'entorpeixen",
+        "Solo se utiliza un",
+        "Son incompatibles",
+        "Es complementan"
+      ],
+      "ok": 3,
+      "exp": "Es complementan, no se obstaculizan.",
+      "id": "T1-1.2-05"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Un formulario s'debe comprobar antes de guardarlo a la base de datos. Cómo es reparteix la feina?",
+      "codi": "",
+      "op": [
+        "Todo con HTML",
+        "Validación en el servidor y almacenamiento en el cliente",
+        "Validación con lenguaje de cliente y almacenamiento con lenguaje de servidor",
+        "Todo con lenguaje de cliente"
+      ],
+      "ok": 2,
+      "exp": "Ejemplo del tema.",
+      "id": "T1-1.2-06"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Comprobar que un correo tiene formato correcto antes de enviar el formulario es hace en...",
+      "codi": "",
+      "op": [
+        "El cliente",
+        "La base de datos",
+        "El W3C",
+        "El maquinari del servidor"
+      ],
+      "ok": 0,
+      "exp": "La validación es hace en el cliente.",
+      "id": "T1-1.2-07"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Guardar una comanda a la base de datos es hace con lenguaje de...",
+      "codi": "",
+      "op": [
+        "CSS",
+        "HTML",
+        "Servidor",
+        "Cliente"
+      ],
+      "ok": 2,
+      "exp": "L'almacenamiento es de servidor.",
+      "id": "T1-1.2-08"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Qué lenguajes dan formato al texto y a el estilo de la página?",
+      "codi": "",
+      "op": [
+        "JavaScript y PHP",
+        "HTML y CSS",
+        "SQL y Python",
+        "Solo JavaScript"
+      ],
+      "ok": 1,
+      "exp": "HTML y CSS dan formato y estilo.",
+      "id": "T1-1.2-09"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Qué lenguaje crea páginas dinámicas con scripts en el cliente?",
+      "codi": "",
+      "op": [
+        "CSS",
+        "JavaScript",
+        "XML",
+        "HTML"
+      ],
+      "ok": 1,
+      "exp": "JavaScript.",
+      "id": "T1-1.2-10"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "En qué lenguaje es centra el módulo?",
+      "codi": "",
+      "op": [
+        "C",
+        "PHP",
+        "JavaScript",
+        "Java"
+      ],
+      "ok": 2,
+      "exp": "El módulo es centra en JavaScript.",
+      "id": "T1-1.2-11"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Por qué JavaScript es tan útil en el cliente?",
+      "codi": "",
+      "op": [
+        "Escribe archivos en el servidor",
+        "Sustituye el HTML",
+        "El suporten la mayoría de los navegadores y sistemas operativos actuales",
+        "Solo funciona en un navegador"
+      ],
+      "ok": 2,
+      "exp": "Grande utilidad y soporte generalizado.",
+      "id": "T1-1.2-12"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Cuáles son las cuatro capas de desarrollo web en el cliente, de abajo arriba?",
+      "codi": "",
+      "op": [
+        "Estructura → contenido → comportamiento → presentación",
+        "Contenido → estructura → presentación → comportamiento",
+        "Comportamiento → presentación → estructura → contenido",
+        "Presentación → contenido → estructura → comportamiento"
+      ],
+      "ok": 1,
+      "exp": "De bajo a arriba: contenido, estructura, presentación, comportamiento.",
+      "id": "T1-1.2-13"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Cuál es la capa superior y qué gestiona?",
+      "codi": "",
+      "op": [
+        "HTML: la presentación",
+        "JavaScript: el comportamiento de la página",
+        "El DOM: el contenido",
+        "CSS: el estructura"
+      ],
+      "ok": 1,
+      "exp": "JavaScript es la capa de comportamiento.",
+      "id": "T1-1.2-14"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Qué tecnología corresponde a la capa de presentación?",
+      "codi": "",
+      "op": [
+        "JavaScript",
+        "SQL",
+        "HTML",
+        "CSS"
+      ],
+      "ok": 3,
+      "exp": "Capa de presentación (CSS).",
+      "id": "T1-1.2-15"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Qué tecnología corresponde a la capa d'estructura?",
+      "codi": "",
+      "op": [
+        "Contenido sin estructura",
+        "JavaScript",
+        "CSS",
+        "DOM / estructura HTML"
+      ],
+      "ok": 3,
+      "exp": "Capa d'estructura (DOM / HTML).",
+      "id": "T1-1.2-16"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "A la capa de contenido ahí ha...",
+      "codi": "",
+      "op": [
+        "Las rutas de los archivos",
+        "Solo CSS",
+        "Los scripts",
+        "Texto, imágenes, etcétera"
+      ],
+      "ok": 3,
+      "exp": "Capa de contenido.",
+      "id": "T1-1.2-17"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Qué forma el «contenido estructurado (documento HTML)»?",
+      "codi": "",
+      "op": [
+        "Las capas de contenido y d'estructura",
+        "Las capas de presentación y comportamiento",
+        "Todas las capas",
+        "Solo la de comportamiento"
+      ],
+      "ok": 0,
+      "exp": "Contenido + estructura.",
+      "id": "T1-1.2-18"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Queremos cambiar el color de un botón cuando es haz clic. Qué capa gestiona el canvi (el comportamiento)?",
+      "codi": "",
+      "op": [
+        "El contenido",
+        "JavaScript",
+        "HTML",
+        "El servidor"
+      ],
+      "ok": 1,
+      "exp": "El comportamiento es JavaScript.",
+      "id": "T1-1.2-19"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Qué d'estos NO es un lenguaje d'entorno cliente?",
+      "codi": "",
+      "op": [
+        "CSS",
+        "PHP",
+        "JavaScript",
+        "HTML"
+      ],
+      "ok": 1,
+      "exp": "PHP se ejecuta en el servidor.",
+      "id": "T1-1.2-20"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "teoría",
+      "q": "Un sitio hecho con lenguaje de servidor necesita...",
+      "codi": "",
+      "op": [
+        "Solo mostrar HTML estático",
+        "Recollir las peticiones hechas desde del cliente y puede guardar información en una base de datos",
+        "No comunicar-se con el cliente",
+        "Ejecutarse dentro del navegador"
+      ],
+      "ok": 1,
+      "exp": "Recull peticiones y puede usar una BD.",
+      "id": "T1-1.2-21"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "Los lenguajes de cliente y servidor se obstaculizan entre ells",
+        "JavaScript es la capa de comportamiento",
+        "HTML y CSS dan formato y estilo",
+        "La validación es hace con lenguaje de cliente"
+      ],
+      "ok": 0,
+      "exp": "Es complementan, no se obstaculizan.",
+      "id": "T1-1.2-22"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA sobre las capas.",
+      "codi": "",
+      "op": [
+        "JavaScript es la capa superior",
+        "CSS es la capa superior",
+        "HTML aporta el estructura",
+        "El contenido son texto y imágenes"
+      ],
+      "ok": 1,
+      "exp": "La capa superior es JavaScript (comportamiento).",
+      "id": "T1-1.2-23"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "escribir",
+      "titol": "Capas del cliente",
+      "q": "Describe las cuatro capas de desarrollo web en el cliente, de abajo arriba, y la tecnología de cada una.",
+      "codi": "",
+      "solucio": "Contenido (texto, imágenes) → estructura (DOM/HTML) → presentación (CSS) → comportamiento (JavaScript). Contenido + estructura formen el contenido estructurado (documento HTML). JavaScript es la capa superior.",
+      "rubrica": [
+        "Orden correcto (1)",
+        "Tecnología de cada capa (1)",
+        "Contenido estructurado (0,5)"
+      ],
+      "punts": 2.5,
+      "id": "T1-1.2-24"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "escribir",
+      "titol": "Cliente y servidor se complementan",
+      "q": "Explica con el ejemplo de un formulario cómo se complementan cliente y servidor.",
+      "codi": "",
+      "solucio": "El cliente (JavaScript) valida las datos antes de enviar-las; el servidor recibe la petición y las almacena a la base de datos. Cadascun hace la seva part.",
+      "rubrica": [
+        "Validación en el cliente (1)",
+        "Almacenamiento en el servidor (1)"
+      ],
+      "punts": 2,
+      "id": "T1-1.2-25"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Cuando se inicia la interacción con el navegador y cuando termina?",
+      "codi": "",
+      "op": [
+        "Se inicia con el CSS y termina con el HTML",
+        "Se inicia en descargar JavaScript y termina al cerrarlo",
+        "Se inicia en el servidor y termina en el cliente",
+        "Se inicia en indicar la dirección del recurso y termina con la seva visualización"
+      ],
+      "ok": 3,
+      "exp": "Dirección del recurso → visualización.",
+      "id": "T1-1.3-01"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "De qué depende el proceso d'interpretación de un navegador?",
+      "codi": "",
+      "op": [
+        "Solo del servidor",
+        "Del sistema de archivos",
+        "Solo de el HTML",
+        "Del propósito y la configuración del navegador"
+      ],
+      "ok": 3,
+      "exp": "Rápido, fiel o priorizando seguridad.",
+      "id": "T1-1.3-02"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Quants componentes tiene la arquitectura de referencia del navegador del tema?",
+      "codi": "",
+      "op": [
+        "6",
+        "10",
+        "4",
+        "8"
+      ],
+      "ok": 3,
+      "exp": "Interfaz, navegador, renderizado, comunicaciones, intérprete JS, analizador XML, visualización y persistencia.",
+      "id": "T1-1.3-03"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente muestra barras d'herramientas, progreso de carga y gestiona descargas?",
+      "codi": "",
+      "op": [
+        "Motor del navegador",
+        "Interfaz de usuario",
+        "Subsistema de comunicaciones",
+        "Analizador XML"
+      ],
+      "ok": 1,
+      "exp": "Interfaz entre el usuarioo y el motor.",
+      "id": "T1-1.3-04"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente carga una URL/URI y soporta retroceder, adelante y recargar?",
+      "codi": "",
+      "op": [
+        "Motor de renderizado",
+        "Motor del navegador",
+        "Persistencia de datos",
+        "Componente de visualización"
+      ],
+      "ok": 1,
+      "exp": "Función principal del motor del navegador.",
+      "id": "T1-1.3-05"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente carga las alertas de JavaScript?",
+      "codi": "",
+      "op": [
+        "Interfaz de usuario",
+        "Motor del navegador",
+        "Motor de renderizado",
+        "Intérprete de JavaScript"
+      ],
+      "ok": 1,
+      "exp": "El motor del navegador carga las alertas.",
+      "id": "T1-1.3-06"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente presenta visualmente el recurso y interpreta HTML, XML, CSS, audio/vídeo y imágenes?",
+      "codi": "",
+      "op": [
+        "Persistencia de datos",
+        "Analizador XML",
+        "Motor de renderizado",
+        "Subsistema de comunicaciones"
+      ],
+      "ok": 2,
+      "exp": "Presenta visualmente y interpreta el código.",
+      "id": "T1-1.3-07"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente implementa los protocolos de transferencia d'archivos y documentos d'internet?",
+      "codi": "",
+      "op": [
+        "Subsistema de comunicaciones",
+        "Interfaz de usuario",
+        "Motor del navegador",
+        "Persistencia"
+      ],
+      "ok": 0,
+      "exp": "Comunicaciones.",
+      "id": "T1-1.3-08"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente analiza y ejecuta el código JavaScript (eventos de ratón o teclado)?",
+      "codi": "",
+      "op": [
+        "Analizador XML",
+        "Motor del navegador",
+        "Intérprete de JavaScript",
+        "Componente de visualización"
+      ],
+      "ok": 2,
+      "exp": "Intérprete de JS.",
+      "id": "T1-1.3-09"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente carga en memoria una representación en árbol (DOM) de la página?",
+      "codi": "",
+      "op": [
+        "Interfaz de usuario",
+        "Intérprete de JavaScript",
+        "Analizador XML",
+        "Persistencia de datos"
+      ],
+      "ok": 2,
+      "exp": "El analizador crea el DOM.",
+      "id": "T1-1.3-10"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente ofrece funcionalidades por visualizar el contenido de un documento HTML?",
+      "codi": "",
+      "op": [
+        "Componente de visualización",
+        "Comunicaciones",
+        "Analizador XML",
+        "Motor del navegador"
+      ],
+      "ok": 0,
+      "exp": "Componente de visualización.",
+      "id": "T1-1.3-11"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente almacena historiales, sesiones, preferencias, certificados de seguridad y cookies?",
+      "codi": "",
+      "op": [
+        "Subsistema de persistencia de datos",
+        "Motor de renderizado",
+        "Interfaz de usuario",
+        "Intérprete de JavaScript"
+      ],
+      "ok": 0,
+      "exp": "Persistencia.",
+      "id": "T1-1.3-12"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Pulsas el botón «atrás» del navegador. Qué componente lo gestiona principalmente?",
+      "codi": "",
+      "op": [
+        "Persistencia de datos",
+        "Analizador XML",
+        "Motor del navegador",
+        "Intérprete de JavaScript"
+      ],
+      "ok": 2,
+      "exp": "Volver a la página anterior es del motor del navegador.",
+      "id": "T1-1.3-13"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "El navegador guarda una cookie. Qué componente ahí intervé?",
+      "codi": "",
+      "op": [
+        "Analizador XML",
+        "Persistencia de datos",
+        "Motor de renderizado",
+        "Interfaz de usuario"
+      ],
+      "ok": 1,
+      "exp": "Cookies = persistencia.",
+      "id": "T1-1.3-14"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Haces clic un botón con onclick. Qué componente ejecuta el código?",
+      "codi": "",
+      "op": [
+        "Motor del navegador",
+        "Persistencia",
+        "Intérprete de JavaScript",
+        "Comunicaciones"
+      ],
+      "ok": 2,
+      "exp": "L'intérprete ejecuta eventos.",
+      "id": "T1-1.3-15"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "El navegador descarga el HTML por HTTP. Qué componente ahí participa?",
+      "codi": "",
+      "op": [
+        "Intérprete de JavaScript",
+        "Componente de visualización",
+        "Subsistema de comunicaciones",
+        "Analizador XML"
+      ],
+      "ok": 2,
+      "exp": "Protocolos de transferencia.",
+      "id": "T1-1.3-16"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Aparece una barra de progreso de carga. Qué componente la muestra?",
+      "codi": "",
+      "op": [
+        "Interfaz de usuario",
+        "Motor de renderizado",
+        "Analizador XML",
+        "Persistencia"
+      ],
+      "ok": 0,
+      "exp": "Barras d'herramientas y progreso de carga.",
+      "id": "T1-1.3-17"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué componente puede comunicar-se con el sistema operativo por a sesiones y preferencias?",
+      "codi": "",
+      "op": [
+        "Analizador XML",
+        "Interfaz de usuario",
+        "Intérprete de JavaScript",
+        "Componente de visualización"
+      ],
+      "ok": 1,
+      "exp": "Es comunica con el sistema operativo en alguns casos.",
+      "id": "T1-1.3-18"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué motor de JavaScript llevan Chrome, Edge, Opera y Brave?",
+      "codi": "",
+      "op": [
+        "JavaScriptCore",
+        "Chakra",
+        "SpiderMonkey",
+        "V8"
+      ],
+      "ok": 3,
+      "exp": "V8.",
+      "id": "T1-1.3-19"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué motor de JavaScript lleva también Node.js?",
+      "codi": "",
+      "op": [
+        "SpiderMonkey",
+        "V8",
+        "Chakra",
+        "JavaScriptCore"
+      ],
+      "ok": 1,
+      "exp": "Por esto el mismo lenguaje sirve a navegador y servidor.",
+      "id": "T1-1.3-20"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Cuál es el motor de Firefox, el el primero de todos, escrito por Brendan Eich?",
+      "codi": "",
+      "op": [
+        "Chakra",
+        "V8",
+        "JavaScriptCore",
+        "SpiderMonkey"
+      ],
+      "ok": 3,
+      "exp": "El fue escribir el 1995.",
+      "id": "T1-1.3-21"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Quant tardó Brendan Eich a crear el lenguaje, según el tema?",
+      "codi": "",
+      "op": [
+        "Diez días",
+        "Una setmana",
+        "Diez años",
+        "Diez meses"
+      ],
+      "ok": 0,
+      "exp": "Fue crear el lenguaje en diez días.",
+      "id": "T1-1.3-22"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Cuál es el únicoo motor que es puede usar a los navegadores d'iPhone y iPad?",
+      "codi": "",
+      "op": [
+        "V8",
+        "JavaScriptCore",
+        "Chakra",
+        "SpiderMonkey"
+      ],
+      "ok": 1,
+      "exp": "Motor de Safari.",
+      "id": "T1-1.3-23"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué quiere dir que los motores actuales son JIT?",
+      "codi": "",
+      "op": [
+        "Compilan todo el código un día antes",
+        "No ejecutan código",
+        "Solo interpreten línea a línea",
+        "Compilan a código máquina justo antes de ejecutar"
+      ],
+      "ok": 3,
+      "exp": "Ya no son intérpretes lentos.",
+      "id": "T1-1.3-24"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Un documento antiguo diu que Edge lleva el motor Chakra. Qué es cierto hoy?",
+      "codi": "",
+      "op": [
+        "Edge todavía usa Chakra",
+        "Edge usa SpiderMonkey",
+        "Microsoft el fue abandonar el 2020 y Edge usa V8",
+        "Edge usa JavaScriptCore"
+      ],
+      "ok": 2,
+      "exp": "El documento está desactualitzat.",
+      "id": "T1-1.3-25"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "teoría",
+      "q": "Qué motor corresponde a Safari?",
+      "codi": "",
+      "op": [
+        "SpiderMonkey",
+        "Chakra",
+        "V8",
+        "JavaScriptCore"
+      ],
+      "ok": 3,
+      "exp": "Safari = JavaScriptCore.",
+      "id": "T1-1.3-26"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA sobre los motores de JavaScript.",
+      "codi": "",
+      "op": [
+        "JavaScriptCore es el de Safari",
+        "V8 es dentro de Node.js",
+        "SpiderMonkey es el motor de Firefox",
+        "Los motores actuales son intérpretes lentos que no compilan nada"
+      ],
+      "ok": 3,
+      "exp": "Todos tres compilan JIT.",
+      "id": "T1-1.3-27"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA sobre la arquitectura del navegador.",
+      "codi": "",
+      "op": [
+        "El motor de renderizado presenta visualmente el recurso",
+        "El analizador XML se encarga de las cookies",
+        "La persistencia guarda historiales",
+        "L'intérprete de JS ejecuta el código"
+      ],
+      "ok": 1,
+      "exp": "Las cookies son de persistencia.",
+      "id": "T1-1.3-28"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "escribir",
+      "titol": "Arquitectura del navegador",
+      "q": "Enumera los 8 componentes de la arquitectura de referencia del navegador y describe en una frase la función de cada un.",
+      "codi": "",
+      "solucio": "Interfaz de usuario; motor del navegador (carga URL, atrás/adelante, alertas JS); motor de renderizado (presenta el recurso); subsistema de comunicaciones (protocolos); intérprete de JavaScript; analizador XML (árbol DOM); componente de visualización; persistencia de datos (historiales, sesiones, preferencias, certificados, cookies).",
+      "rubrica": [
+        "8 componentes (0,2 c/u)",
+        "Función correcta de cada un (0,2 c/u)"
+      ],
+      "punts": 3,
+      "id": "T1-1.3-29"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "escribir",
+      "titol": "Motores de JavaScript",
+      "q": "Asocia cada motor (V8, SpiderMonkey, JavaScriptCore) con los seus navegadores y explica qué significa JIT.",
+      "codi": "",
+      "solucio": "V8: Chrome, Edge, Opera, Brave y Node.js. SpiderMonkey: Firefox, el primero (Brendan Eich, 1995). JavaScriptCore: Safari, el únicoo a iPhone/iPad. JIT: compilan a código máquina justo antes de ejecutar, por esto ya no son intérpretes lentos. Chakra, abandonado el 2020.",
+      "rubrica": [
+        "Associació de los 3 motores (1,5)",
+        "JIT (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.3-30"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Quién gestiona los sitios web dinámicos en el costat del servidor?",
+      "codi": "",
+      "op": [
+        "El navegador",
+        "Lenguajes de script de servidor",
+        "HTML",
+        "CSS"
+      ],
+      "ok": 1,
+      "exp": "Todo sitio dinámico es gestiona con scripts en el servidor.",
+      "id": "T1-1.4-01"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Una razón por usar JavaScript en el cliente es que...",
+      "codi": "",
+      "op": [
+        "Gestiona la base de datos",
+        "No puede escribir archivos a el entornoo servidor",
+        "Escribe archivos en el servidor",
+        "Sustituye el servidor"
+      ],
+      "ok": 1,
+      "exp": "Prepara datos y las cedeix a un otro lenguaje.",
+      "id": "T1-1.4-02"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "El sitio debe ser navegable sin JavaScript porque...",
+      "codi": "",
+      "op": [
+        "JS es il·legal",
+        "L'HTML no funciona con JS",
+        "JavaScript no existe a todos los navegadores",
+        "Si el navegador el tiene inhabilitat, la página no debe quedar inactiva"
+      ],
+      "ok": 3,
+      "exp": "Hay que preparar el sitio.",
+      "id": "T1-1.4-03"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "En qué caso NO ofrece soluciones JavaScript?",
+      "codi": "",
+      "op": [
+        "Dar respuesta a el usuarioo desde de un formulario",
+        "Millorar el experiència de usuario",
+        "Escribir archivos en el servidor",
+        "Modificar estilos dinàmicament"
+      ],
+      "ok": 2,
+      "exp": "Pregunta del tema.",
+      "id": "T1-1.4-04"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "«Gràcies al lenguaje HTML al costat del servidor es posible diseñar páginas dinámicas.»",
+      "codi": "",
+      "op": [
+        "Cierto",
+        "Cierto solo con CSS",
+        "Cierto con ActiveX",
+        "Falso"
+      ],
+      "ok": 3,
+      "exp": "HTML no es un lenguaje de servidor dinámico.",
+      "id": "T1-1.4-05"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Cuál de estas es una solución que ofrece JavaScript?",
+      "codi": "",
+      "op": [
+        "Escribir al disco del servidor",
+        "Cambiar la configuración del navegador",
+        "Procesar las datos del formulario antes de enviar-las",
+        "Instal·lar programas"
+      ],
+      "ok": 2,
+      "exp": "Soluciones del tema.",
+      "id": "T1-1.4-06"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Cuál de estas es una solución que ofrece JavaScript?",
+      "codi": "",
+      "op": [
+        "Modificar de manera dinámica estilos y continguts",
+        "Abrir C:\\win.ini",
+        "Ejecutar SQL en el servidor",
+        "Compilar C"
+      ],
+      "ok": 0,
+      "exp": "Solución de la lista.",
+      "id": "T1-1.4-07"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Qué es la «caixa de sorra» (sandbox)?",
+      "codi": "",
+      "op": [
+        "Un tipo de cookie",
+        "Un servidor de proves",
+        "Un editor de código",
+        "L'entorno en se ejecuta el JavaScript de la página y que li impide leer archivos del disco o lanzar programas"
+      ],
+      "ok": 3,
+      "exp": "El JS no toca disco, programas ni configuración del navegador.",
+      "id": "T1-1.4-08"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Qué NO puede hacer el JavaScript de una página por culpa del sandbox?",
+      "codi": "",
+      "op": [
+        "Leer ni escribir archivos del tu disco",
+        "Validar un formulario",
+        "Responder a un clic",
+        "Cambiar el texto de un paràgraf"
+      ],
+      "ok": 0,
+      "exp": "Sandbox.",
+      "id": "T1-1.4-09"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Cómo es define un origen en la política del mismo origen?",
+      "codi": "",
+      "op": [
+        "Solo el dominio",
+        "Protocolo + dominio + puerto",
+        "Solo el protocolo",
+        "Dominio + ruta"
+      ],
+      "ok": 1,
+      "exp": "Si en cambia un, es un otro origen.",
+      "id": "T1-1.4-10"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Una página de HTTP://banco.es quiere leer https://banco.es. Es el mismo origen?",
+      "codi": "",
+      "op": [
+        "No: cambia el protocolo",
+        "Sí",
+        "No: cambia la ruta",
+        "Sí, si es el mismo dominio"
+      ],
+      "ok": 0,
+      "exp": "Protocolo diferente.",
+      "id": "T1-1.4-11"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Una página de HTTP://banco.es quiere leer HTTP://banco.es:8080. Es el mismo origen?",
+      "codi": "",
+      "op": [
+        "No: cambia el puerto",
+        "Sí: el puerto no compta",
+        "Sí",
+        "No: cambia el protocolo"
+      ],
+      "ok": 0,
+      "exp": "El puerto forma part de el origen.",
+      "id": "T1-1.4-12"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Una página de HTTP://banco.es/inici lee HTTP://banco.es/compte. Es el mismo origen?",
+      "codi": "",
+      "op": [
+        "No: cambia el dominio",
+        "No: cambia la ruta",
+        "No: cambia el puerto",
+        "Sí: la ruta no forma part de el origen"
+      ],
+      "ok": 3,
+      "exp": "Solo compten protocolo, dominio y puerto.",
+      "id": "T1-1.4-13"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Un script de banco.es puede leer las cookies d'otrositio.cómo?",
+      "codi": "",
+      "op": [
+        "Sí, con ActiveX",
+        "Sí, si es JavaScript",
+        "Sí, siempre",
+        "No, por la política del mismo origen"
+      ],
+      "ok": 3,
+      "exp": "Orígenes diferentes.",
+      "id": "T1-1.4-14"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Qué es el error de CORS?",
+      "codi": "",
+      "op": [
+        "Una fallo del tu código",
+        "El navegador aplicant la política del mismo origen a una petición a una API aliena",
+        "Un error del W3C",
+        "Un error de sintaxis"
+      ],
+      "ok": 1,
+      "exp": "No es culpa del tu código.",
+      "id": "T1-1.4-15"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Cómo se soluciona un error de CORS?",
+      "codi": "",
+      "op": [
+        "El servidor debe dar permiso con una cabecera",
+        "Reescrivint el HTML",
+        "Con un punto y coma",
+        "Reiniciant el navegador"
+      ],
+      "ok": 0,
+      "exp": "El servidor autoritza orígenes.",
+      "id": "T1-1.4-16"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Qué es el XSS?",
+      "codi": "",
+      "op": [
+        "Un lenguaje de servidor",
+        "Un tipo de CSS",
+        "Un error de CORS",
+        "Texto de un usuario, sin netejar, que lleva un <script> y se ejecuta cómo si fos tu"
+      ],
+      "ok": 3,
+      "exp": "Es cola malgrat el sandbox.",
+      "id": "T1-1.4-17"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "En qué tema es veurà el XSS en profunditat?",
+      "codi": "",
+      "op": [
+        "Tema 8",
+        "Tema 6",
+        "Tema 2",
+        "Tema 1"
+      ],
+      "ok": 1,
+      "exp": "Lo veurem en el Tema 6.",
+      "id": "T1-1.4-18"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Cuál es la regla por a todo el curs?",
+      "codi": "",
+      "op": [
+        "El navegador protege todas las datos",
+        "La página es protege sola",
+        "El servidor no valida nada",
+        "El navegador protege el usuarioo de la tuya página, pero no la tuya página de las datos que tu li fiques"
+      ],
+      "ok": 3,
+      "exp": "Regla de la diapositiva.",
+      "id": "T1-1.4-19"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "código",
+      "q": "Este código es seguro ante XSS?",
+      "codi": "const entrada = '<img src=x onerror=alert(1)>';\ndocument.getElementById('xat').innerHTML = entrada;",
+      "op": [
+        "Sí: el sandbox lo evita",
+        "Sí: alert no existe",
+        "No: es un error de sintaxis",
+        "No: innerHTML interpreta HTML y el onerror se ejecutaria"
+      ],
+      "ok": 3,
+      "exp": "Hay que textContent o netejar el entrada.",
+      "id": "T1-1.4-20"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "código",
+      "q": "Qué hace este código y por qué se la forma segura?",
+      "codi": "const entrada = '<img src=x onerror=alert(1)>';\ndocument.getElementById('xat').textContent = entrada;",
+      "op": [
+        "Muestra el texto tal qual, sin interpretar HTML",
+        "Ejecuta el alert",
+        "Da error de CORS",
+        "Borra la página"
+      ],
+      "ok": 0,
+      "exp": "textContent no interpreta etiquetas.",
+      "id": "T1-1.4-21"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "El tu JS quiere leer una API de un otro dominio que no envía la cabecera d'autorització. Qué pasa?",
+      "codi": "",
+      "op": [
+        "El servidor del tu sitio falla",
+        "Es lee pero con retraso",
+        "Funciona sin problemes",
+        "El navegador bloquea la lectura (CORS)"
+      ],
+      "ok": 3,
+      "exp": "Política del mismo origen.",
+      "id": "T1-1.4-22"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "teoría",
+      "q": "Una página deshabilita JavaScript y es queda buida. Qué principi incompleix?",
+      "codi": "",
+      "op": [
+        "Ha de ser navegable sin JavaScript",
+        "El de CORS",
+        "El del mismo origen",
+        "El del sandbox"
+      ],
+      "ok": 0,
+      "exp": "Segundo motivo del tema.",
+      "id": "T1-1.4-23"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "CORS es el navegador aplicant una política",
+        "El JavaScript se ejecuta en un sandbox",
+        "El JavaScript del navegador puede leer cualquier archivo del disco si el usuarioo visita la página",
+        "L'XSS pasa por no netejar el texto de usuario"
+      ],
+      "ok": 2,
+      "exp": "El sandbox lo impide.",
+      "id": "T1-1.4-24"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA sobre CORS.",
+      "codi": "",
+      "op": [
+        "Aparece en demanar datos a una API aliena",
+        "El navegador aplica la política del mismo origen",
+        "Es un error de sintaxis del tu código",
+        "El servidor debe dar permiso con una cabecera"
+      ],
+      "ok": 2,
+      "exp": "No es una fallo del tu código.",
+      "id": "T1-1.4-25"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "escribir",
+      "titol": "Sandbox y mismo origen",
+      "q": "Explica qué es el sandbox y la política del mismo origen. Define «origen» y raona si HTTP://web.cat y HTTP://web.cat:3000 son el mismo origen.",
+      "codi": "",
+      "solucio": "Sandbox: el JS se ejecuta en una caixa tancada, sin acceso a archivos del disco, programas ni configuración. Mismo origen: un script de un origen no puede leer cookies ni contenido de un otro. Origen = protocolo + dominio + puerto. HTTP://web.cat y HTTP://web.cat:3000 NO son el mismo origen porque cambia el puerto.",
+      "rubrica": [
+        "Sandbox (0,75)",
+        "Mismo origen (0,75)",
+        "Definició d'origen (0,5)",
+        "Ejemplo correcto (0,5)"
+      ],
+      "punts": 2.5,
+      "id": "T1-1.4-26"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "escribir",
+      "titol": "CORS y XSS",
+      "q": "Diferencia CORS y XSS: qué son, quién los provoca y cómo es tracten.",
+      "codi": "",
+      "solucio": "CORS: el navegador bloquea peticiones a un otro origen sin permiso; no es culpa del código; el servidor dona permiso con una cabecera. XSS: texto de usuario sin netejar con un <script> que se ejecuta cómo si fos tu; es evita netejant el entrada/textContent (Tema 6).",
+      "rubrica": [
+        "CORS (1)",
+        "XSS (1)"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-27"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "escribir",
+      "titol": "Por qué JavaScript en el cliente",
+      "q": "Enumera tres raons del tema por usar JavaScript en el cliente y tres soluciones que ofrece.",
+      "codi": "",
+      "solucio": "Raons: no puede escribir archivos en el servidor (prepara datos); el sitio debe ser navegable sin JS; examina datos del servidor y actualiza parts de la página. Soluciones: feedback a el usuarioo, interfaz amigable, controlar plugins/marcs/applets, procesar datos de formulario, modificar estilos y continguts dinàmicament.",
+      "rubrica": [
+        "3 raons (1,5)",
+        "3 soluciones (1,5)"
+      ],
+      "punts": 3,
+      "id": "T1-1.4-28"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "En es pueden col·locar los scripts en un documento HTML?",
+      "codi": "",
+      "op": [
+        "Solo al <title>",
+        "Solo dentro de <HTML>",
+        "Solo al final del archivo fuera de <HTML>",
+        "Entre <head> y </head> o entre <body> y </body>"
+      ],
+      "ok": 3,
+      "exp": "Encapçalat o cuerpo del script.",
+      "id": "T1-1.5-01"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Qué s'nombra «encapçalat del script»?",
+      "codi": "",
+      "op": [
+        "El script al final del body",
+        "El script al <title>",
+        "El script col·locat entre <head> y </head>",
+        "El script en un archivo externo"
+      ],
+      "ok": 2,
+      "exp": "Posición al head.",
+      "id": "T1-1.5-02"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Qué etiqueta contenidora designa los scripts?",
+      "codi": "",
+      "op": [
+        "<code> ... </code>",
+        "<JS> ... </JS>",
+        "<JavaScript> ... </JavaScript>",
+        "<script> ... </script>"
+      ],
+      "ok": 3,
+      "exp": "Empieza por <script> y termina por </script>.",
+      "id": "T1-1.5-03"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Qué indica al navegador el etiqueta d'obertura <script>?",
+      "codi": "",
+      "op": [
+        "Que esperi código JavaScript en sitio d'HTML",
+        "Que carregui CSS",
+        "Que s'termina el documento",
+        "Que obri una ventana"
+      ],
+      "ok": 0,
+      "exp": "Cambia el que s'espera.",
+      "id": "T1-1.5-04"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Qué diu el atribut type=\"text/javascript\"?",
+      "codi": "",
+      "op": [
+        "Que es un archivo binario",
+        "Que es CSS",
+        "Que el script es formato de texto pla organitzat cómo JavaScript",
+        "Que es HTML"
+      ],
+      "ok": 2,
+      "exp": "Formato de sol texto.",
+      "id": "T1-1.5-05"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Qué hace document.write(\"¡Hola Onliner!\");?",
+      "codi": "",
+      "op": [
+        "Da un error",
+        "Escribe «¡Hola Onliner!» a la página",
+        "L'envía en el servidor",
+        "L'escribe a la consola"
+      ],
+      "ok": 1,
+      "exp": "Primero script del tema.",
+      "id": "T1-1.5-06"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Por qué sirve el punto y coma al final de la línea?",
+      "codi": "",
+      "op": [
+        "Indica a el intérprete que la línea ha acabat",
+        "Declara una variable",
+        "Cierra el etiqueta script",
+        "Comenta la línea"
+      ],
+      "ok": 0,
+      "exp": "Indica final de línea.",
+      "id": "T1-1.5-07"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Qué hace </script>?",
+      "codi": "",
+      "op": [
+        "Abre un script nuevo",
+        "Comenta el código",
+        "Carga un archivo",
+        "Termina el script y el navegador espera de nuevo HTML"
+      ],
+      "ok": 3,
+      "exp": "Tancament.",
+      "id": "T1-1.5-08"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "código",
+      "q": "Qué muestra la consola?",
+      "codi": "<head>\n  <script>\n    console.log(document.body);\n  </script>\n</head>\n<body></body>",
+      "op": [
+        "`undefined`",
+        "`null`",
+        "Un error",
+        "`true`"
+      ],
+      "ok": 1,
+      "exp": "Al <head> todavía no existe el body.",
+      "id": "T1-1.5-09"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "código",
+      "q": "Qué muestra la consola?",
+      "codi": "<body>\n  <p>Hola</p>\n  <script>\n    console.log(document.body !== null);\n  </script>\n</body>",
+      "op": [
+        "`undefined`",
+        "`true`",
+        "`null`",
+        "`false`"
+      ],
+      "ok": 1,
+      "exp": "Al final del body ya existe.",
+      "id": "T1-1.5-10"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "código",
+      "q": "Qué es veu a la página?",
+      "codi": "<body>\n  <script>\n    document.write('<p>1</p>');\n    document.write('<p>2</p>');\n  </script>\n</body>",
+      "op": [
+        "1 y 2 en paràgrafs seguits",
+        "Solo 2",
+        "Solo 1",
+        "Nada"
+      ],
+      "ok": 0,
+      "exp": "document.write añade mientras la página es construeix.",
+      "id": "T1-1.5-11"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "código",
+      "q": "Qué pasa a la página a los 2 según?",
+      "codi": "setTimeout(function () {\n  document.write('<p>Tard</p>');\n}, 2000);",
+      "op": [
+        "S'borra la página y solo queda el mensaje",
+        "Error de sintaxis",
+        "Nada",
+        "Se añade el mensaje al final"
+      ],
+      "ok": 0,
+      "exp": "document.write después de cargar borra el documento.",
+      "id": "T1-1.5-12"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Qué es diferente entre console.log('Hola') y document.write('Hola')?",
+      "codi": "",
+      "op": [
+        "document.write fue a la consola",
+        "Hacen exactament el mismo",
+        "console.log no toca la página; document.write escribe al documento",
+        "console.log escribe a la página"
+      ],
+      "ok": 2,
+      "exp": "Consola vs documento.",
+      "id": "T1-1.5-13"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "código",
+      "q": "Qué muestra la consola?",
+      "codi": "<script>console.log(1);</script>\n<script>console.log(2);</script>\n<script>console.log(3);</script>",
+      "op": [
+        "`1`, `2`, `3` en tres líneas",
+        "Error",
+        "`3`",
+        "`1` y `3`"
+      ],
+      "ok": 0,
+      "exp": "Se segueixen en orden.",
+      "id": "T1-1.5-14"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "código",
+      "q": "Un script s'escribe al <body> antes de un <p id='x'>. Qué pasa si el script hace getElementById('x').textContent = 'a'?",
+      "codi": "<body>\n  <script>\n    document.getElementById('x').textContent = 'a';\n  </script>\n  <p id=\"x\">hola</p>\n</body>",
+      "op": [
+        "Error: el elementoo es null todavía",
+        "Es cambia el texto",
+        "Es cambia el CSS",
+        "Nada, sin error"
+      ],
+      "ok": 0,
+      "exp": "Cuando se ejecuta, el p todavía no existe.",
+      "id": "T1-1.5-15"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "teoría",
+      "q": "Qué de los dos sitios es el «cuerpo del script»?",
+      "codi": "",
+      "op": [
+        "Dentro de <title>",
+        "Fuera de <HTML>",
+        "Entre <body> y </body>",
+        "Entre <head> y </head>"
+      ],
+      "ok": 2,
+      "exp": "Cuerpo del script.",
+      "id": "T1-1.5-16"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "error",
+      "q": "Cuál es el error d'este código?",
+      "codi": "<script type=\"text/javascript\">\n  document.write('Hola');\n</scrip>",
+      "op": [
+        "Falta type",
+        "L'etiqueta de tancament está mal escrita (</scrip>)",
+        "Falta un punto y coma",
+        "document.write no existe"
+      ],
+      "ok": 1,
+      "exp": "Hay que cerrar con </script>.",
+      "id": "T1-1.5-17"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "error",
+      "q": "Cuál es el error?",
+      "codi": "<script>\n  document.write(\"Hola);\n</script>",
+      "op": [
+        "Falta cerrar las comillas",
+        "Falta <head>",
+        "Sobra el punto y coma",
+        "Falta type"
+      ],
+      "ok": 0,
+      "exp": "String sin cerrar.",
+      "id": "T1-1.5-18"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "error",
+      "q": "Qué pasa con este código?",
+      "codi": "<body>\n  document.write('Hola');\n</body>",
+      "op": [
+        "S'escribe Hola a la página",
+        "Error de CORS",
+        "Fue a la consola",
+        "Es muestra cómo a texto: no está dentro de <script>"
+      ],
+      "ok": 3,
+      "exp": "JS solo se ejecuta dentro de <script>.",
+      "id": "T1-1.5-19"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "error",
+      "q": "Cuál es el error?",
+      "codi": "<script>\n  console.log('A');\n<script>",
+      "op": [
+        "Falta el punto y coma",
+        "console.log no existe",
+        "Falta type",
+        "La segona etiqueta abre un script en sitio de cerrar-lo"
+      ],
+      "ok": 3,
+      "exp": "Hay que </script>.",
+      "id": "T1-1.5-20"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "escribir",
+      "titol": "En col·locar scripts",
+      "q": "Explica en es pueden col·locar los scripts en un HTML, qué etiqueta s'usa y qué diferencia de ejecución ahí ha entre poner-lo al head y al final del body.",
+      "codi": "",
+      "solucio": "Entre <head></head> (encapçalat) o <body></body> (cuerpo), con <script></script>. Al head se ejecuta antes que existeixi el body (no puede tocar elementos); al final del body ya todo el HTML existe.",
+      "rubrica": [
+        "Dos sitios (0,5)",
+        "Etiqueta (0,5)",
+        "Diferencia head/body (1)"
+      ],
+      "punts": 2,
+      "id": "T1-1.5-21"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "escribir",
+      "titol": "Primero script",
+      "q": "Escribe un script en línea que mostri «Hola món» a la página y un otro mensaje a la consola. Explica qué hacen el punto y coma y </script>.",
+      "codi": "",
+      "solucio": "<script type=\"text/javascript\">\n  document.write('Hola món');\n  console.log('Hola consola');\n</script>\nEl punto y coma indica final de línea; </script> termina el JS y el navegador espera HTML.",
+      "rubrica": [
+        "Script correcto (1)",
+        "Punto y coma (0,5)",
+        "</script> (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.5-22"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Cuáles son las dues formes d'integrar JavaScript en HTML según el tema?",
+      "codi": "",
+      "op": [
+        "Solo en línea",
+        "Solo con CSS",
+        "Código en línea y archivo externo",
+        "Solo archivo externo"
+      ],
+      "ok": 2,
+      "exp": "Dues formes principals.",
+      "id": "T1-1.6-01"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué atribut carga un archivo JavaScript externo?",
+      "codi": "",
+      "op": [
+        "href",
+        "rel",
+        "link",
+        "src"
+      ],
+      "ok": 3,
+      "exp": "<script src=\"archivo.JS\">.",
+      "id": "T1-1.6-02"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué extensió tiene un archivo JavaScript externo?",
+      "codi": "",
+      "op": [
+        ".jsx",
+        ".JS",
+        ".CSS",
+        ".HTML"
+      ],
+      "ok": 1,
+      "exp": "Extensió .JS.",
+      "id": "T1-1.6-03"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Cuál es la manera más recomanable d'integrar el código?",
+      "codi": "",
+      "op": [
+        "Dentro de un comentari HTML",
+        "Archivo externo",
+        "Código en línea",
+        "Con ActiveX"
+      ],
+      "ok": 1,
+      "exp": "El tema recomana el archivo externo.",
+      "id": "T1-1.6-04"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Cuál es un ventaja del archivo externo?",
+      "codi": "",
+      "op": [
+        "Ocultar el código a los usuarios",
+        "Hacer-lo imbatible",
+        "Evitar usar el servidor",
+        "Compartir el mismo archivo entre diversos HTML"
+      ],
+      "ok": 3,
+      "exp": "Es comparteix.",
+      "id": "T1-1.6-05"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué ventaja del archivo externo cita el tema respecte a los codis de las parts de la página?",
+      "codi": "",
+      "op": [
+        "Considerar-los de manera independent (estructura, formato y tratament)",
+        "Eliminar el HTML",
+        "Barrejar-los",
+        "Prescindir del CSS"
+      ],
+      "ok": 0,
+      "exp": "Separació.",
+      "id": "T1-1.6-06"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué NO es un ventaja del archivo externo?",
+      "codi": "",
+      "op": [
+        "Facilitar la depuración y la claredat",
+        "Aportar modularitat",
+        "Que el código no es pueda veure con Ctrl+U",
+        "Poder compartir el archivo"
+      ],
+      "ok": 2,
+      "exp": "Cualquier puede veure el código.",
+      "id": "T1-1.6-07"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Una ruta relativa s'dirección...",
+      "codi": "",
+      "op": [
+        "Desde del directorio en nos trobem",
+        "Con un protocolo HTTP",
+        "Solo a archivos locals",
+        "Desde el arrel de la unitat"
+      ],
+      "ok": 0,
+      "exp": "Ruta relativa.",
+      "id": "T1-1.6-08"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Una ruta absoluta s'dirección...",
+      "codi": "",
+      "op": [
+        "Desde la carpeta anterior",
+        "Desde del directorio arrel o de la unitat",
+        "Desde del directorio actual",
+        "Con HTTP://"
+      ],
+      "ok": 1,
+      "exp": "Ruta absoluta.",
+      "id": "T1-1.6-09"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Una ruta remota es reconeix porque...",
+      "codi": "",
+      "op": [
+        "Empieza con ../",
+        "Empieza con JS/",
+        "Empieza con el protocolo HTTP",
+        "No tiene extensió"
+      ],
+      "ok": 2,
+      "exp": "Ruta remota.",
+      "id": "T1-1.6-10"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué significa src=\"../JS/ejemplo.JS\"?",
+      "codi": "",
+      "op": [
+        "El archivo es a la carpeta JS del directorio anterior",
+        "El archivo es remot",
+        "El archivo es a la carpeta JS actual",
+        "El archivo es a el arrel"
+      ],
+      "ok": 0,
+      "exp": "../ puja un directorio.",
+      "id": "T1-1.6-11"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "código",
+      "q": "Qué tipo de ruta es esta?",
+      "codi": "<script src=\"http://www.tu-dominio.com/ejemplo.js\"></script>",
+      "op": [
+        "Invàlida",
+        "Remota",
+        "Absoluta",
+        "Relativa"
+      ],
+      "ok": 1,
+      "exp": "Empieza con HTTP.",
+      "id": "T1-1.6-12"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "código",
+      "q": "Qué tipo de ruta es esta?",
+      "codi": "<script src=\"js/app.js\"></script>",
+      "op": [
+        "Absoluta",
+        "Relativa",
+        "Invàlida",
+        "Remota"
+      ],
+      "ok": 1,
+      "exp": "Desde del directorio actual.",
+      "id": "T1-1.6-13"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "El HTML es a /web/HTML/index.HTML y el JS a /web/JS/app.JS. Qué src es correcto?",
+      "codi": "",
+      "op": [
+        "HTML/JS/app.JS",
+        "./app.JS",
+        "../JS/app.JS",
+        "JS/app.JS"
+      ],
+      "ok": 2,
+      "exp": "Hay que pujar un nivell.",
+      "id": "T1-1.6-14"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "El HTML es a /web/index.HTML y el JS a /web/JS/app.JS. Qué src es correcto?",
+      "codi": "",
+      "op": [
+        "app.JS",
+        "/JS/app.JS/",
+        "../JS/app.JS",
+        "JS/app.JS"
+      ],
+      "ok": 3,
+      "exp": "Dentro de JS/ desde del directorio actual.",
+      "id": "T1-1.6-15"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Por cargar más de un archivo JS...",
+      "codi": "",
+      "op": [
+        "Solo con CSS",
+        "Es repeteix el etiqueta <script> canviant el archivo",
+        "Es ponen separats por comes a src",
+        "No es puede"
+      ],
+      "ok": 1,
+      "exp": "Repetim el etiqueta.",
+      "id": "T1-1.6-16"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Por a qué sirve <noscript>?",
+      "codi": "",
+      "op": [
+        "Cargar CSS",
+        "Informar el usuarioo si el navegador no soporta scripts",
+        "Cerrar scripts",
+        "Ejecutar JS"
+      ],
+      "ok": 1,
+      "exp": "Texto informativo.",
+      "id": "T1-1.6-17"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué sintaxis cambia en XHTML por insertar JS directament?",
+      "codi": "",
+      "op": [
+        "S'elimina </script>",
+        "No es puede",
+        "S'usa CDATA dentro del script",
+        "S'usa <JS>"
+      ],
+      "ok": 2,
+      "exp": "<![CDATA[ ... ]]>.",
+      "id": "T1-1.6-18"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué llicència esmenta el tema por añadir al código?",
+      "codi": "",
+      "op": [
+        "GPL solo",
+        "Propietària",
+        "Creative Commons",
+        "Ningún"
+      ],
+      "ok": 2,
+      "exp": "Llicència Creative Commons.",
+      "id": "T1-1.6-19"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "código",
+      "q": "Qué pasa con el código de dentro d'esta etiqueta?",
+      "codi": "<script src=\"app.js\">\n  console.log('Hola');\n</script>",
+      "op": [
+        "S'ignora: cuando ahí ha src, el navegador no ejecuta el contenido",
+        "Es muestra a la página",
+        "Se ejecuta y después carga el archivo",
+        "Da error de sintaxis"
+      ],
+      "ok": 0,
+      "exp": "Hay que separar en dos <script>.",
+      "id": "T1-1.6-20"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "código",
+      "q": "Cuál es el orden real de ejecución?",
+      "codi": "<head>\n  <script>console.log(1);</script>\n  <script src=\"dos.js\"></script>      <!-- escriu 2 -->\n  <script src=\"tres.js\" defer></script> <!-- escriu 3 -->\n</head>\n<body>\n  <script src=\"quatre.js\"></script>    <!-- escriu 4 -->\n</body>",
+      "op": [
+        "1, 3, 2, 4",
+        "4, 3, 2, 1",
+        "1, 2, 3, 4",
+        "1, 2, 4, 3"
+      ],
+      "ok": 3,
+      "exp": "El defer se ejecuta el último.",
+      "id": "T1-1.6-21"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué hace el atribut defer en un script externo?",
+      "codi": "",
+      "op": [
+        "Bloquea la página",
+        "Se ejecuta antes que nada",
+        "Es baja en paral·lel y se ejecuta al final, cuando el HTML está completo",
+        "No se ejecuta nunca"
+      ],
+      "ok": 2,
+      "exp": "Defer.",
+      "id": "T1-1.6-22"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Un script externo al head sin atributs es...",
+      "codi": "",
+      "op": [
+        "Bloqueando: detiene la construcció de la página hasta que se ejecuta",
+        "Ejecutado al final",
+        "Ejecutado en paral·lel sin orden",
+        "Ignorat"
+      ],
+      "ok": 0,
+      "exp": "Caso dolent.",
+      "id": "T1-1.6-23"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "código",
+      "q": "Qué muestra la consola con defer?",
+      "codi": "<head>\n  <script src=\"a.js\" defer></script>\n</head>\n<body><h1 id=\"t\">El títol</h1></body>\n\n// a.js\nconsole.log(document.getElementById('t').textContent);",
+      "op": [
+        "`null`",
+        "`undefined`",
+        "`El título`",
+        "Un error"
+      ],
+      "ok": 2,
+      "exp": "Con defer, el HTML ya está complet.",
+      "id": "T1-1.6-24"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "código",
+      "q": "Qué pasa con a.JS sin defer al head?",
+      "codi": "<head>\n  <script src=\"a.js\"></script>\n</head>\n<body><h1 id=\"t\">El títol</h1></body>\n\n// a.js\nconsole.log(document.getElementById('t').textContent);",
+      "op": [
+        "No es carga",
+        "Muestra undefined",
+        "Muestra el título",
+        "TypeError: el h1 todavía es null"
+      ],
+      "ok": 3,
+      "exp": "L'HTML todavía no existe.",
+      "id": "T1-1.6-25"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "código",
+      "q": "Poner defer a un <script> en línea (sin src)...",
+      "codi": "<script defer>\n  console.log('A');\n</script>",
+      "op": [
+        "Retarda el ejecución",
+        "No tiene ningún efecte",
+        "El converteix en externo",
+        "Da error"
+      ],
+      "ok": 1,
+      "exp": "defer solo actua con src.",
+      "id": "T1-1.6-26"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "teoría",
+      "q": "Qué hace async en un script externo?",
+      "codi": "",
+      "op": [
+        "Se ejecuta en terminar de descargar-se, sin orden garantit",
+        "Bloquea la página",
+        "No se ejecuta",
+        "Se ejecuta siempre el último"
+      ],
+      "ok": 0,
+      "exp": "async no garanteix orden.",
+      "id": "T1-1.6-27"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "error",
+      "q": "Cuál es el error?",
+      "codi": "<script type=\"text/javascript\" src=\"js/app.js\" />",
+      "op": [
+        "Un <script> con src s'debe cerrar con </script>",
+        "Falta .HTML",
+        "Falta type",
+        "Sobra src"
+      ],
+      "ok": 0,
+      "exp": "No admet tancament automàtic.",
+      "id": "T1-1.6-28"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "error",
+      "q": "Cuál es el error si app.JS es a la carpeta JS/ y el HTML es a el arrel?",
+      "codi": "<script src=\"app.js\"></script>",
+      "op": [
+        "Falta type",
+        "Falta la carpeta: habría de ser JS/app.JS",
+        "Falta defer",
+        "Sobra el punto"
+      ],
+      "ok": 1,
+      "exp": "La ruta no existe.",
+      "id": "T1-1.6-29"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "error",
+      "q": "Cuál es el error si el HTML es a /web/HTML/ y app.JS a /web/JS/?",
+      "codi": "<script src=\"js/app.js\"></script>",
+      "op": [
+        "Falta defer",
+        "Falta pujar un nivell: ../JS/app.JS",
+        "Falta type",
+        "Falta HTTP"
+      ],
+      "ok": 1,
+      "exp": "Ruta relativa incorrecta.",
+      "id": "T1-1.6-30"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "escribir",
+      "titol": "En línea vs externo",
+      "q": "Compara el código en línea y el archivo externo: escribe un ejemplo de cada y tres ventajas de el externo.",
+      "codi": "",
+      "solucio": "<script>console.log('hola');</script> vs <script src=\"app.JS\"></script>. Ventajas: separar estructura/formato/tratament; compartir el archivo entre HTML; depuración y claredat; modularitat y rapidesa de carga.",
+      "rubrica": [
+        "Ejemplo en línea (0,5)",
+        "Ejemplo externo (0,5)",
+        "3 ventajas (1)"
+      ],
+      "punts": 2,
+      "id": "T1-1.6-31"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "escribir",
+      "titol": "Rutas",
+      "q": "Escribe un ejemplo de ruta relativa, una d'absoluta y una de remota por cargar un archivo JS, y explica qué significa ../.",
+      "codi": "",
+      "solucio": "Relativa: JS/app.JS; absoluta: /JS/app.JS (desde el arrel); remota: HTTP://www.ejemplo.cómo/app.JS. ../ = directorio anterior.",
+      "rubrica": [
+        "3 rutas (1,5)",
+        "../ (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.6-32"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "escribir",
+      "titol": "Orden con defer",
+      "q": "Explica en qué orden se ejecutan: script en línea al head, script externo al head, script externo con defer al head y script externo al final del body.",
+      "codi": "",
+      "solucio": "1) en línea al head; 2) externo al head (bloqueando); 3) externo al final del body; 4) el defer, el último, cuando se ha analitzat todo el HTML.",
+      "rubrica": [
+        "Orden correcto (1)",
+        "Explicación del defer (0,5)",
+        "Bloqueando (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.6-33"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Qué herramienta puede ser suficient para desarrollar código HTML y JavaScript?",
+      "codi": "",
+      "op": [
+        "Un simple editor de texto",
+        "Un programa de diseño",
+        "Solo un navegador",
+        "Solo un servidor"
+      ],
+      "ok": 0,
+      "exp": "Una herramienta puede ser un simple editor de texto.",
+      "id": "T1-1.7-01"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Qué tipo d'editors NO es recomanable?",
+      "codi": "",
+      "op": [
+        "Notepad++",
+        "Eclipse",
+        "Orientats a modificar continguts y presentación (FrontPage, Dreamweaver)",
+        "Bluefish"
+      ],
+      "ok": 2,
+      "exp": "Interessen los desarrolladores de código.",
+      "id": "T1-1.7-02"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Qué d'estos editors NO aparece a la lista d'editors gratuïts?",
+      "codi": "",
+      "op": [
+        "Notepad++",
+        "Dreamweaver",
+        "NetBeans",
+        "Bluefish"
+      ],
+      "ok": 1,
+      "exp": "Dreamweaver es del que s'debe fugir.",
+      "id": "T1-1.7-03"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Qué habría d'oferir un bon editor de código?",
+      "codi": "",
+      "op": [
+        "Colores, verificació de sintaxis, comentaris, blocs de código y opciones cómo a cliente FTP",
+        "Solo un navegador",
+        "Solo imágenes",
+        "Ningún herramienta"
+      ],
+      "ok": 0,
+      "exp": "Pautes del tema.",
+      "id": "T1-1.7-04"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Por programar JavaScript es necesario estar connectat a internet?",
+      "codi": "",
+      "op": [
+        "Solo con servidor",
+        "Sí, por validar",
+        "Sí, siempre",
+        "No: solo un navegador"
+      ],
+      "ok": 3,
+      "exp": "Es puede desarrollar en cualquier sitio.",
+      "id": "T1-1.7-05"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Quantes navegadores recomana instal·lar el tema para hacer comprovacions?",
+      "codi": "",
+      "op": [
+        "Cinco o más",
+        "Dos o tres",
+        "Un",
+        "Ningún"
+      ],
+      "ok": 1,
+      "exp": "Dos o tres de diferentes.",
+      "id": "T1-1.7-06"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Cuál es el orden de los passos recomanats para hacer un portal web?",
+      "codi": "",
+      "op": [
+        "Ejecutar → validar → guardar",
+        "Validar → codificar → guardar",
+        "Codificar → guardar y ejecutar → validar",
+        "Guardar → validar → codificar"
+      ],
+      "ok": 2,
+      "exp": "Validar es el último pas.",
+      "id": "T1-1.7-07"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Si fas modificacions al código, qué hay que hacer por veure los canvis?",
+      "codi": "",
+      "op": [
+        "Reiniciar el ordenador",
+        "Recargar el navegador",
+        "Borrar el historial",
+        "Reinstal·lar-lo"
+      ],
+      "ok": 1,
+      "exp": "N'ahí ha prou con recargar.",
+      "id": "T1-1.7-08"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Cuál es el último pas recomanat?",
+      "codi": "",
+      "op": [
+        "Validar",
+        "Instal·lar un navegador",
+        "Codificar",
+        "Guardar"
+      ],
+      "ok": 0,
+      "exp": "Estalvia horas de comprovacions.",
+      "id": "T1-1.7-09"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Qué organismo regeix las validacions y tiene un validador en línea?",
+      "codi": "",
+      "op": [
+        "Mozilla",
+        "W3C",
+        "ISO",
+        "Oracle"
+      ],
+      "ok": 1,
+      "exp": "validator.w3.org.",
+      "id": "T1-1.7-10"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Cómo más nos ajustem a el estándar...",
+      "codi": "",
+      "op": [
+        "Mejor resultado entre navegadores",
+        "Peor rendimiento",
+        "Menos compatibilidad",
+        "Más errores"
+      ],
+      "ok": 0,
+      "exp": "Estandardització.",
+      "id": "T1-1.7-11"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Cualquier persona puede veure el tu JavaScript. Cómo lo hace?",
+      "codi": "",
+      "op": [
+        "No puede",
+        "Solo con permiso del servidor",
+        "Con Ctrl+U o F12",
+        "Solo con un editor"
+      ],
+      "ok": 2,
+      "exp": "El navegador el debe descargar completo.",
+      "id": "T1-1.7-12"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Qué hace minificar el código?",
+      "codi": "",
+      "op": [
+        "Quita espacios y escurça noms porque la página pesi menos y carregui antes",
+        "L'encripta",
+        "Elimina errores",
+        "Protege el código"
+      ],
+      "ok": 0,
+      "exp": "Minificar no es proteger.",
+      "id": "T1-1.7-13"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Ofuscar el código...",
+      "codi": "",
+      "op": [
+        "Elimina el XSS",
+        "L'amaga del todo",
+        "Solo hace perdre unos minuts a quién vulgui leer-lo",
+        "El hace seguro"
+      ],
+      "ok": 2,
+      "exp": "No es protección real.",
+      "id": "T1-1.7-14"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Qué herramienta cita el tema cómo a ejemplo de minificació en publicar?",
+      "codi": "",
+      "op": [
+        "FrontPage",
+        "Notepad++",
+        "Vite o esbuild",
+        "Dreamweaver"
+      ],
+      "ok": 2,
+      "exp": "Vite y esbuild.",
+      "id": "T1-1.7-15"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "En NO has de poner nunca una clave d'API?",
+      "codi": "",
+      "op": [
+        "Al gestor de secrets",
+        "Al servidor",
+        "Al código del cliente",
+        "A una variable d'entorno del servidor"
+      ],
+      "ok": 2,
+      "exp": "Si la poses en el cliente, la publiques.",
+      "id": "T1-1.7-16"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Una comprobación «usuario premium» hecha solo con JavaScript en el cliente es...",
+      "codi": "",
+      "op": [
+        "Insegura: es puede saltar",
+        "Segura si está minificada",
+        "Segura",
+        "Segura con defer"
+      ],
+      "ok": 0,
+      "exp": "Cualquier puede modificar el cliente.",
+      "id": "T1-1.7-17"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "La validación hecha en el cliente sirve por...",
+      "codi": "",
+      "op": [
+        "Seguridad",
+        "Evitar XSS",
+        "Comoditat de el usuarioo, nunca por seguridad",
+        "Sustituir el servidor"
+      ],
+      "ok": 2,
+      "exp": "El servidor debe volver a validar-lo todo.",
+      "id": "T1-1.7-18"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Por qué las APIs del proyecto final no demanen clave?",
+      "codi": "",
+      "op": [
+        "Porque no existen",
+        "Porque son las úniques que es pueden llamar con honestedat desde del navegador",
+        "Porque son del W3C",
+        "Porque son más ràpides"
+      ],
+      "ok": 1,
+      "exp": "Una clave en el cliente es publica.",
+      "id": "T1-1.7-19"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "código",
+      "q": "Este código es una mala práctica. Por qué?",
+      "codi": "const CLAU = 'sk-12345-secreta';\nfetch('https://api.exemple.com/dades?key=' + CLAU);",
+      "op": [
+        "Falta defer",
+        "La clave queda visible por a cualquier con Ctrl+U o F12",
+        "La clave está encriptada",
+        "fetch no accepta llaves"
+      ],
+      "ok": 1,
+      "exp": "Clave en el cliente.",
+      "id": "T1-1.7-20"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "código",
+      "q": "Este código comprueba el papel solo en el cliente. Cuál es el problema?",
+      "codi": "if (usuari.rol === 'admin') {\n  mostrarPanellAdmin();\n}",
+      "op": [
+        "Cualquier puede cambiar el valor o saltar-se la comprobación",
+        "Falta async",
+        "Falta el punto y coma",
+        "No ahí ha ningún problema"
+      ],
+      "ok": 0,
+      "exp": "No es seguro.",
+      "id": "T1-1.7-21"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Un usuario hace a la consola: document.getElementById('c').removeAttribute('required'). Qué demostra?",
+      "codi": "",
+      "op": [
+        "Que required es seguro",
+        "Que no es puede",
+        "Que la validación de cliente es puede saltar",
+        "Que el servidor valida"
+      ],
+      "ok": 2,
+      "exp": "Por esto el servidor valida de nuevo.",
+      "id": "T1-1.7-22"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Qué extensions de VS Code demana la P00?",
+      "codi": "",
+      "op": [
+        "Solo Live Servidor",
+        "Dreamweaver y Bluefish",
+        "FTP y W3C",
+        "Live Servidor, Prettier y ESLint"
+      ],
+      "ok": 3,
+      "exp": "Entorno de P00.",
+      "id": "T1-1.7-23"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "teoría",
+      "q": "Por qué hacer servir Live Servidor en sitio d'abrir el HTML con file://?",
+      "codi": "",
+      "op": [
+        "No hay que navegador",
+        "Es más bonic",
+        "Sirve la página por HTTP://127.0.0.1:5500/ y el navegador la trata cómo un sitio real",
+        "Compila el JS"
+      ],
+      "ok": 2,
+      "exp": "P00.",
+      "id": "T1-1.7-24"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "El navegador debe descargar el JS completo",
+        "Minificar el código el protege porque ningú el pueda leer",
+        "La validación del cliente no es seguridad",
+        "Una clave d'API nunca fue al código del cliente"
+      ],
+      "ok": 1,
+      "exp": "Minificar es rendimiento, no protección.",
+      "id": "T1-1.7-25"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "error",
+      "q": "Detecta el afirmación FALSA sobre herramientas.",
+      "codi": "",
+      "op": [
+        "Los editors pueden tener clientes FTP",
+        "El W3C tiene un validador",
+        "Hay que estar connectat a internet por escribir JavaScript",
+        "Hay que provar en 2 o 3 navegadores"
+      ],
+      "ok": 2,
+      "exp": "No hay que conexión.",
+      "id": "T1-1.7-26"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "escribir",
+      "titol": "Código visible",
+      "q": "Explica por qué el código JS siempre es veu y qué conseqüències tiene (llaves d'API, validación, minificació).",
+      "codi": "",
+      "solucio": "El navegador debe descargar el JS completo; cualquier el veu con Ctrl+U/F12. Minificar no protege (solo pes); ofuscar solo hace perdre tiempo. Una clave d'API/contrasenya/comprobación premium nunca en el cliente. La validación del cliente es comoditat, el servidor debe volver a validar.",
+      "rubrica": [
+        "Por qué es veu (0,5)",
+        "Minificar no es proteger (0,5)",
+        "Clave en el cliente (0,5)",
+        "Validación (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.7-27"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "escribir",
+      "titol": "Flux de treball",
+      "q": "Describe los passos recomanats para hacer un portal web y las herramientas que ahí intervenen.",
+      "codi": "",
+      "solucio": "1) Codificar HTML, JS y CSS con un editor de código; 2) guardar con las extensions y provar en 2-3 navegadores (recarregant); 3) validar con el W3C. No hay que internet.",
+      "rubrica": [
+        "Tres passos (1,5)",
+        "Herramientas (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.7-28"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D1: qué tipo d'error es veu a la consola?",
+      "codi": "console.log(\"Falta tancar el parèntesi\";",
+      "op": [
+        "CORS",
+        "TypeError",
+        "SyntaxError: missing ) after argumento list",
+        "ReferenceError"
+      ],
+      "ok": 2,
+      "exp": "Falta el paréntesis de tancament.",
+      "id": "T1-pract-01"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D1: en qué orden s'debe leer un mensaje d'error de la consola?",
+      "codi": "",
+      "op": [
+        "No hay que leer-lo",
+        "Tipo d'error, qué falta y en (archivo y línea)",
+        "En, tipo y qué falta",
+        "Qué falta, en y tipo"
+      ],
+      "ok": 1,
+      "exp": "Tres coses siempre en este orden.",
+      "id": "T1-pract-02"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D1: qué pasa cuando es llamada document.write después d'haver cargado la página?",
+      "codi": "setTimeout(function () {\n  document.write('<p>Arribo tard</p>');\n}, 2000);",
+      "op": [
+        "Fue a la consola",
+        "Borra todo el documento y empieza de nuevo",
+        "Nada",
+        "Añade al final"
+      ],
+      "ok": 1,
+      "exp": "Por esto casi no s'usa.",
+      "id": "T1-pract-03"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D1: qué es la forma moderna de cambiar un texto de la página?",
+      "codi": "const p = document.getElementById('missatge');\np.textContent = 'Nou text';",
+      "op": [
+        "getElementById + textContent",
+        "document.write",
+        "alert",
+        "console.log"
+      ],
+      "ok": 0,
+      "exp": "No destrueix nada.",
+      "id": "T1-pract-04"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D1: qué hace este código?",
+      "codi": "const p = document.getElementById('missatge');\np.style.color = '#8c2f39';",
+      "op": [
+        "Cambia el color del texto del paràgraf a un granat",
+        "Da error",
+        "Cambia el fons",
+        "Borra el paràgraf"
+      ],
+      "ok": 0,
+      "exp": "style.color.",
+      "id": "T1-pract-05"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D2: qué es la salida de la consola en el orden real de ejecución de la demo?",
+      "codi": "",
+      "op": [
+        "1 en línea al head, 2 externo al head, 4 externo al final, 3 defer",
+        "1, 3, 2, 4",
+        "1, 2, 3, 4",
+        "4, 3, 2, 1"
+      ],
+      "ok": 0,
+      "exp": "El defer fue siempre el último.",
+      "id": "T1-pract-06"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D2: el body existe cuando se ejecuta el script en línea del head?",
+      "codi": "console.log('el body existeix?', document.body !== null);",
+      "op": [
+        "Siempre es undefined",
+        "No: devuelve false",
+        "Sí: devuelve true",
+        "Depende del navegador"
+      ],
+      "ok": 1,
+      "exp": "document.body es null.",
+      "id": "T1-pract-07"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D2: qué script es «bloqueando»?",
+      "codi": "",
+      "op": [
+        "El defer",
+        "El del final del body",
+        "L'externo al head sin atributs",
+        "L'async"
+      ],
+      "ok": 2,
+      "exp": "Detiene la construcció hasta que se ejecuta.",
+      "id": "T1-pract-08"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D3: el servidor ha enviat los tres productes de la lista?",
+      "codi": "",
+      "op": [
+        "No: los crea el navegador con JavaScript",
+        "Sí, pero ocults",
+        "Sí",
+        "No existen"
+      ],
+      "ok": 0,
+      "exp": "Ctrl+U muestra la lista buida.",
+      "id": "T1-pract-09"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D3: qué diferencia ahí ha entre Ctrl+U y F12 > Elementos?",
+      "codi": "",
+      "op": [
+        "Ctrl+U muestra el DOM modificat",
+        "Son iguals",
+        "Ctrl+U muestra el HTML tal cómo el ha enviat el servidor; Elementos muestra el DOM ya modificat",
+        "Elementos muestra solo CSS"
+      ],
+      "ok": 2,
+      "exp": "Clave de la demo.",
+      "id": "T1-pract-10"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D3: qué hace createElement + appendChild?",
+      "codi": "const li = document.createElement('li');\nli.textContent = 'Teclat';\nllista.appendChild(li);",
+      "op": [
+        "Crea un <li> en memoria y el penja de la lista",
+        "Borra la lista",
+        "Valida el formulario",
+        "Escribe un archivo"
+      ],
+      "ok": 0,
+      "exp": "Construeix el DOM.",
+      "id": "T1-pract-11"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D4: qué componente de F12 muestra las peticiones en el servidor?",
+      "codi": "",
+      "op": [
+        "Elementos",
+        "Sources",
+        "Network",
+        "Application"
+      ],
+      "ok": 2,
+      "exp": "Subsistema de comunicaciones.",
+      "id": "T1-pract-12"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D4: en es veu localStorage?",
+      "codi": "",
+      "op": [
+        "Console",
+        "Network",
+        "Pestaña Application",
+        "Elementos"
+      ],
+      "ok": 2,
+      "exp": "Persistencia de datos.",
+      "id": "T1-pract-13"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D4: fetch demana un archivo y el servidor contesta 404. Qué muestra la consola?",
+      "codi": "fetch('dades/inexistent.json')\n  .then(r => console.log(r.status, r.ok))\n  .catch(e => console.error('Error', e));",
+      "op": [
+        "Entra al catch",
+        "`404` y `false` y NO entra al catch",
+        "`200` y `true`",
+        "Un SyntaxError"
+      ],
+      "ok": 1,
+      "exp": "fetch no lanza error por 404/500.",
+      "id": "T1-pract-14"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D4: cuando se ejecuta el .catch de un fetch?",
+      "codi": "",
+      "op": [
+        "Solo si falla la red de veritat",
+        "Nunca",
+        "Siempre que ahí ha un 404",
+        "Siempre que ahí ha un 500"
+      ],
+      "ok": 0,
+      "exp": "El 404 no es un error de red.",
+      "id": "T1-pract-15"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D4: qué hace respuesta.json()?",
+      "codi": "",
+      "op": [
+        "Dona un error",
+        "Converteix el texto rebut en un objeto",
+        "Borra la respuesta",
+        "Envía datos"
+      ],
+      "ok": 1,
+      "exp": "Parseja JSON.",
+      "id": "T1-pract-16"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D4: qué componente corresponde a el intérprete de JavaScript a F12?",
+      "codi": "",
+      "op": [
+        "Network",
+        "Elementos",
+        "Application",
+        "Console y Sources"
+      ],
+      "ok": 3,
+      "exp": "Ejecuta y muestra el JS.",
+      "id": "T1-pract-17"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D4: qué diapositiva s'acompanya con la demo D4?",
+      "codi": "",
+      "op": [
+        "L'arquitectura de referencia del navegador",
+        "El modelo cliente-servidor",
+        "La validación W3C",
+        "Las rutas de los archivos"
+      ],
+      "ok": 0,
+      "exp": "Cada componente tiene la seva pestaña.",
+      "id": "T1-pract-18"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D5: por qué fetch('file:///C:/Windows/win.ini') falla?",
+      "codi": "",
+      "op": [
+        "El archivo no existe",
+        "Error de sintaxis",
+        "Falta async",
+        "El navegador (sandbox) bloquea la lectura del disco"
+      ],
+      "ok": 3,
+      "exp": "Sandbox.",
+      "id": "T1-pract-19"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "D5: por qué fetch('https://example.cómo') falla?",
+      "codi": "",
+      "op": [
+        "Falta defer",
+        "Error del tu código",
+        "example.cómo no existe",
+        "El navegador bloquea la lectura por la política del mismo origen (CORS)"
+      ],
+      "ok": 3,
+      "exp": "El servidor no envía la cabecera d'autorització.",
+      "id": "T1-pract-20"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D5: qué hace evento.preventDefault() al submit?",
+      "codi": "form.addEventListener('submit', function (e) {\n  e.preventDefault();\n});",
+      "op": [
+        "Valida el correo",
+        "Detiene el enviament real del formulario",
+        "Cierra la página",
+        "Envía el formulario dues veces"
+      ],
+      "ok": 1,
+      "exp": "preventDefault.",
+      "id": "T1-pract-21"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "D5: qué demostra el botón «Saltar-se la validación»?",
+      "codi": "camp.removeAttribute('required');\ncamp.type = 'text';",
+      "op": [
+        "Que la validación del cliente es puede eliminar desde la consola",
+        "Que required no existe",
+        "Que el formulario es seguro",
+        "Que el servidor es insegur"
+      ],
+      "ok": 0,
+      "exp": "removeAttribute('required') y type='texto'.",
+      "id": "T1-pract-22"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "P00: qué condició indica que s'usa Live Servidor?",
+      "codi": "if (location.protocol === 'http:') {\n  afegir('✓ La pàgina va per http.');\n}",
+      "op": [
+        "`location.protocolo === 'HTTP:'`",
+        "`navigator.cookieEnabled`",
+        "`typeof fetch === 'function'`",
+        "`location.protocolo === 'file:'`"
+      ],
+      "ok": 0,
+      "exp": "Live Servidor sirve por HTTP.",
+      "id": "T1-pract-23"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "P00: qué comprueba esta línea?",
+      "codi": "typeof fetch === 'function'",
+      "op": [
+        "Si el navegador conoce fetch",
+        "Si ahí ha galetes",
+        "Si ahí ha disco",
+        "La resolució"
+      ],
+      "ok": 0,
+      "exp": "typeof.",
+      "id": "T1-pract-24"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "P00: qué comprueba esta línea?",
+      "codi": "navigator.cookieEnabled",
+      "op": [
+        "El protocolo",
+        "La resolució",
+        "Si las galetes están habilitades",
+        "Si fetch existe"
+      ],
+      "ok": 2,
+      "exp": "cookieEnabled.",
+      "id": "T1-pract-25"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "P00: qué lee esta condició?",
+      "codi": "if (screen.width && screen.height) { }",
+      "op": [
+        "El disco",
+        "El protocolo",
+        "La resolució de la pantalla",
+        "Las galetes"
+      ],
+      "ok": 2,
+      "exp": "screen.width y screen.height.",
+      "id": "T1-pract-26"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: por qué se captura el error de fetch('file://...')?",
+      "codi": "",
+      "op": [
+        "Por millorar la velocidad",
+        "Por provar CORS",
+        "Porque el archivo no ahí es",
+        "Por demostrar que JavaScript no puede leer archivos del disco (sandbox)"
+      ],
+      "ok": 3,
+      "exp": "Requisit importante.",
+      "id": "T1-pract-27"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: qué son las cuatro formes d'integrar código que muestra el HTML?",
+      "codi": "",
+      "op": [
+        "Cuatro archivos al head",
+        "CSS, HTML, JS y XML",
+        "onclick, <script> en línea al cuerpo, <script src> al head y <script src> al final del body",
+        "Solo <script src>"
+      ],
+      "ok": 2,
+      "exp": "R3.",
+      "id": "T1-pract-28"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: qué es el orden de los apuntaments 1, 2 y 3?",
+      "codi": "",
+      "op": [
+        "1, 3, 2",
+        "3, 2, 1",
+        "head (1), en línea al cuerpo (2), final del body (3)",
+        "2, 1, 3"
+      ],
+      "ok": 2,
+      "exp": "El head se ejecuta antes.",
+      "id": "T1-pract-29"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: por qué el script del head no puede tocar los elementos de la página?",
+      "codi": "",
+      "op": [
+        "Porque falta async",
+        "Porque es externo",
+        "Porque se ejecuta antes que el cuerpo existeixi",
+        "Porque no tiene permiso"
+      ],
+      "ok": 2,
+      "exp": "L'HTML todavía no se ha analitzat.",
+      "id": "T1-pract-30"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: tres maneres d'arreglar el script del head?",
+      "codi": "",
+      "op": [
+        "Eliminar-lo",
+        "defer, moure'l al final del body o usar DOMContentLoaded",
+        "Solo async",
+        "Solo defer"
+      ],
+      "ok": 1,
+      "exp": "Las tres de la respuesta escrita.",
+      "id": "T1-pract-31"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: si poses defer al archivo del head pero el script en línea del cuerpo llamada apuntarOrdre...",
+      "codi": "",
+      "op": [
+        "ReferenceError: apuntarOrdre is not defined",
+        "Funciona igual",
+        "S'ignora defer",
+        "Es carga dues veces"
+      ],
+      "ok": 0,
+      "exp": "El defer se ejecuta después del script en línea.",
+      "id": "T1-pract-32"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: qué classifica la taula de comparativa.md y qué caso es trampa?",
+      "codi": "",
+      "op": [
+        "JSON es solo servidor",
+        "JSON es un lenguaje de servidor",
+        "JSON es solo cliente",
+        "JSON: formato de datos, no lenguaje; usat por cliente y servidor"
+      ],
+      "ok": 3,
+      "exp": "Dubte clàssic.",
+      "id": "T1-pract-33"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: en se ejecuta Node.js?",
+      "codi": "",
+      "op": [
+        "Solo en el cliente",
+        "Al servidor",
+        "En un CSS",
+        "Al navegador"
+      ],
+      "ok": 1,
+      "exp": "Node.js lleva V8.",
+      "id": "T1-pract-34"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoría",
+      "q": "P00: en se ejecuta WebAssembly?",
+      "codi": "",
+      "op": [
+        "Principalmente en el cliente (navegador), todo y que también puede usar-se fuera",
+        "Solo en el servidor",
+        "Solo al CSS",
+        "Solo a SQL"
+      ],
+      "ok": 0,
+      "exp": "Trampa del llistat.",
+      "id": "T1-pract-35"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "código",
+      "q": "P00: qué es el tipo de ruta del script?",
+      "codi": "<script src=\"js/app.js\"></script>",
+      "op": [
+        "Remota",
+        "Relativa",
+        "Invàlida",
+        "Absoluta"
+      ],
+      "ok": 1,
+      "exp": "JS/app.JS.",
+      "id": "T1-pract-36"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "error",
+      "q": "P00: qué error tiene esta línea d'app.JS?",
+      "codi": "function avisarDesDeAtribut() {\n  apuntarOrdre('4 · clic botó (atribut HTML)');\n  document.getElementById('ordre').textContent = ordre.join('\\n')\n}\napuntarOrdre('3');",
+      "op": [
+        "orden no existe",
+        "apuntarOrdre es privada",
+        "Falta el punto y coma y no funciona",
+        "Ningún error sintàctic: orden es var global del head"
+      ],
+      "ok": 3,
+      "exp": "orden ve de a-la-capcalera.JS.",
+      "id": "T1-pract-37"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "error",
+      "q": "D2: qué error ahí ha?",
+      "codi": "<head>\n  <script src=\"a.js\"></script>\n</head>\n<body><p id=\"x\"></p></body>\n// a.js\ndocument.getElementById('x').textContent = 'a';",
+      "op": [
+        "getElementById no existe",
+        "Falta type",
+        "Falta el punto y coma",
+        "El script se ejecuta antes que el p existeixi: falta defer"
+      ],
+      "ok": 3,
+      "exp": "TypeError por null.",
+      "id": "T1-pract-38"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "error",
+      "q": "D4: qué es el problema?",
+      "codi": "fetch('dades/x.json')\n  .then(r => r.json())\n  .then(d => console.log(d))\n  .catch(e => console.error(e));",
+      "op": [
+        "Falta el punto y coma",
+        "Si el servidor responde 404 no es detecta con catch; hay que comprobar r.ok",
+        "Falta async",
+        "JSON() no existe"
+      ],
+      "ok": 1,
+      "exp": "fetch no falla por 404.",
+      "id": "T1-pract-39"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "error",
+      "q": "P00: qué es el problema d'esta cadena?",
+      "codi": "afegir('✗' + ' ' + 'El navegador no admet' + comprovacio);",
+      "op": [
+        "Sobra el +",
+        "Falta un espacio: surt «admet fetch» enganxat",
+        "añadir no existe",
+        "Falta una cometa"
+      ],
+      "ok": 1,
+      "exp": "Falta el espacio.",
+      "id": "T1-pract-40"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escribir",
+      "titol": "P00 · Comprovacions",
+      "q": "Escribe las cinco comprovacions de P00 con if/else y añadir().",
+      "codi": "",
+      "solucio": "if (location.protocolo === 'HTTP:') {...}; if (typeof fetch === 'function') {...}; if (navigator.cookieEnabled) {...}; if (screen.width && screen.height) {...}; provarDisc() con fetch('file://...') y catch.",
+      "rubrica": [
+        "5 comprovacions (0,3 c/u)",
+        "if/else correctes (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-pract-41"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escribir",
+      "titol": "D5 · Los límits",
+      "q": "Explica las tres coses que muestra la demo D5 y por qué cada una pasa.",
+      "codi": "",
+      "solucio": "1) No es puede leer un archivo del disco: sandbox. 2) No es puede leer example.cómo sin permiso: mismo origen/CORS. 3) La validación del cliente es puede saltar: el servidor debe validar.",
+      "rubrica": [
+        "Sandbox (0,7)",
+        "CORS (0,7)",
+        "Validación (0,6)"
+      ],
+      "punts": 2,
+      "id": "T1-pract-42"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escribir",
+      "titol": "D2 · Cuatro formes",
+      "q": "Escribe cuatro scripts diferentes (en línea al head, externo al head, defer, externo al final del body) y indica el orden.",
+      "codi": "",
+      "solucio": "<script>console.log(1)</script> al head; <script src=\"dos.JS\"> al head; <script src=\"tres.JS\" defer> al head; <script src=\"cuatro.JS\"> al final del body. Orden: 1, 2, 4, 3.",
+      "rubrica": [
+        "4 formes (1)",
+        "Orden (1)"
+      ],
+      "punts": 2,
+      "id": "T1-pract-43"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escribir",
+      "titol": "D4 · fetch",
+      "q": "Escribe un fetch que carregui datos/motores.JSON, comprovi r.ok y pinti los motores en un <ul>.",
+      "codi": "",
+      "solucio": "fetch('datos/motores.JSON').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(d => { for (const m of d.motores) { const li = document.createElement('li'); li.textContent = m.nombre; ul.appendChild(li); } }).catch(console.error);",
+      "rubrica": [
+        "fetch (0,5)",
+        "Comprobar r.ok (0,5)",
+        "JSON() (0,5)",
+        "Crear y añadir li (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-pract-44"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escribir",
+      "titol": "D1 · Hola Onliner",
+      "q": "Escribe el código por cambiar el texto y el color de un paràgraf con id=\"mensaje\" y mostrar un mensaje a la consola.",
+      "codi": "",
+      "solucio": "const p = document.getElementById('mensaje'); p.textContent = 'Nuevo texto'; p.style.color = '#8c2f39'; console.log('hecho');",
+      "rubrica": [
+        "getElementById (0,5)",
+        "textContent (0,5)",
+        "style.color (0,5)",
+        "console.log (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-pract-45"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "interpretar",
+      "titol": "Consola o página",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "console.log('A');\ndocument.write('<p>B</p>');\nconsole.log('C');",
+      "solucio": "Consola: A, C. El B no surt a la consola: document.write el escribe a la página. Última línea: console.log('C') solo deixa constància a la consola.",
+      "rubrica": [
+        "A y C a la consola (1)",
+        "B a la página, no a la consola (1)"
+      ],
+      "punts": 2,
+      "id": "T1-1.5-23"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "interpretar",
+      "titol": "Orden de ejecución",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea. Indica el orden.",
+      "codi": "<head>\n  <script>console.log(1);</script>\n  <script src=\"dos.js\"></script>          // console.log(2)\n  <script src=\"tres.js\" defer></script>   // console.log(3)\n</head>\n<body>\n  <script src=\"quatre.js\"></script>        // console.log(4)\n</body>",
+      "solucio": "Salida: 1, 2, 4, 3. El defer es baja en paral·lel pero se ejecuta el último, cuando el HTML ya es completo; el 4 ya corre porque es al final del body.",
+      "rubrica": [
+        "Orden 1,2,4,3 (1,5)",
+        "Explicación del defer (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.6-34"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "interpretar",
+      "titol": "Aprovats",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "const notes = [4, 9, 6, 10];\nlet aprovats = 0;\nfor (const n of notes) {\n  if (n >= 5) {\n    aprovats++;\n    console.log('aprovat: ' + n);\n  }\n}\nconsole.log(aprovats + ' aprovats');\nconsole.log(notes.length + '/' + aprovats);",
+      "solucio": "aprovat: 9 / aprovat: 6 / aprovat: 10 / 3 aprovats / 4/3. A la última línea, 4 + '/' ya es el texto '4/' (número + texto = concatenació) y después s'ahí pega 3.",
+      "rubrica": [
+        "Las tres líneas del bucle (1)",
+        "3 aprovats (0,3)",
+        "4/3 (0,3)",
+        "Explicación de la concatenació (0,4)"
+      ],
+      "punts": 2,
+      "id": "T1-1.5-24"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "interpretar",
+      "titol": "fetch con 404",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "fetch('dades/inexistent.json')\n  .then(r => {\n    console.log('estat', r.status, r.ok);\n    return r.json();\n  })\n  .catch(e => console.log('catch'));\nconsole.log('final');",
+      "solucio": "final / estat 404 false / catch. 'finael  surt primero porque fetch es asíncron. El 404 no lanza error, pero r.json() falla porque el cuerpo no es JSON y entonces entra al catch.",
+      "rubrica": [
+        "final primero (0,7)",
+        "estat 404 false (0,6)",
+        "catch (0,3)",
+        "Explicación asíncron / 404 (0,4)"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-29"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "interpretar",
+      "titol": "Mismo origen",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "const o = u => new URL(u).origin;\nconsole.log(o('http://web.cat/a') === o('http://web.cat/b'));\nconsole.log(o('http://web.cat') === o('https://web.cat'));\nconsole.log(o('http://web.cat') === o('http://web.cat:3000'));",
+      "solucio": "true / false / false. L'origen es protocolo + dominio + puerto: la ruta no compta; el protocolo y el puerto diferentes dan un otro origen.",
+      "rubrica": [
+        "true, false, false (1,2)",
+        "Origen = protocolo+dominio+puerto (0,8)"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-30"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "interpretar",
+      "titol": "textContent vs innerHTML",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "const d = document.createElement('div');\nd.innerHTML = '<b>hola</b>';\nconsole.log(d.textContent);\nconsole.log(d.innerHTML);\nd.textContent = '<b>hola</b>';\nconsole.log(d.innerHTML);",
+      "solucio": "hola / <b>hola</b> / &lt;b&gt;hola&lt;/b&gt;. Con textContent el texto es desa literal y el navegador escapa los símbols: no s'interpreta cómo a HTML (por esto evita XSS).",
+      "rubrica": [
+        "Las tres sortides (1,2)",
+        "Explicación del textContent y XSS (0,8)"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-31"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "interpretar",
+      "titol": "Función apuntarOrdre (P00)",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "var ordre = [];\nfunction apuntarOrdre(t) {\n  ordre.push(t);\n  console.log(t);\n}\napuntarOrdre('1');\napuntarOrdre('2');\napuntarOrdre('3');\nconsole.log(ordre.length);\nconsole.log(ordre.join('-'));",
+      "solucio": "1 / 2 / 3 / 3 / 1-2-3. orden.join('-') uneix los elementos de el array con un guió.",
+      "rubrica": [
+        "1,2,3 (0,8)",
+        "3 (0,5)",
+        "1-2-3 y explicación del join (0,7)"
+      ],
+      "punts": 2,
+      "id": "T1-pract-46"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "interpretar",
+      "titol": "Comprovacions (P00)",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "const llista = ['fetch', 'Promise', 'class'];\nfor (const c of llista) {\n  if (c === 'class') {\n    console.log('especial');\n  } else if (typeof window[c] === 'function') {\n    console.log('✓ ' + c);\n  } else {\n    console.log('✗ ' + c);\n  }\n}",
+      "solucio": "✓ fetch / ✓ Promise / especial (en un navegador modern). Por a 'class' entra al primero if y no es comprueba con typeof.",
+      "rubrica": [
+        "✓ fetch y ✓ Promise (1)",
+        "especial (0,5)",
+        "Explicación del primero if (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-pract-47"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "interpretar",
+      "titol": "document.body al head",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "<head>\n  <script>\n    console.log(document.body);\n    console.log(typeof document.body);\n  </script>\n</head>",
+      "solucio": "null / object. Todavía no existe el body, pero typeof null es 'object' (peculiaritat del lenguaje).",
+      "rubrica": [
+        "null (1)",
+        "object y explicación (1)"
+      ],
+      "punts": 2,
+      "id": "T1-1.5-25"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "interpretar",
+      "titol": "localStorage",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "localStorage.setItem('n', '5');\nconsole.log(localStorage.getItem('n') + 1);\nconsole.log(Number(localStorage.getItem('n')) + 1);\nconsole.log(localStorage.getItem('x'));",
+      "solucio": "51 / 6 / null. localStorage solo guarda texto: '5' + 1 es '51'; con Number es hace suma. Una clave inexistent devuelve null. Es el subsistema de persistencia.",
+      "rubrica": [
+        "51 (0,6)",
+        "6 (0,6)",
+        "null (0,3)",
+        "Explicación del texto (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.3-31"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "interpretar",
+      "titol": "JSON",
+      "q": "Escribe, línea por línea, el que muestra la consola, y explica la última línea.",
+      "codi": "const d = JSON.parse('{\"motors\":[{\"nom\":\"V8\",\"any\":2008},{\"nom\":\"SpiderMonkey\",\"any\":1995}]}');\nconsole.log(d.motors.length);\nconsole.log(d.motors[1].nom);\nconsole.log(d.motors.map(m => m.any));",
+      "solucio": "2 / SpiderMonkey / [2008, 1995]. JSON.parse converteix el texto en objeto; el índice empieza en 0, por esto [1] es el segundo; map crea un array nuevo con los años.",
+      "rubrica": [
+        "2 (0,4)",
+        "SpiderMonkey (0,6)",
+        "[2008, 1995] (0,6)",
+        "Explicación de el índice y map (0,4)"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-32"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "abierta",
+      "q": "Explica con las tuyas paraules qué es el W3C y por qué se creó.",
+      "solucio": "El W3C es un consorcio/organización que desarrolla y mantiene los estándares web. Es fue crear ante el enorme auge de la web.",
+      "punts_clau": [
+        "Consorcio/organización",
+        "Estándares web",
+        "Por el auge de la web"
+      ],
+      "punts": 1,
+      "id": "T1-intro-17"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "abierta",
+      "q": "Qué es el hipertexto y por qué la web depende d'ell?",
+      "solucio": "Palabra o frase que al acceder a ella nos lleva a información relacionada. La web se basa en el hipertexto.",
+      "punts_clau": [
+        "Definició",
+        "La web se basa en ell"
+      ],
+      "punts": 1,
+      "id": "T1-intro-18"
+    },
+    {
+      "apartat": "intro",
+      "tipus": "abierta",
+      "q": "Por qué se dice que el desarrollo web es multidisciplinar? Enumera las fases.",
+      "solucio": "Porque el programador debe dominar todas las fases: necesidades del cliente, objetivos y estrategia, interfaz gráfica, prototipos y presentación final.",
+      "punts_clau": [
+        "Domina todas las fases",
+        "Las 5 fases"
+      ],
+      "punts": 2,
+      "id": "T1-intro-19"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "abierta",
+      "q": "Explica el modelo cliente-servidor.",
+      "solucio": "Tres elementos: servidor (aloja páginas, maquinari/programari, lenguaje multi fils), máquina cliente (navegadores que hacen la petición; HTML, CSS, JS) y conectividad de la red.",
+      "punts_clau": [
+        "Servidor",
+        "Cliente/navegador",
+        "Conectividad"
+      ],
+      "punts": 2,
+      "id": "T1-1.1-24"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "abierta",
+      "q": "Cuáles son los cuatro campos del diseño web?",
+      "solucio": "Visual, tecnología, distribución y propósito.",
+      "punts_clau": [
+        "Los 4 campos"
+      ],
+      "punts": 1,
+      "id": "T1-1.1-25"
+    },
+    {
+      "apartat": "1.1",
+      "tipus": "abierta",
+      "q": "Qué diferencia ahí ha entre alojar y presentar una página?",
+      "solucio": "El servidor aloja y sirve las páginas; el navegador (cliente) presenta la información normalmente escrita en HTML.",
+      "punts_clau": [
+        "Servidor aloja",
+        "Navegador presenta"
+      ],
+      "punts": 1,
+      "id": "T1-1.1-26"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "abierta",
+      "q": "Diferencia entre entorno cliente y entorno servidor, con el ejemplo de un formulario.",
+      "solucio": "Cliente: se ejecuta al navegador (valida el formulario). Servidor: se ejecuta en el servidor (guarda la información a la base de datos). Es complementan.",
+      "punts_clau": [
+        "Cliente = navegador",
+        "Servidor = servidor",
+        "Ejemplo formulario"
+      ],
+      "punts": 2,
+      "id": "T1-1.2-26"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "abierta",
+      "q": "Explica las cuatro capas del desarrollo web en el cliente.",
+      "solucio": "De bajo a arriba: contenido, estructura (DOM/HTML), presentación (CSS), comportamiento (JavaScript).",
+      "punts_clau": [
+        "4 capas",
+        "Orden",
+        "JavaScript capa superior"
+      ],
+      "punts": 2,
+      "id": "T1-1.2-27"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "abierta",
+      "q": "Por qué el módulo se centra en JavaScript?",
+      "solucio": "Grande utilidad en el cliente y suportat por la mayoría de los navegadores y sistemas operativos.",
+      "punts_clau": [
+        "Utilidad en el cliente",
+        "Soporte generalizado"
+      ],
+      "punts": 1,
+      "id": "T1-1.2-28"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "abierta",
+      "q": "Explica qué componentes intervenen desde que escrius una URL hasta que veus la página.",
+      "solucio": "Interfaz de usuario, motor del navegador (carga el dirección), subsistema de comunicaciones (descarga), analizador XML (DOM), motor de renderizado y componente de visualización (mostren), intérprete JS, persistencia.",
+      "punts_clau": [
+        "Navegador carga URL",
+        "Comunicaciones",
+        "Analizador/DOM",
+        "Renderizado y visualización"
+      ],
+      "punts": 3,
+      "id": "T1-1.3-32"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "abierta",
+      "q": "Qué es un motor de JavaScript? Nombra'n tres y digues qué es JIT.",
+      "solucio": "Ejecuta el JS: V8 (Chrome, Edge, Opera, Brave y Node.js), SpiderMonkey (Firefox), JavaScriptCore (Safari). JIT: compilan a código máquina justo antes de ejecutar.",
+      "punts_clau": [
+        "3 motores con navegador",
+        "JIT"
+      ],
+      "punts": 2,
+      "id": "T1-1.3-33"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "abierta",
+      "q": "Qué hacen el analizador XML y el motor de renderizado?",
+      "solucio": "El analizador carga en memoria el árbol DOM de la página; el motor de renderizado presenta visualmente el recurso interpretant HTML, XML, CSS, audio/vídeo y imágenes.",
+      "punts_clau": [
+        "DOM",
+        "Presentar el recurso"
+      ],
+      "punts": 1,
+      "id": "T1-1.3-34"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "abierta",
+      "q": "Qué es el sandbox y qué no puede hacer JavaScript?",
+      "solucio": "Caixa de sorra: no puede leer ni escribir archivos del disco, ni lanzar programas, ni tocar la configuración del navegador.",
+      "punts_clau": [
+        "Sandbox",
+        "Archivos",
+        "Programas/configuración"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-33"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "abierta",
+      "q": "Explica la política del mismo origen y CORS.",
+      "solucio": "Un script de un origen no puede leer cookies ni contenido de un otro. Origen = protocolo + dominio + puerto. CORS es el navegador aplicant-lo; el servidor dona permiso con una cabecera.",
+      "punts_clau": [
+        "Origen definit",
+        "CORS no es culpa del código",
+        "Cabecera"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-34"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "abierta",
+      "q": "Qué es el XSS y qué es la regla por a todo el curs?",
+      "solucio": "Texto de usuario sin netejar que lleva un <script> se ejecuta cómo si fos tu. El navegador protege el usuarioo de la tuya página, pero no la página de las datos que tu li fiques.",
+      "punts_clau": [
+        "Definició XSS",
+        "Regla del curs"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-35"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "abierta",
+      "q": "Por qué JavaScript no puede escribir archivos en el servidor y por qué el sitio debe funcionar sin ell?",
+      "solucio": "JS solo prepara/cedeix datos porque las tracti el servidor. El sitio debe ser navegable sin JS: si el navegador el tiene inhabilitat, la página no debe quedar inactiva.",
+      "punts_clau": [
+        "No escribe en el servidor",
+        "Navegable sin JS"
+      ],
+      "punts": 1,
+      "id": "T1-1.4-36"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "abierta",
+      "q": "En es col·loquen los scripts y qué diferencia ahí ha entre head y final del body?",
+      "solucio": "Dentro <head> o <body>, con <script></script>. Al head se ejecuta antes que existeixi el cuerpo; al final del body el HTML ya es completo.",
+      "punts_clau": [
+        "Dos sitios",
+        "Etiqueta",
+        "Diferencia de ejecución"
+      ],
+      "punts": 2,
+      "id": "T1-1.5-26"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "abierta",
+      "q": "Por a qué sirven type=\"text/javascript\", el punto y coma y </script>?",
+      "solucio": "type indica texto pla organitzat cómo JS; el punto y coma indica final de línea a el intérprete; </script> termina el JS y el navegador torna a esperar HTML.",
+      "punts_clau": [
+        "type",
+        "Punto y coma",
+        "</script>"
+      ],
+      "punts": 1.5,
+      "id": "T1-1.5-27"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "abierta",
+      "q": "Compara código en línea y archivo externo y digues qué es mejor y por qué.",
+      "solucio": "L'externo (src, .JS): codis independents, compartible entre HTML, facilita depuración y claredat, modularitat y carga rápida.",
+      "punts_clau": [
+        "Dues formes",
+        "Externo recomanat",
+        "Ventajas"
+      ],
+      "punts": 2,
+      "id": "T1-1.6-35"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "abierta",
+      "q": "Explica ruta relativa, absoluta y remota y qué hace ../.",
+      "solucio": "Relativa: desde del directorio actual; absoluta: desde el arrel/unitat; remota: empieza con HTTP. ../ es el directorio anterior.",
+      "punts_clau": [
+        "Las tres rutas",
+        "../"
+      ],
+      "punts": 1,
+      "id": "T1-1.6-36"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "abierta",
+      "q": "Explica la diferencia entre script bloqueando, defer y async.",
+      "solucio": "Bloqueando: detiene la página hasta que se ejecuta. Defer: es baja en paral·lel y se ejecuta al final con el HTML complet. Async: se ejecuta cuando termina de baixar, sin orden garantit.",
+      "punts_clau": [
+        "Bloqueando",
+        "Defer",
+        "Async"
+      ],
+      "punts": 2,
+      "id": "T1-1.6-37"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "abierta",
+      "q": "Por a qué sirven <noscript>, CDATA y Creative Commons?",
+      "solucio": "<noscript>: texto por a navegadores sin scripts. CDATA: sintaxis por insertar JS directament en XHTML. Creative Commons: llicència afegida al código.",
+      "punts_clau": [
+        "noscript",
+        "CDATA",
+        "Creative Commons"
+      ],
+      "punts": 1.5,
+      "id": "T1-1.6-38"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "abierta",
+      "q": "Cómo triaries un editor de código y qué flux de treball seguiries?",
+      "solucio": "Editor de código (no de continguts cómo Dreamweaver/FrontPage) con colores, sintaxis, comentaris, FTP. Flux: codificar, guardar y provar en 2-3 navegadores (recarregant), validar con el W3C.",
+      "punts_clau": [
+        "Criteri d'editor",
+        "Flux de 3 passos",
+        "Validador W3C"
+      ],
+      "punts": 2,
+      "id": "T1-1.7-29"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "abierta",
+      "q": "Por qué el código JavaScript siempre es veu y qué conseqüències tiene?",
+      "solucio": "El navegador el debe descargar completo; es veu con Ctrl+U o F12. Minificar no protege; la clave d'API nunca en el cliente; la validación del cliente es solo comoditat.",
+      "punts_clau": [
+        "Es veu con Ctrl+U/F12",
+        "Minificar no es proteger",
+        "Clave d'API",
+        "Validación"
+      ],
+      "punts": 2,
+      "id": "T1-1.7-30"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "abierta",
+      "q": "Qué es el validador del W3C y por qué se el último pas?",
+      "solucio": "Comprueba que el código es vàlid según el estándar y detecta imperfeccions; cómo más nos ajustem a el estándar, mejor resultado entre navegadores.",
+      "punts_clau": [
+        "Valida el estándar",
+        "Mejor entre navegadores"
+      ],
+      "punts": 1,
+      "id": "T1-1.7-31"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "abierta",
+      "q": "Qué demostra el requisit R2 de la P00 sobre la lectura de un archivo del disco?",
+      "solucio": "Que el navegador es un sandbox: JS no puede leer archivos del disco y el error ve del navegador, no del código.",
+      "punts_clau": [
+        "Sandbox",
+        "Error del navegador"
+      ],
+      "punts": 1,
+      "id": "T1-pract-48"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "abierta",
+      "q": "Diferencia entre Ctrl+U y F12 > Elementos (D3).",
+      "solucio": "Ctrl+U muestra el HTML tal cómo el ha enviat el servidor; Elementos muestra el DOM ya modificat pel JavaScript.",
+      "punts_clau": [
+        "Ctrl+U = enviat",
+        "Elementos = DOM modificat"
+      ],
+      "punts": 1,
+      "id": "T1-pract-49"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "abierta",
+      "q": "Por qué fetch no entra al catch en un 404 (D4)?",
+      "solucio": "fetch solo falla por errores de red; un 404 es una respuesta vàlida y hay que comprobar r.ok.",
+      "punts_clau": [
+        "Solo falla la red",
+        "Comprobar r.ok"
+      ],
+      "punts": 1,
+      "id": "T1-pract-50"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "escribir",
+      "titol": "Entrada de usuario segura",
+      "q": "Escribe el código que agafi el texto de un <input id=\"nombre\"> y el mostri dentro de un <p id=\"salida\"> sin risc d'XSS. Explica por qué no has d'usar innerHTML.",
+      "codi": "",
+      "solucio": "const texto = document.getElementById('nombre').value;\ndocument.getElementById('salida').textContent = texto;\ninnerHTML interpretaria etiquetas cómo <script> o <img onerror>; textContent las muestra cómo a texto.",
+      "rubrica": [
+        "Leer el valor (0,5)",
+        "Usar textContent (1)",
+        "Explicación d'innerHTML (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.4-37"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "escribir",
+      "titol": "Tres scripts ben col·locats",
+      "q": "El HTML es a /web/index.HTML; utils.JS y app.JS son a /web/JS/. app.JS usa funciones d'utils.JS y toca elementos del body. Escribe las etiquetas <script> y justifica el orden.",
+      "codi": "",
+      "solucio": "<script src=\"JS/utils.JS\" defer></script>\n<script src=\"JS/app.JS\" defer></script>\nEs ponen al head con defer (se ejecutan en orden cuando el HTML es completo). utils.JS debe ir antes d'app.JS.",
+      "rubrica": [
+        "Ruta relativa JS/ (0,5)",
+        "defer o final del body (0,5)",
+        "Orden utils antes d'app (1)"
+      ],
+      "punts": 2,
+      "id": "T1-1.6-39"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "escribir",
+      "titol": "Validación en el cliente",
+      "q": "Escribe un formulario que no s'enviï si el nombre es buit o el correo no contiene @, mostrant un mensaje. Explica por qué el servidor debe volver a validar.",
+      "codi": "",
+      "solucio": "form.addEventListener('submit', function (e) {\n  const nombre = document.getElementById('nombre').value.trim();\n  const correo = document.getElementById('correo').value;\n  if (nombre === '' || !correo.includes('@')) {\n    e.preventDefault();\n    document.getElementById('avis').textContent = 'Revisa el nombre y el correo';\n  }\n});\nEl cliente es puede saltar desde la consola; la validación del cliente es comoditat, no seguridad.",
+      "rubrica": [
+        "Evento submit (0,5)",
+        "Condició correcta (0,5)",
+        "preventDefault (0,5)",
+        "Mensaje (0,25)",
+        "Servidor valida (0,25)"
+      ],
+      "punts": 2,
+      "id": "T1-1.7-32"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "escribir",
+      "titol": "Detecció de característiques",
+      "q": "Escribe código que comprovi si el navegador conoce fetch y localStorage y mostri por consola un ✓ o ✗ de cada un.",
+      "codi": "",
+      "solucio": "console.log(typeof fetch === 'function' ? '✓ fetch' : '✗ fetch');\nconsole.log(typeof localStorage !== 'undefined' ? '✓ localStorage' : '✗ localStorage');",
+      "rubrica": [
+        "Comprobación de fetch (1)",
+        "Comprobación de localStorage (0,5)",
+        "Salida ✓/✗ (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.3-35"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escribir",
+      "titol": "Lista de productes (D3)",
+      "q": "Escribe una función pintar(productes) que rebi un array de textos y afegeixi un <li> por cada un dentro de <ul id=\"lista\">.",
+      "codi": "",
+      "solucio": "function pintar(productes) {\n  const lista = document.getElementById('lista');\n  for (const p of productes) {\n    const li = document.createElement('li');\n    li.textContent = p;\n    lista.appendChild(li);\n  }\n}",
+      "rubrica": [
+        "getElementById (0,4)",
+        "Bucle (0,4)",
+        "createElement + textContent (0,6)",
+        "appendChild (0,6)"
+      ],
+      "punts": 2,
+      "id": "T1-pract-51"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "escribir",
+      "titol": "Cambiar el título",
+      "q": "Escribe el HTML mínim con un <h1 id=\"título\"> y un script que n'ahí canviï el texto de manera que no doni error.",
+      "codi": "",
+      "solucio": "<body>\n  <h1 id=\"título\">Hola</h1>\n  <script>\n    document.getElementById('título').textContent = 'Nuevo título';\n  </script>\n</body>\nEl script fue después de el h1 (o con defer), porque el elementoo ya existeixi.",
+      "rubrica": [
+        "h1 con id (0,5)",
+        "Script después o con defer (1)",
+        "textContent (0,5)"
+      ],
+      "punts": 2,
+      "id": "T1-1.5-28"
+    },
+    {
+      "apartat": "1.2",
+      "tipus": "escribir",
+      "titol": "Comprobar el protocolo",
+      "q": "Escribe código que mostri por consola si la página fue por HTTP: (Live Servidor) o por file: y digui qué hacer.",
+      "codi": "",
+      "solucio": "if (location.protocolo === 'HTTP:') {\n  console.log('✓ Fue por HTTP. Live Servidor funciona.');\n} else {\n  console.log('✗ Fue por ' + location.protocolo + '. Abre-la con Live Servidor.');\n}",
+      "rubrica": [
+        "location.protocolo (0,6)",
+        "if/else correcto (0,8)",
+        "Mensajes (0,6)"
+      ],
+      "punts": 2,
+      "id": "T1-1.2-29"
+    },
+    {
+      "apartat": "1.4",
+      "tipus": "error",
+      "q": "Cuál es el error?",
+      "codi": "fetch('dades/x.json')\n  .then(r => { r.json(); })\n  .then(d => console.log(d.nom));",
+      "op": [
+        "Falta el punto y coma",
+        "JSON no existe",
+        "Falta async",
+        "Falta return ante r.json(): el segundo then recibe undefined"
+      ],
+      "ok": 3,
+      "exp": "Sin return no pasa nada al siguiente then.",
+      "id": "T1-1.4-38"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "error",
+      "q": "Cuál es el error?",
+      "codi": "const total = 0;\nfor (const p of [1, 2, 3]) {\n  total += p;\n}",
+      "op": [
+        "Falta el punto y coma",
+        "for-of no existe",
+        "total es const: no es puede reassignar (TypeError)",
+        "Falta let a p"
+      ],
+      "ok": 2,
+      "exp": "Hay que let total.",
+      "id": "T1-1.5-29"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "error",
+      "q": "Cuál es el error?",
+      "codi": "if (typeof fetch = 'function') {\n  console.log('ok');\n}",
+      "op": [
+        "S'ha escrito = (asignación) en sitio de ===: SyntaxError",
+        "Falten llaves",
+        "typeof no existe",
+        "Falta el punto y coma"
+      ],
+      "ok": 0,
+      "exp": "= assigna; === compara.",
+      "id": "T1-1.3-36"
+    },
+    {
+      "apartat": "1.5",
+      "tipus": "error",
+      "q": "Cuál es el error?",
+      "codi": "document.getElementById('#titol').textContent = 'Hola';",
+      "op": [
+        "textContent no existe",
+        "getElementById no lleva # (devuelve null y dona TypeError)",
+        "Falta el punto y coma",
+        "Falta defer"
+      ],
+      "ok": 1,
+      "exp": "getElementById('título').",
+      "id": "T1-1.5-30"
+    },
+    {
+      "apartat": "1.3",
+      "tipus": "error",
+      "q": "Cuál es el problema?",
+      "codi": "localStorage.setItem('obj', { a: 1 });\nconsole.log(localStorage.getItem('obj'));",
+      "op": [
+        "Desa '[object Object]': hay que JSON.stringify",
+        "Falta el punto y coma",
+        "setItem no existe",
+        "getItem devuelve null siempre"
+      ],
+      "ok": 0,
+      "exp": "localStorage solo desa texto.",
+      "id": "T1-1.3-37"
+    },
+    {
+      "apartat": "1.7",
+      "tipus": "error",
+      "q": "Cuál es el problema?",
+      "codi": "form.addEventListener('submit', function (e) {\n  if (nom.value === '') { alert('Falta el nom'); }\n});",
+      "op": [
+        "alert no existe",
+        "Falta e.preventDefault(): el formulario s'envía igualment",
+        "Falta async",
+        "Falta el punto y coma"
+      ],
+      "ok": 1,
+      "exp": "Hay que detener el enviament.",
+      "id": "T1-1.7-33"
+    },
+    {
+      "apartat": "1.6",
+      "tipus": "error",
+      "q": "Cuál es el error?",
+      "codi": "<script src=\"app.js\" defer>\n  console.log('Hola');\n</script>",
+      "op": [
+        "El contenido s'ignora: con src no se ejecuta el código de dentro",
+        "Falta type",
+        "Falta el punto y coma",
+        "defer no existe"
+      ],
+      "ok": 0,
+      "exp": "Hay que separar-los.",
+      "id": "T1-1.6-40"
+    }
+  ]
+}

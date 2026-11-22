@@ -48,7 +48,8 @@ function renderWrongItem(q, position, options = {}) {
   explain.innerHTML = formatText(q.explicacion || "");
   item.append(explain);
 
-  if (q.tipo === "codigo" && q.codigo && q.traza && q.traza.length) {
+  const traza = (Array.isArray(q.traza) && q.traza.length) ? q.traza : (typeof generarTrazaFallback === "function" ? generarTrazaFallback(q) : []);
+  if (q.tipo === "codigo" && q.codigo && traza.length) {
     const traceSlot = document.createElement("div");
     traceSlot.style.marginTop = "14px";
     if (lazyTrace) {
@@ -60,13 +61,13 @@ function renderWrongItem(q, position, options = {}) {
       details.addEventListener("toggle", () => {
         if (details.open && !built) {
           built = true;
-          createTracePlayer(traceSlot, q.codigo, q.traza);
+          createTracePlayer(traceSlot, q.codigo, traza);
         }
       });
       details.append(summary, traceSlot);
       item.append(details);
     } else {
-      createTracePlayer(traceSlot, q.codigo, q.traza);
+      createTracePlayer(traceSlot, q.codigo, traza);
       item.append(traceSlot);
     }
   }

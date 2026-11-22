@@ -27,6 +27,7 @@ export const configuracion = {
         [
           "assets/js/app/persistencia-archivos.js",
           "assets/js/app/estado.js",
+          "assets/js/app/supabase.js",
           "assets/js/app/sesion.js",
           "assets/js/app/depurador.js",
           "assets/js/app/preguntas.js",
@@ -41,6 +42,10 @@ export const configuracion = {
     [
       "/assets/js/practicar-apuntes.js",
       ["assets/js/practicar-apuntes.js", "text/javascript; charset=utf-8"],
+    ],
+    [
+      "/assets/js/app/consola-vivo.js",
+      ["assets/js/app/consola-vivo.js", "text/javascript; charset=utf-8"],
     ],
     ["/data/asignaturas.json", ["data/asignaturas.json", "application/json; charset=utf-8"]],
     [
@@ -62,11 +67,15 @@ export const configuracion = {
     process.env.RUTA_BANCOS ?? "datos/bancos",
   ),
   puerto: enteroEntorno("PUERTO_WEB", 8124, 1, 65535),
+  proveedorIA: (process.env.PROVEEDOR_IA || "auto").trim().toLowerCase(),
   direccionOllama: (process.env.DIRECCION_OLLAMA ??
     "http://generador-apuntes-ollama:11434")
     .trim()
     .replace(/\/+$/, ""),
   modelo: (process.env.MODELO_IA ?? "qwen2.5vl:7b").trim(),
+  nvidiaApiKey: (process.env.NVIDIA_API_KEY ?? "").trim(),
+  nvidiaModelo: (process.env.NVIDIA_MODELO ?? "meta/llama-3.1-8b-instruct").trim(),
+  nvidiaBaseUrl: (process.env.NVIDIA_BASE_URL ?? "https://integrate.api.nvidia.com/v1").trim().replace(/\/+$/, ""),
   contextoModelo: enteroEntorno("NUM_CTX_IA", 24576, 4096, 131072),
   tokensRespuesta: enteroEntorno("TOKENS_MAX_IA", 2048, 256, 8192),
   tiempoMaximoMs: enteroEntorno("TIEMPO_IA", 900, 30, 3600) * 1000,

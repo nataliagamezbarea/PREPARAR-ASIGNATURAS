@@ -1684,10 +1684,16 @@ const SupabaseAuth = (() => {
     if (!btn || !label) return;
 
     if (currentUser) {
-      const email = currentUser.email || "Usuario";
-      label.textContent = email.split("@")[0];
-      btn.classList.add("primary");
-      btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
+      if (sessionStorage.getItem("esInvitado") === "true") {
+        label.textContent = "Invitado";
+        btn.classList.remove("primary");
+        btn.title = "Modo Invitado · Clic para identificarte con tu cuenta";
+      } else {
+        const email = currentUser.email || "Usuario";
+        label.textContent = email.split("@")[0];
+        btn.classList.add("primary");
+        btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
+      }
     } else {
       label.textContent = "Iniciar sesión";
       btn.classList.remove("primary");
@@ -1959,6 +1965,13 @@ const SupabaseAuth = (() => {
   }
 
   async function autenticarConGate() {
+    if (sessionStorage.getItem("esInvitado") === "true") {
+      currentUser = { id: "invitado", email: "invitado@local" };
+      ocultarLoginGate();
+      updateAuthButton();
+      return true;
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const hasError = urlParams.has("error") || urlParams.has("error_description");
     let errorAlInicio = "";
@@ -2168,6 +2181,15 @@ const SupabaseAuth = (() => {
         if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
         mostrarLoginGate(`Error: ${err.message || err}`);
       }
+    });
+
+    document.getElementById("gate-btn-guest")?.addEventListener("click", () => {
+      sessionStorage.setItem("esInvitado", "true");
+      sessionStorage.setItem("esAdmin", "false");
+      currentUser = { id: "invitado", email: "invitado@local" };
+      ocultarLoginGate();
+      updateAuthButton();
+      if (typeof toast === "function") toast("Has entrado en modo Invitado");
     });
 
     document.querySelector("#auth-btn")?.addEventListener("click", () => {

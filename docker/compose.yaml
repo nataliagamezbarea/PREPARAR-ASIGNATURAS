@@ -10,13 +10,23 @@ services:
       RUTA_APUNTES: /data/apuntes
       RUTA_BANCOS: /app/datos/bancos
       DIRECCION_OLLAMA: http://generador-apuntes-ollama:11434
+      PROVEEDOR_IA: ${PROVEEDOR_IA:-auto}
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
+      NVIDIA_MODELO: ${NVIDIA_MODELO:-meta/llama-3.1-8b-instruct}
+      NVIDIA_BASE_URL: ${NVIDIA_BASE_URL:-https://integrate.api.nvidia.com/v1}
+      SUPABASE_URL: ${SUPABASE_URL:-https://lztatgnlplpduiatmlrv.supabase.co}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-sb_publishable_z_T7Y3yKqPdXLnvL3ltnQA_ZAPrXImZ}
+      GITHUB_REPOSITORY: ${GITHUB_REPOSITORY:-nataliagamezbarea/GRADOS_INFORMATICOS}
+      GITHUB_BRANCH: ${GITHUB_BRANCH:-Segundo_grado_superior}
+      GITHUB_FOLDER: ${GITHUB_FOLDER:-datos/bancos/WEC}
+      GH_TOKEN: ${GH_TOKEN:-}
       MODELO_IA: ${MODELO_IA:-qwen2.5vl:7b}
       NUM_CTX_IA: ${NUM_CTX_IA:-24576}
       TOKENS_MAX_IA: ${TOKENS_MAX_IA:-2048}
       TIEMPO_IA: ${TIEMPO_IA:-900}
       MAX_CARACTERES_BLOQUE: ${MAX_CARACTERES_BLOQUE:-10000}
     ports:
-      - "127.0.0.1:${PUERTO_WEB:-8124}:8124"
+      - "127.0.0.1:8124:8124"
     volumes:
       - ${DIRECTORIO_APUNTES:?Selecciona primero la carpeta de apuntes}:/data/apuntes:ro
       - ./datos/bancos:/app/datos/bancos

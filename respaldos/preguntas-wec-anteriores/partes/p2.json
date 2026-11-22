@@ -1,0 +1,322 @@
+[
+  {
+    "id": 21,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Motores JavaScript",
+    "dificultad": "media",
+    "enunciado": "¿Qué motor usa Firefox y fue el primero de todos?",
+    "opciones": {
+      "A": "Chakra",
+      "B": "JavaScriptCore",
+      "C": "V8",
+      "D": "SpiderMonkey"
+    },
+    "correcta": "D",
+    "explicacion": "SpiderMonkey fue el primero: lo escribió Brendan Eich en 1995, cuando creó el lenguaje en diez días."
+  },
+  {
+    "id": 22,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Motores JavaScript",
+    "dificultad": "media",
+    "enunciado": "¿Qué afirmación sobre Edge y Chakra es correcta?",
+    "opciones": {
+      "A": "Edge usa SpiderMonkey",
+      "B": "Edge sigue usando Chakra",
+      "C": "Edge usa V8 desde 2020",
+      "D": "Edge no usa JavaScript"
+    },
+    "correcta": "C",
+    "explicacion": "Microsoft abandonó Chakra en 2020 y Edge usa V8 desde entonces. Si un apunte dice que Edge lleva Chakra, está desactualizado."
+  },
+  {
+    "id": 23,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Límites de JavaScript",
+    "dificultad": "facil",
+    "enunciado": "¿En cuál de estos casos NO ofrece soluciones JavaScript en el cliente?",
+    "opciones": {
+      "A": "Modificar estilos y contenido",
+      "B": "Validar un formulario",
+      "C": "Escribir ficheros en el servidor",
+      "D": "Dar feedback al usuario"
+    },
+    "correcta": "C",
+    "explicacion": "JavaScript no puede escribir ficheros en el servidor: prepara los datos o los cede para que los trate otro lenguaje."
+  },
+  {
+    "id": 24,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Límites de JavaScript",
+    "dificultad": "media",
+    "enunciado": "El sandbox del navegador implica que JavaScript...",
+    "opciones": {
+      "A": "no puede leer ni escribir ficheros del disco ni lanzar programas",
+      "B": "puede cambiar la configuración del navegador",
+      "C": "puede acceder a todas las cookies de otros sitios",
+      "D": "puede leer y escribir cualquier fichero del disco"
+    },
+    "correcta": "A",
+    "explicacion": "Todo el JavaScript de una página se ejecuta dentro de una caja: no puede leer ni escribir ficheros del disco, ni lanzar programas, ni tocar la configuración del navegador."
+  },
+  {
+    "id": 25,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Seguridad web",
+    "dificultad": "media",
+    "enunciado": "La política del mismo origen define origen como:",
+    "opciones": {
+      "A": "protocolo + dominio + puerto",
+      "B": "IP + usuario + contraseña",
+      "C": "dominio + ruta + fichero",
+      "D": "protocolo + navegador + sistema operativo"
+    },
+    "correcta": "A",
+    "explicacion": "Origen = protocolo + dominio + puerto. Si cambia uno solo, ya es otro origen."
+  },
+  {
+    "id": 26,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Seguridad web",
+    "dificultad": "dificil",
+    "enunciado": "Un error de CORS significa que...",
+    "opciones": {
+      "A": "tu código tiene un error de sintaxis",
+      "B": "el servidor está apagado siempre",
+      "C": "la base de datos rechazó la consulta",
+      "D": "el navegador hizo la petición y recibió respuesta, pero no te deja leerla"
+    },
+    "correcta": "D",
+    "explicacion": "No es un fallo de tu código: el navegador aplica la política del mismo origen. El servidor debe dar permiso con una cabecera."
+  },
+  {
+    "id": 27,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Seguridad web",
+    "dificultad": "media",
+    "enunciado": "¿Cómo se sube una foto desde una página web de forma legítima?",
+    "opciones": {
+      "A": "Con `fetch(\"file:///...\")`",
+      "B": "Con `document.write`",
+      "C": "Con `localStorage`",
+      "D": "Con un `<input type=\"file\">`, porque la decisión es del usuario"
+    },
+    "correcta": "D",
+    "explicacion": "El sandbox impide leer ficheros del disco. La decisión la toma el usuario mediante un input de tipo file, no el código."
+  },
+  {
+    "id": 28,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Validación",
+    "dificultad": "media",
+    "enunciado": "¿Qué significa que la validación del cliente es 'para el usuario, no contra el usuario'?",
+    "opciones": {
+      "A": "Que no se puede modificar",
+      "B": "Que solo funciona sin JavaScript",
+      "C": "Que sustituye al servidor",
+      "D": "Que mejora la experiencia, pero el servidor debe validar de nuevo"
+    },
+    "correcta": "D",
+    "explicacion": "La validación del cliente es por comodidad: evita errores y viajes innecesarios. Quien decide de verdad es el servidor, que debe volver a validar todo."
+  },
+  {
+    "id": 29,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Formularios",
+    "dificultad": "media",
+    "enunciado": "¿Qué hace `preventDefault()` en el evento `submit`?",
+    "opciones": {
+      "A": "Valida el formulario",
+      "B": "Borra los campos",
+      "C": "Envía los datos al servidor",
+      "D": "Cancela el envío automático y la recarga de la página"
+    },
+    "correcta": "D",
+    "explicacion": "`preventDefault()` cancela la acción automática del navegador, en este caso enviar y recargar. No valida ni envía los datos."
+  },
+  {
+    "id": 30,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Seguridad web",
+    "dificultad": "media",
+    "enunciado": "¿Qué método es más seguro para insertar texto escrito por un usuario?",
+    "opciones": {
+      "A": "`textContent`",
+      "B": "`document.write`",
+      "C": "`innerHTML`",
+      "D": "`eval`"
+    },
+    "correcta": "A",
+    "explicacion": "`textContent` trata el texto como texto y no lo interpreta como HTML. `innerHTML` puede permitir XSS si el texto viene del usuario."
+  },
+  {
+    "id": 31,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Seguridad web",
+    "dificultad": "media",
+    "enunciado": "¿Por qué no se debe poner una clave de API en el código del cliente?",
+    "opciones": {
+      "A": "Porque localStorage la borra",
+      "B": "Porque todo el JavaScript llega al navegador y se puede leer",
+      "C": "Porque el navegador la ejecuta más lento",
+      "D": "Porque CORS la bloquea siempre"
+    },
+    "correcta": "B",
+    "explicacion": "Para ejecutar tu JavaScript el navegador debe descargarlo entero. Si pones una clave, la estás publicando."
+  },
+  {
+    "id": 32,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Seguridad web",
+    "dificultad": "facil",
+    "enunciado": "Minificar el código sirve para...",
+    "opciones": {
+      "A": "evitar los errores de sintaxis",
+      "B": "proteger el código y ocultarlo para siempre",
+      "C": "cifrar las contraseñas",
+      "D": "reducir el peso y que la página cargue antes"
+    },
+    "correcta": "D",
+    "explicacion": "Minificar quita espacios y acorta nombres para que la página pese menos. No protege el código."
+  },
+  {
+    "id": 33,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Scripts",
+    "dificultad": "facil",
+    "enunciado": "¿Qué etiqueta permite integrar JavaScript en un documento HTML?",
+    "opciones": {
+      "A": "`<script>`",
+      "B": "`<style>`",
+      "C": "`<js>`",
+      "D": "`<code>`"
+    },
+    "correcta": "A",
+    "explicacion": "La etiqueta contenedora es `<script>` ... `</script>`. La de apertura avisa al navegador de que espere código JavaScript."
+  },
+  {
+    "id": 34,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Scripts",
+    "dificultad": "facil",
+    "enunciado": "¿Qué diferencia hay entre `document.write` y `console.log`?",
+    "opciones": {
+      "A": "`document.write` habla con quien visita la página; `console.log` con quien programa",
+      "B": "`document.write` solo funciona en el servidor",
+      "C": "`console.log` escribe en la página",
+      "D": "Son exactamente iguales"
+    },
+    "correcta": "A",
+    "explicacion": "`document.write` escribe en la página; `console.log` escribe en la consola, que es la herramienta de trabajo del programador."
+  },
+  {
+    "id": 35,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "DOM",
+    "dificultad": "media",
+    "enunciado": "¿Qué devuelve `getElementById` si el elemento no existe?",
+    "opciones": {
+      "A": "`false`",
+      "B": "`null`",
+      "C": "`undefined`",
+      "D": "`0`"
+    },
+    "correcta": "B",
+    "explicacion": "Devuelve `null` si todavía no existe o no hay ninguno con ese id. Si luego intentas leer una propiedad, se produce un error."
+  },
+  {
+    "id": 36,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Integración HTML",
+    "dificultad": "dificil",
+    "enunciado": "En la demo D2, ¿cuál es el orden de ejecución de los scripts?",
+    "opciones": {
+      "A": "1, 3, 2, 4",
+      "B": "1, 2, 4, 3",
+      "C": "4, 3, 2, 1",
+      "D": "1, 2, 3, 4"
+    },
+    "correcta": "B",
+    "explicacion": "1 en línea en el head, 2 externo en el head bloqueante, 4 al final del body y 3 con defer (el último, tras analizar el HTML)."
+  },
+  {
+    "id": 37,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Integración HTML",
+    "dificultad": "media",
+    "enunciado": "¿Por qué un script colocado en el `<head>` sin `defer` no ve el body?",
+    "opciones": {
+      "A": "Porque el body aún no existe cuando se ejecuta",
+      "B": "Porque el navegador bloquea todos los scripts del head",
+      "C": "Porque JavaScript no puede acceder al body",
+      "D": "Porque falta el atributo `type`"
+    },
+    "correcta": "A",
+    "explicacion": "El script se ejecuta inmediatamente, antes de que el navegador haya creado el body. Es la causa número uno de `Cannot set properties of null`."
+  },
+  {
+    "id": 38,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Integración HTML",
+    "dificultad": "media",
+    "enunciado": "¿Qué dos soluciones válidas evitan el problema del script en el head?",
+    "opciones": {
+      "A": "Usar `innerHTML` o `localStorage`",
+      "B": "Usar `async` o `document.write`",
+      "C": "Poner el script dos veces o usar `var`",
+      "D": "Poner el script al final del body o usar `defer`"
+    },
+    "correcta": "D",
+    "explicacion": "Las dos soluciones buenas son poner el fichero al final del body o poner `defer` en el head. También vale ejecutar el código cuando el documento ya está cargado."
+  },
+  {
+    "id": 39,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Integración HTML",
+    "dificultad": "facil",
+    "enunciado": "¿Qué hace `<noscript>`?",
+    "opciones": {
+      "A": "Carga un script externo",
+      "B": "Muestra un texto informativo si el navegador no soporta scripts",
+      "C": "Ejecuta JavaScript si está desactivado",
+      "D": "Valida el HTML"
+    },
+    "correcta": "B",
+    "explicacion": "Si el navegador no soporta scripts, se informa al usuario con el texto que va entre `<noscript>` y `</noscript>`."
+  },
+  {
+    "id": 40,
+    "tema": 1,
+    "tipo": "teoria",
+    "tag": "Herramientas",
+    "dificultad": "media",
+    "enunciado": "¿Por qué hay que abrir las páginas con Live Server y no como `file://`?",
+    "opciones": {
+      "A": "Porque `file://` desactiva CSS",
+      "B": "Porque `file://` no muestra HTML",
+      "C": "Porque Live Server compila JavaScript",
+      "D": "Porque con `file://` el navegador bloquea `fetch`, no guarda cookies y `location.port` sale vacío"
+    },
+    "correcta": "D",
+    "explicacion": "Live Server sirve la página por `http://127.0.0.1:5500`. Con `file://` el navegador bloquea `fetch`, no guarda cookies y `location.port` sale vacío."
+  }
+]

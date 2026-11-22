@@ -1216,11 +1216,6 @@ function vigilarCambiosEnApuntes() {
 }
 
 window.abrirPracticaDesdeApuntes = renderizarPantallaApuntes;
-if (window.location.hash === "#apuntes" || window.location.search.includes("pantalla=apuntes")) {
-  void renderizarPantallaApuntes().catch((error) =>
-    mostrarMensaje(error.message, "error")
-  );
-}
 window.addEventListener("beforeunload", cancelarControladoresPantalla);
 window.addEventListener("preparar-tests-reload", async () => {
   void recargarDatosApuntes().catch((error) =>

@@ -194,3 +194,173 @@ function createTracePlayer(container, code, trace) {
   update();
   container.append(player);
 }
+
+function generarTrazaFallback(q) {
+  if (!q) return [];
+  if (Array.isArray(q.traza) && q.traza.length) return q.traza;
+  if (!q.codigo) return [];
+
+  const lineas = String(q.codigo).replace(/\r/g, "").split("\n");
+  const traza = [];
+
+  lineas.forEach((lineaTexto, idx) => {
+    const numLinea = idx + 1;
+    const trim = lineaTexto.trim();
+    if (!trim) return;
+
+    let nota = `Línea ${numLinea}: ${trim}`;
+    let salida = null;
+
+    const matchLog = trim.match(/console\.log\(\s*['"`]([^'"`]+)['"`]\s*\)/);
+    if (matchLog && !trim.includes("setTimeout") && !trim.includes(".then")) {
+      salida = matchLog[1];
+      nota = `Ejecución síncrona: imprime "${salida}"`;
+    } else if (trim.includes("setTimeout")) {
+      nota = "Temporizador / Macrotarea: encola callback en la cola de macrotareas.";
+    } else if (trim.includes("Promise") || trim.includes(".then")) {
+      nota = "Promesa / Microtarea: encola callback en la cola de microtareas (alta prioridad).";
+    }
+
+    traza.push({
+      linea: numLinea,
+      nota,
+      salida,
+      vars: {}
+    });
+  });
+
+  if (/microtarea|macrotarea|event loop|asincron/i.test((q.explicacion || "") + " " + (q.tag || ""))) {
+    traza.push({
+      linea: lineas.length,
+      nota: "Event Loop (Fase Microtareas): procesa promesas resueltas de la cola de microtareas.",
+      salida: null,
+      vars: { "Fase Event Loop": "Microtareas" }
+    });
+    traza.push({
+      linea: lineas.length,
+      nota: "Event Loop (Fase Macrotareas): ejecuta los temporizadores encolados (setTimeout).",
+      salida: null,
+      vars: { "Fase Event Loop": "Macrotareas" }
+    });
+  }
+
+  return traza.length ? traza : [{ linea: 1, nota: "Inicio de ejecución", vars: {} }];
+}
+
+function renderDebugView(container, q, selected) {
+  if (!container) return;
+  container.innerHTML = "";
+  const card = document.createElement("div");
+  card.className = "debug-card";
+  card.style.cssText = `
+    margin-top: 12px;
+    padding: 14px;
+    background: #0b1120;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-size: 13px;
+  `;
+
+  const head = document.createElement("div");
+  head.style.cssText = `
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1e293b;
+    flex-wrap: wrap;
+    gap: 8px;
+  `;
+  head.innerHTML = `
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="color:#38bdf8; font-weight:700; font-size:13px;"><i class="fa-solid fa-bug" aria-hidden="true"></i> Depurador de pregunta</span>
+      <span style="background:#1e293b; color:#94a3b8; padding:2px 8px; border-radius:999px; font-size:11px;">#${q.id ?? "?"} · Tema ${q.tema ?? "?"}</span>
+    </div>
+    <span style="font-size:11px; color:#64748b;">${esc(q.tag || q.apartadoNombre || "JavaScript")}</span>
+  `;
+  card.append(head);
+
+  if (q.codigo) {
+    const execBox = document.createElement("div");
+    execBox.style.marginBottom = "14px";
+
+    const execBtn = document.createElement("button");
+    execBtn.type = "button";
+    execBtn.className = "btn tiny primary";
+    execBtn.innerHTML = '<i class="fa-solid fa-play" aria-hidden="true"></i> Ejecutar código en vivo';
+
+    const consolePre = document.createElement("pre");
+    consolePre.style.cssText = `
+      display: none;
+      margin-top: 8px;
+      padding: 10px;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #22d3ee;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      max-height: 180px;
+      overflow-y: auto;
+    `;
+
+    execBtn.addEventListener("click", () => {
+      consolePre.style.display = "block";
+      consolePre.textContent = "▶ Ejecutando…\n";
+      const salidas = [];
+      const fakeConsole = {
+        log: (...args) => {
+          const linea = args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          salidas.push(linea);
+          consolePre.textContent = salidas.join("\n");
+          if (window.cv) window.cv.log(`[Ejecución #${q.id}] ${linea}`);
+        },
+        error: (...args) => {
+          const linea = "❌ " + args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          salidas.push(linea);
+          consolePre.textContent = salidas.join("\n");
+          if (window.cv) window.cv.error(`[Ejecución #${q.id}] ${linea}`);
+        },
+        warn: (...args) => {
+          const linea = "⚠️ " + args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          salidas.push(linea);
+          consolePre.textContent = salidas.join("\n");
+        }
+      };
+
+      try {
+        const fn = new Function("console", q.codigo);
+        fn(fakeConsole);
+        if (!salidas.length) {
+          consolePre.textContent = "(El código se ejecutó sin imprimir en consola)";
+        }
+      } catch (err) {
+        fakeConsole.error(err.message);
+      }
+    });
+
+    execBox.append(execBtn, consolePre);
+    card.append(execBox);
+
+    const tracePlayerBox = document.createElement("div");
+    const traza = generarTrazaFallback(q);
+    createTracePlayer(tracePlayerBox, q.codigo, traza);
+    card.append(tracePlayerBox);
+  } else {
+    const info = document.createElement("div");
+    info.style.cssText = "line-height:1.6; color:#94a3b8; font-size:12px;";
+    info.innerHTML = `
+      <div><b>Enunciado:</b> ${formatText(q.enunciado || "")}</div>
+      <div style="margin-top:6px;"><b>Tu respuesta:</b> ${selected ? `<b>${selected})</b> ${formatText(q.opciones?.[selected] ?? "")}` : "Sin responder"}</div>
+      <div><b>Respuesta correcta:</b> <b>${q.correcta})</b> ${formatText(q.opciones?.[q.correcta] ?? "")}</div>
+      <div style="margin-top:6px; color:#64748b;">(Esta es una pregunta conceptual sin bloque de código ejecutable).</div>
+    `;
+    card.append(info);
+  }
+
+  container.append(card);
+}

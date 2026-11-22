@@ -32,7 +32,99 @@ async function consultarOllama(ruta, opciones = {}) {
   return respuesta.json();
 }
 
+async function consultarNvidia({
+  prompt,
+  controlador,
+  instruccionesSistema,
+  soloJson = true,
+  opcionesIA = {},
+}) {
+  const apiKey = configuracion.nvidiaApiKey;
+  if (!apiKey) throw new Error("Falta NVIDIA_API_KEY en el archivo .env");
+  const modelo = configuracion.nvidiaModelo || "meta/llama-3.1-8b-instruct";
+  const limite = AbortSignal.timeout(configuracion.tiempoMaximoMs);
+  const senal = controlador ? AbortSignal.any([controlador.signal, limite]) : limite;
+
+  const url = `${configuracion.nvidiaBaseUrl}/chat/completions`;
+  const body = {
+    model: modelo,
+    messages: [
+      {
+        role: "system",
+        content:
+          instruccionesSistema ??
+          "Eres un profesor que crea preguntas originales para exámenes. Usa únicamente el material de estudio del mensaje y devuelve JSON válido.",
+      },
+      { role: "user", content: prompt },
+    ],
+    temperature: opcionesIA.temperature ?? 0.25,
+    max_tokens: opcionesIA.num_predict ?? configuracion.tokensRespuesta,
+  };
+
+  if (soloJson) {
+    body.response_format = { type: "json_object" };
+  }
+
+  let respuesta;
+  try {
+    respuesta = await fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify(body),
+      signal: senal,
+    });
+  } catch (error) {
+    if (controlador?.signal.aborted) {
+      throw Object.assign(new Error("Generación cancelada."), {
+        nombre: "CancelacionSolicitada",
+      });
+    }
+    throw new Error(`No se pudo conectar con NVIDIA NIM (${configuracion.nvidiaBaseUrl}): ${error.message}`);
+  }
+
+  if (!respuesta.ok) {
+    const detalle = (await respuesta.text().catch(() => "")).slice(0, 1000);
+    throw new Error(`NVIDIA NIM respondió ${respuesta.status}: ${detalle}`);
+  }
+
+  const datos = await respuesta.json();
+  const contenido = datos.choices?.[0]?.message?.content;
+  if (typeof contenido !== "string" || !contenido.trim()) {
+    throw new Error("NVIDIA NIM no devolvió contenido.");
+  }
+
+  return {
+    contenido,
+    modelo: datos.model ?? modelo,
+    duracionNs: 0,
+    tokensEntrada: datos.usage?.prompt_tokens ?? 0,
+    tokensSalida: datos.usage?.completion_tokens ?? 0,
+  };
+}
+
 export async function comprobarModelo() {
+  const usarNvidia =
+    configuracion.proveedorIA === "nvidia" ||
+    (configuracion.proveedorIA === "auto" && Boolean(configuracion.nvidiaApiKey));
+
+  if (usarNvidia) {
+    return {
+      conectado: Boolean(configuracion.nvidiaApiKey),
+      modeloDisponible: Boolean(configuracion.nvidiaApiKey),
+      proveedor: "nvidia",
+      modelo: configuracion.nvidiaModelo,
+      modelos: [
+        configuracion.nvidiaModelo,
+        "deepseek-ai/deepseek-r1",
+        "qwen/qwen2.5-72b-instruct",
+        "nvidia/llama-3.1-nemotron-70b-instruct",
+      ],
+    };
+  }
+
   try {
     const datos = await consultarOllama("/api/tags", {
       solicitud: { method: "GET" },
@@ -47,13 +139,25 @@ export async function comprobarModelo() {
     return {
       conectado: true,
       modeloDisponible: disponible,
+      proveedor: "ollama",
       modelo: configuracion.modelo,
       modelos: modelos.map((modelo) => modelo.name ?? modelo.model).filter(Boolean),
     };
   } catch (error) {
+    // Si Ollama falla pero hay NVIDIA_API_KEY configurada, fallback automático a NVIDIA NIM
+    if (configuracion.nvidiaApiKey) {
+      return {
+        conectado: true,
+        modeloDisponible: true,
+        proveedor: "nvidia",
+        modelo: configuracion.nvidiaModelo,
+        modelos: [configuracion.nvidiaModelo],
+      };
+    }
     return {
       conectado: false,
       modeloDisponible: false,
+      proveedor: "ollama",
       modelo: configuracion.modelo,
       error: error.message,
     };
@@ -66,44 +170,75 @@ export async function generarConIA({
   progreso,
   instruccionesSistema,
   soloJson = true,
+  opcionesIA = {},
 }) {
+  const usarNvidia =
+    configuracion.proveedorIA === "nvidia" ||
+    (configuracion.proveedorIA === "auto" && Boolean(configuracion.nvidiaApiKey));
+
+  if (usarNvidia) {
+    progreso?.(`Consultando NVIDIA NIM (${configuracion.nvidiaModelo})…`);
+    return consultarNvidia({
+      prompt,
+      controlador,
+      instruccionesSistema,
+      soloJson,
+      opcionesIA,
+    });
+  }
+
   progreso?.("Consultando el modelo local de Ollama…");
-  const datos = await consultarOllama("/api/chat", {
-    controlador,
-    solicitud: {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        model: configuracion.modelo,
-        stream: false,
-        ...(soloJson ? { format: "json" } : {}),
-        messages: [
-          {
-            role: "system",
-            content:
-              instruccionesSistema ??
-              "Eres un profesor que crea preguntas originales para exámenes. Usa únicamente el material de estudio del mensaje y devuelve JSON válido.",
+  try {
+    const datos = await consultarOllama("/api/chat", {
+      controlador,
+      solicitud: {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          model: configuracion.modelo,
+          stream: false,
+          ...(soloJson ? { format: "json" } : {}),
+          messages: [
+            {
+              role: "system",
+              content:
+                instruccionesSistema ??
+                "Eres un profesor que crea preguntas originales para exámenes. Usa únicamente el material de estudio del mensaje y devuelve JSON válido.",
+            },
+            { role: "user", content: prompt },
+          ],
+          options: {
+            temperature: opcionesIA.temperature ?? 0.25,
+            num_ctx: opcionesIA.num_ctx ?? Math.min(8192, configuracion.contextoModelo || 8192),
+            num_predict: opcionesIA.num_predict ?? configuracion.tokensRespuesta,
+            num_gpu: 99,
+            num_thread: 8,
           },
-          { role: "user", content: prompt },
-        ],
-        options: {
-          temperature: 0.25,
-          num_ctx: Math.min(8192, configuracion.contextoModelo || 8192),
-          num_predict: configuracion.tokensRespuesta,
-          num_gpu: 99,
-          num_thread: 8,
-        },
-      }),
-    },
-  });
-  const contenido = datos.message?.content;
-  if (typeof contenido !== "string" || !contenido.trim())
-    throw new Error("Ollama no devolvió preguntas.");
-  return {
-    contenido,
-    modelo: datos.model ?? configuracion.modelo,
-    duracionNs: Number(datos.total_duration) || 0,
-    tokensEntrada: Number(datos.prompt_eval_count) || 0,
-    tokensSalida: Number(datos.eval_count) || 0,
-  };
+        }),
+      },
+    });
+    const contenido = datos.message?.content;
+    if (typeof contenido !== "string" || !contenido.trim())
+      throw new Error("Ollama no devolvió preguntas.");
+    return {
+      contenido,
+      modelo: datos.model ?? configuracion.modelo,
+      duracionNs: Number(datos.total_duration) || 0,
+      tokensEntrada: Number(datos.prompt_eval_count) || 0,
+      tokensSalida: Number(datos.eval_count) || 0,
+    };
+  } catch (error) {
+    // Si Ollama falla y tenemos clave de NVIDIA, fallback a NVIDIA NIM
+    if (configuracion.nvidiaApiKey) {
+      progreso?.(`Ollama no respondió, cambiando automáticamente a NVIDIA NIM (${configuracion.nvidiaModelo})…`);
+      return consultarNvidia({
+        prompt,
+        controlador,
+        instruccionesSistema,
+        soloJson,
+        opcionesIA,
+      });
+    }
+    throw error;
+  }
 }

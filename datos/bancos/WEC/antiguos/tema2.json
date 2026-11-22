@@ -1,0 +1,4731 @@
+{
+  "tema": "Tema 2 · Aplicación y verificación de la sintaxis del lenguaje",
+  "modul": "0612 · Desarrollo web en entorno cliente",
+  "versio": 1,
+  "idioma": "es",
+  "apartats": {
+    "2.1": "2.1 Selección de lenguaje de programación de clientes web",
+    "2.2": "2.2 Tipos de datos",
+    "2.3": "2.3 Variables",
+    "2.4": "2.4 Asignaciones",
+    "2.5": "2.5 Operadores",
+    "2.6": "2.6 Sentencias",
+    "2.7": "2.7 Estructuras de control",
+    "2.8": "2.8 Comentarios en el código",
+    "2.9": "2.9 Herramientas para programar, probar y depurar el código",
+    "pract": "Demos D1-D5 y prácticas P01 y P02"
+  },
+  "preguntes": [
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "¿Qué lenguaje de programación se estudia en este tema?",
+      "codi": "",
+      "op": [
+        "PHP",
+        "C#",
+        "JavaScript",
+        "Java"
+      ],
+      "ok": 2,
+      "exp": "Es el lenguaje del módulo.",
+      "id": "T2-2.1-01"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "¿Qué es JScript?",
+      "codi": "",
+      "op": [
+        "Una variante de JavaScript desarrollada por otra empresa (Microsoft)",
+        "Un editor de código",
+        "Una librería de CSS",
+        "El nombre antiguo de Java"
+      ],
+      "ok": 0,
+      "exp": "JScript es la variante de Microsoft.",
+      "id": "T2-2.1-02"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "¿Qué lenguaje toma JavaScript como referencia?",
+      "codi": "",
+      "op": [
+        "Ruby",
+        "C",
+        "Python",
+        "Pascal"
+      ],
+      "ok": 1,
+      "exp": "Los lenguajes modernos de alto nivel parten de la base de C.",
+      "id": "T2-2.1-03"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "¿Por qué resulta fácil adaptar JavaScript a otros lenguajes modernos de alto nivel?",
+      "codi": "",
+      "op": [
+        "Porque parten de la misma base (C)",
+        "Porque son interpretados por el navegador",
+        "Porque no tienen sintaxis",
+        "Porque todos son de Oracle"
+      ],
+      "ok": 0,
+      "exp": "Facilita la adaptación, conversión y compatibilización.",
+      "id": "T2-2.1-04"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "¿Cómo fue el primer nombre de JavaScript?",
+      "codi": "",
+      "op": [
+        "LiveScript",
+        "ECMA",
+        "JScript",
+        "Mocha"
+      ],
+      "ok": 3,
+      "exp": "Primero Mocha, luego LiveScript y por fin JavaScript.",
+      "id": "T2-2.1-05"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "¿Cuál es el orden correcto de los nombres del lenguaje?",
+      "codi": "",
+      "op": [
+        "Mocha → JavaScript → LiveScript",
+        "JavaScript → Mocha → LiveScript",
+        "Mocha → LiveScript → JavaScript",
+        "LiveScript → Mocha → JavaScript"
+      ],
+      "ok": 2,
+      "exp": "Historia del lenguaje.",
+      "id": "T2-2.1-06"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "¿Qué empresa desarrolló JavaScript originalmente?",
+      "codi": "",
+      "op": [
+        "Apple",
+        "Netscape",
+        "Microsoft",
+        "Google"
+      ],
+      "ok": 1,
+      "exp": "Netscape.",
+      "id": "T2-2.1-07"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "Según el tema, ¿a quién pertenece actualmente el lenguaje?",
+      "codi": "",
+      "op": [
+        "Microsoft",
+        "Oracle Corporation",
+        "Mozilla",
+        "Netscape"
+      ],
+      "ok": 1,
+      "exp": "Oracle, propietaria también de Java.",
+      "id": "T2-2.1-08"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "¿Por qué es de vital importancia elegir el lenguaje del portal web?",
+      "codi": "",
+      "op": [
+        "Porque de él depende la tecnología que utilizaremos",
+        "Porque es obligatorio por ley",
+        "Porque el navegador solo admite uno",
+        "Porque no se puede cambiar el servidor"
+      ],
+      "ok": 0,
+      "exp": "Lo dice el tema.",
+      "id": "T2-2.1-09"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "teoria",
+      "q": "Un desarrollador con experiencia en otros lenguajes aprende JavaScript con poco esfuerzo porque...",
+      "codi": "",
+      "op": [
+        "Es idéntico a Java",
+        "No tiene variables",
+        "JavaScript no tiene sintaxis",
+        "La sintaxis de las sentencias tiene un formato semejante"
+      ],
+      "ok": 3,
+      "exp": "Formato semejante.",
+      "id": "T2-2.1-10"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "JScript es una variante de JavaScript desarrollada por Oracle",
+        "JavaScript se llamó Mocha al principio",
+        "JavaScript tomó como referencia el lenguaje C",
+        "Netscape desarrolló JavaScript"
+      ],
+      "ok": 0,
+      "exp": "JScript es de Microsoft.",
+      "id": "T2-2.1-11"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "Antes de JavaScript se llamó LiveScript",
+        "El primer nombre fue LiveScript y después pasó a llamarse Mocha",
+        "Su nombre inicial fue Mocha",
+        "El nombre actual es JavaScript"
+      ],
+      "ok": 1,
+      "exp": "Mocha fue el primero.",
+      "id": "T2-2.1-12"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "oberta",
+      "q": "Explica brevemente la historia de JavaScript: quién lo creó, cómo se llamó y a quién pertenece hoy.",
+      "solucio": "Lo desarrolló Netscape con el nombre de Mocha; pasó a llamarse LiveScript y finalmente JavaScript. Hoy pertenece a Oracle Corporation según el tema.",
+      "punts_clau": [
+        "Netscape",
+        "Mocha → LiveScript → JavaScript",
+        "Oracle"
+      ],
+      "punts": 2,
+      "id": "T2-2.1-13"
+    },
+    {
+      "apartat": "2.1",
+      "tipus": "oberta",
+      "q": "¿Qué es JScript y por qué se parece a JavaScript?",
+      "solucio": "Es una variante de JavaScript desarrollada por Microsoft, por eso comparte base y sintaxis.",
+      "punts_clau": [
+        "Variante",
+        "Microsoft"
+      ],
+      "punts": 1,
+      "id": "T2-2.1-14"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Cuántos tipos de datos lista el tema para JavaScript?",
+      "codi": "",
+      "op": [
+        "Cuatro",
+        "Seis: String, Number, Boolean, Null, Object y Undefined",
+        "Diez",
+        "Tres"
+      ],
+      "ok": 1,
+      "exp": "Tabla de tipos de datos.",
+      "id": "T2-2.2-01"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Cuáles son los tres tipos primitivos que cita el tema?",
+      "codi": "",
+      "op": [
+        "Undefined, Null y Object",
+        "Number, Object y Null",
+        "Números, cadenas de texto y valores booleanos",
+        "String, Array y Boolean"
+      ],
+      "ok": 2,
+      "exp": "Primitivos.",
+      "id": "T2-2.2-02"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Cómo se llama el tipo compuesto de JavaScript?",
+      "codi": "",
+      "op": [
+        "Class",
+        "Object",
+        "Array",
+        "Struct"
+      ],
+      "ok": 1,
+      "exp": "Object representa una serie de valores primitivos y compuestos.",
+      "id": "T2-2.2-03"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Qué tipo de dato permite tener una variable inicializada sin valor?",
+      "codi": "",
+      "op": [
+        "Undefined",
+        "Null",
+        "String",
+        "Empty"
+      ],
+      "ok": 0,
+      "exp": "Pregunta del tema: Undefined son variables no inicializadas.",
+      "id": "T2-2.2-04"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "Si hacemos parseInt(\"23,932\"), ¿qué obtenemos?",
+      "codi": "",
+      "op": [
+        "23",
+        "23,9",
+        "23,932",
+        "24"
+      ],
+      "ok": 0,
+      "exp": "parseInt se queda con la parte entera y para en la coma.",
+      "id": "T2-2.2-05"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Qué representa el tipo Boolean?",
+      "codi": "",
+      "op": [
+        "Una variable sin inicializar",
+        "Una entidad lógica con dos valores: true o false",
+        "Un texto",
+        "Un número decimal"
+      ],
+      "ok": 1,
+      "exp": "Boolean.",
+      "id": "T2-2.2-06"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Qué valor tiene exactamente el tipo Null?",
+      "codi": "",
+      "op": [
+        "\"\" (texto vacío)",
+        "0",
+        "undefined",
+        "null"
+      ],
+      "ok": 3,
+      "exp": "Tiene exactamente el valor null.",
+      "id": "T2-2.2-07"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "En JavaScript, ¿es necesario guardar siempre el mismo tipo de dato en una misma variable?",
+      "codi": "",
+      "op": [
+        "No, porque en la declaración no se especifica el tipo",
+        "Solo con let",
+        "Solo con const",
+        "Sí, siempre"
+      ],
+      "ok": 0,
+      "exp": "Lo dice el tema.",
+      "id": "T2-2.2-08"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Qué hace parseInt(\"98.76\")?",
+      "codi": "",
+      "op": [
+        "Devuelve 98",
+        "Devuelve 99",
+        "Devuelve 98.76",
+        "Devuelve NaN"
+      ],
+      "ok": 0,
+      "exp": "Se queda con la parte entera.",
+      "id": "T2-2.2-09"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Qué hace parseFloat(\"23.932\")?",
+      "codi": "",
+      "op": [
+        "Devuelve 23.932",
+        "Devuelve NaN",
+        "Devuelve 24",
+        "Devuelve 23"
+      ],
+      "ok": 0,
+      "exp": "Mantiene los decimales.",
+      "id": "T2-2.2-10"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Cómo se convierte un número en cadena de forma sencilla según el tema?",
+      "codi": "",
+      "op": [
+        "Concatenando una cadena vacía al principio",
+        "Con parseFloat()",
+        "No se puede",
+        "Con parseInt()"
+      ],
+      "ok": 0,
+      "exp": "'' + numero.",
+      "id": "T2-2.2-11"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Qué funciones se usan para pasar de cadena a número?",
+      "codi": "",
+      "op": [
+        "String() y Boolean()",
+        "toString() y toFixed()",
+        "typeof y isNaN",
+        "parseInt() y parseFloat()"
+      ],
+      "ok": 3,
+      "exp": "Conversión de cadena a número.",
+      "id": "T2-2.2-12"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "Una variable de JavaScript que no se ha inicializado tiene el valor...",
+      "codi": "",
+      "op": [
+        "null",
+        "NaN",
+        "0",
+        "undefined"
+      ],
+      "ok": 3,
+      "exp": "Tipo Undefined.",
+      "id": "T2-2.2-13"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Qué devuelve typeof null?",
+      "codi": "",
+      "op": [
+        "\"undefined\"",
+        "\"object\"",
+        "\"string\"",
+        "\"null\""
+      ],
+      "ok": 1,
+      "exp": "Error histórico de JavaScript de 1995 que no se corrige.",
+      "id": "T2-2.2-14"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "teoria",
+      "q": "¿Qué diferencia hay entre undefined y null?",
+      "codi": "",
+      "op": [
+        "undefined es un número",
+        "Son exactamente lo mismo",
+        "null es de tipo String",
+        "undefined: nadie ha puesto valor; null: se ha puesto «vacío» a propósito"
+      ],
+      "ok": 3,
+      "exp": "Demo D1.",
+      "id": "T2-2.2-15"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log(typeof 42);\nconsole.log(typeof 'hola');\nconsole.log(typeof true);\nconsole.log(typeof undefined);",
+      "op": [
+        "`number`, `text`, `boolean`, `undefined`",
+        "`number`, `string`, `boolean`, `null`",
+        "`number`, `string`, `boolean`, `undefined`",
+        "`int`, `string`, `bool`, `undefined`"
+      ],
+      "ok": 2,
+      "exp": "Los cuatro typeof básicos.",
+      "id": "T2-2.2-16"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log(parseInt('243'));\nconsole.log(parseInt('98.76'));\nconsole.log(parseFloat('98.76'));",
+      "op": [
+        "`243`, `98`, `98`",
+        "`243`, `99`, `98.76`",
+        "`243`, `98.76`, `98.76`",
+        "`243`, `98`, `98.76`"
+      ],
+      "ok": 3,
+      "exp": "parseInt corta los decimales.",
+      "id": "T2-2.2-17"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log(parseInt('hola'));\nconsole.log(Number('hola'));",
+      "op": [
+        "`undefined`, `undefined`",
+        "`0`, `0`",
+        "`NaN`, `0`",
+        "`NaN`, `NaN`"
+      ],
+      "ok": 3,
+      "exp": "Un texto que no parece número da NaN.",
+      "id": "T2-2.2-18"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let x;\nconsole.log(x);\nlet y = null;\nconsole.log(y);",
+      "op": [
+        "`null`, `undefined`",
+        "`undefined`, `null`",
+        "`0`, `null`",
+        "`undefined`, `undefined`"
+      ],
+      "ok": 1,
+      "exp": "x no tiene valor; y es null a propósito.",
+      "id": "T2-2.2-19"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let cosa = 7;\nconsole.log(typeof cosa);\ncosa = 'siete';\nconsole.log(typeof cosa);",
+      "op": [
+        "`number`, `string`",
+        "`number`, `number`",
+        "`number`, `Un error`",
+        "`string`, `string`"
+      ],
+      "ok": 0,
+      "exp": "El tipo lo lleva el valor, no la variable.",
+      "id": "T2-2.2-20"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const n = 12;\nconsole.log('' + n);\nconsole.log(typeof ('' + n));",
+      "op": [
+        "`Un error`, `string`",
+        "`12`, `string`",
+        "`12`, `number`",
+        "`0`, `string`"
+      ],
+      "ok": 1,
+      "exp": "Concatenar una cadena vacía convierte a texto.",
+      "id": "T2-2.2-21"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "error",
+      "q": "¿Qué error da este código?",
+      "codi": "const numero;",
+      "op": [
+        "TypeError",
+        "No da error",
+        "SyntaxError: una const debe inicializarse al declararla",
+        "ReferenceError"
+      ],
+      "ok": 2,
+      "exp": "Una constante necesita valor.",
+      "id": "T2-2.2-22"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "Los tipos primitivos son números, cadenas y booleanos",
+        "Una variable puede guardar distintos tipos de valores",
+        "Existe un tipo compuesto llamado Object",
+        "En JavaScript hay que indicar el tipo de la variable al declararla"
+      ],
+      "ok": 3,
+      "exp": "El tipo no se especifica en la declaración.",
+      "id": "T2-2.2-23"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "Undefined son las variables sin inicializar",
+        "parseInt(\"98.76\") devuelve 98.76",
+        "parseFloat(\"23.932\") devuelve 23.932",
+        "parseInt(\"98.76\") devuelve 98"
+      ],
+      "ok": 1,
+      "exp": "parseInt corta los decimales.",
+      "id": "T2-2.2-24"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "interpretar",
+      "titol": "Tipos y conversiones",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "const a = '8';\nconst b = 2;\nconsole.log(a + b);\nconsole.log(a - b);\nconsole.log(typeof (a + b));\nconsole.log(parseInt(a) + b);",
+      "solucio": "Salida: 82 / 6 / string / 10. El + con un texto concatena (\"82\"); el - convierte el texto a número; parseInt(a) da el número 8 y 8 + 2 = 10.",
+      "rubrica": [
+        "82 (0,5)",
+        "6 (0,5)",
+        "string (0,5)",
+        "10 y explicación (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.2-25"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "interpretar",
+      "titol": "undefined, null y typeof",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "let a;\nlet b = null;\nconsole.log(a);\nconsole.log(b);\nconsole.log(typeof a);\nconsole.log(typeof b);",
+      "solucio": "Salida: undefined / null / undefined / object. typeof null devuelve 'object' por un error histórico de 1995.",
+      "rubrica": [
+        "undefined y null (1)",
+        "undefined y object (0,5)",
+        "Explicación del error histórico (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.2-26"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "escriure",
+      "titol": "Declara los tipos",
+      "q": "Declara con const una variable de cada tipo: entero, decimal, cadena, booleano, null y objeto (con new Object()).",
+      "codi": "",
+      "solucio": "const miEntero = 12;\nconst miDecimal = 2.33;\nconst miCadena = 'hola';\nconst miBooleano = true;\nconst miVariable = null;\nconst miObjeto = new Object();",
+      "rubrica": [
+        "Entero y decimal (0,5)",
+        "Cadena y booleano (0,5)",
+        "null (0,5)",
+        "new Object() (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.2-27"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "escriure",
+      "titol": "Convertir tipos",
+      "q": "Escribe el código que convierta la cadena '45.7' en un entero y en un decimal, y el número 45 en una cadena.",
+      "codi": "",
+      "solucio": "const entero = parseInt('45.7');   // 45\nconst decimal = parseFloat('45.7'); // 45.7\nconst texto = '' + 45;             // '45'",
+      "rubrica": [
+        "parseInt (0,7)",
+        "parseFloat (0,7)",
+        "Concatenar cadena vacía (0,6)"
+      ],
+      "punts": 2,
+      "id": "T2-2.2-28"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "oberta",
+      "q": "Explica los tipos de datos de JavaScript y qué es una conversión de tipos.",
+      "solucio": "Seis tipos: String, Number, Boolean, Null, Object y Undefined. No se declara el tipo. Conversión: de cadena a número con parseInt() y parseFloat(); de número a cadena concatenando una cadena vacía.",
+      "punts_clau": [
+        "Los seis tipos",
+        "Sin tipado fijo",
+        "parseInt/parseFloat",
+        "Cadena vacía"
+      ],
+      "punts": 2,
+      "id": "T2-2.2-29"
+    },
+    {
+      "apartat": "2.2",
+      "tipus": "oberta",
+      "q": "¿Qué diferencia hay entre parseInt y parseFloat? Pon un ejemplo.",
+      "solucio": "parseInt se queda con la parte entera (parseInt('98.76') = 98); parseFloat mantiene los decimales (parseFloat('98.76') = 98.76).",
+      "punts_clau": [
+        "Entero vs decimales",
+        "Ejemplo"
+      ],
+      "punts": 1,
+      "id": "T2-2.2-30"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Cómo define el tema una variable?",
+      "codi": "",
+      "op": [
+        "Un comentario del código",
+        "Un tipo de dato",
+        "Un operador",
+        "Una zona de memoria identificada con un nombre en la que se almacenan datos"
+      ],
+      "ok": 3,
+      "exp": "Concepto del tema.",
+      "id": "T2-2.3-01"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿De cuántas formas se puede declarar una variable según el tema?",
+      "codi": "",
+      "op": [
+        "De una",
+        "De dos: solo declaración, o declaración + asignación",
+        "De tres",
+        "De cuatro"
+      ],
+      "ok": 1,
+      "exp": "Declaración y declaración + asignación.",
+      "id": "T2-2.3-02"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Cuál de estos nombres de variable es válido?",
+      "codi": "",
+      "op": [
+        "2nota",
+        "mi nota",
+        "_total",
+        "precio-final"
+      ],
+      "ok": 2,
+      "exp": "Solo alfanuméricos y guion bajo, sin empezar por número.",
+      "id": "T2-2.3-03"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Por qué no es válido el nombre 2nota?",
+      "codi": "",
+      "op": [
+        "Porque no puede empezar por un número",
+        "Porque es reservado",
+        "Porque es muy corto",
+        "Porque tiene una letra"
+      ],
+      "ok": 0,
+      "exp": "Regla de nombres.",
+      "id": "T2-2.3-04"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Por qué no es válido el nombre mi nota?",
+      "codi": "",
+      "op": [
+        "Porque es reservado",
+        "Porque tiene minúsculas",
+        "Porque contiene un espacio en blanco",
+        "Porque empieza por letra"
+      ],
+      "ok": 2,
+      "exp": "Sin espacios ni símbolos de puntuación.",
+      "id": "T2-2.3-05"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Cuál de estos NO puede usarse como nombre de variable?",
+      "codi": "",
+      "op": [
+        "clase",
+        "class",
+        "edad",
+        "total"
+      ],
+      "ok": 1,
+      "exp": "class es una palabra reservada.",
+      "id": "T2-2.3-06"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Qué dicen las orientaciones sobre el nombre de una variable?",
+      "codi": "",
+      "op": [
+        "Debe ser una palabra reservada",
+        "Debe estar relacionado con el dato que almacena",
+        "Debe ser lo más corto posible",
+        "Debe empezar por número"
+      ],
+      "ok": 1,
+      "exp": "Nombres descriptivos.",
+      "id": "T2-2.3-07"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Qué ocurre con las variables cuando el navegador limpia la ventana?",
+      "codi": "",
+      "op": [
+        "Se convierten en constantes",
+        "Se guardan en el servidor",
+        "Se conservan siempre",
+        "Se eliminan todas"
+      ],
+      "ok": 3,
+      "exp": "Lo dice el tema.",
+      "id": "T2-2.3-08"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "Además de las palabras de ECMAScript 6, ¿qué otras palabras se consideran reservadas?",
+      "codi": "",
+      "op": [
+        "Ninguna",
+        "null, true y false",
+        "Solo las de ES6",
+        "undefined y NaN"
+      ],
+      "ok": 1,
+      "exp": "Nota del tema.",
+      "id": "T2-2.3-09"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Cuál de estas es una palabra reservada de ECMAScript 6?",
+      "codi": "",
+      "op": [
+        "nombre",
+        "total",
+        "typeof",
+        "miVariable"
+      ],
+      "ok": 2,
+      "exp": "Está en la tabla de palabras reservadas.",
+      "id": "T2-2.3-10"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Cuál de estas es una futura palabra reservada (ES6)?",
+      "codi": "",
+      "op": [
+        "function",
+        "let",
+        "while",
+        "enum"
+      ],
+      "ok": 3,
+      "exp": "Futuras: enum, implements, package, protected, static, interface, private, public.",
+      "id": "T2-2.3-11"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Cuál es una palabra reservada de la antigua especificación ES1 a ES3?",
+      "codi": "",
+      "op": [
+        "switch",
+        "if",
+        "const",
+        "volatile"
+      ],
+      "ok": 3,
+      "exp": "Se valoran como reservadas por buena praxis.",
+      "id": "T2-2.3-12"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Qué palabra declara una variable local de ámbito de bloque?",
+      "codi": "",
+      "op": [
+        "let",
+        "var",
+        "const",
+        "function"
+      ],
+      "ok": 0,
+      "exp": "let.",
+      "id": "T2-2.3-13"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Qué palabra declara una constante de solo lectura?",
+      "codi": "",
+      "op": [
+        "class",
+        "let",
+        "var",
+        "const"
+      ],
+      "ok": 3,
+      "exp": "const.",
+      "id": "T2-2.3-14"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "teoria",
+      "q": "¿Qué regla práctica del curso se da para declarar?",
+      "codi": "",
+      "op": [
+        "Empezar siempre con const y cambiar a let solo si hay que reasignar",
+        "No declarar las variables",
+        "Usar siempre let",
+        "Usar siempre var"
+      ],
+      "ok": 0,
+      "exp": "Demo D1.",
+      "id": "T2-2.3-15"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "{\n  let dentro = 'solo aquí';\n  console.log(dentro);\n}\nconsole.log(typeof dentro);",
+      "op": [
+        "`solo aquí`, `string`",
+        "`solo aquí`, `undefined`",
+        "`undefined`, `undefined`",
+        "`solo aquí`, `solo aquí`"
+      ],
+      "ok": 1,
+      "exp": "let solo existe dentro de las llaves; typeof de algo no declarado da 'undefined'.",
+      "id": "T2-2.3-16"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "{\n  var fuera = 5;\n}\nconsole.log(fuera);",
+      "op": [
+        "`5`",
+        "`undefined`",
+        "`null`",
+        "`Un error`"
+      ],
+      "ok": 0,
+      "exp": "var no tiene ámbito de bloque.",
+      "id": "T2-2.3-17"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "error",
+      "q": "¿Qué error da este código?",
+      "codi": "const IVA = 0.21;\nIVA = 0.10;",
+      "op": [
+        "TypeError: no se puede reasignar una constante",
+        "No da error, IVA vale 0.1",
+        "ReferenceError",
+        "SyntaxError"
+      ],
+      "ok": 0,
+      "exp": "Una const no se reasigna.",
+      "id": "T2-2.3-18"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "error",
+      "q": "¿Qué error da este código?",
+      "codi": "{\n  let dentro = 'x';\n}\nconsole.log(dentro);",
+      "op": [
+        "SyntaxError",
+        "No da error",
+        "TypeError",
+        "ReferenceError: dentro is not defined"
+      ],
+      "ok": 3,
+      "exp": "Ámbito de bloque.",
+      "id": "T2-2.3-19"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "error",
+      "q": "¿Por qué da error este código?",
+      "codi": "let Edad = 20;\nconsole.log(edad);",
+      "op": [
+        "Edad es palabra reservada",
+        "console.log no admite variables",
+        "Falta const",
+        "JavaScript distingue mayúsculas y minúsculas: edad no existe"
+      ],
+      "ok": 3,
+      "exp": "Edad y edad son nombres distintos.",
+      "id": "T2-2.3-20"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "error",
+      "q": "¿Qué error da este código?",
+      "codi": "let x = 1;\nlet x = 2;",
+      "op": [
+        "SyntaxError: x ya está declarada",
+        "ReferenceError",
+        "TypeError",
+        "No da error"
+      ],
+      "ok": 0,
+      "exp": "No se puede redeclarar con let.",
+      "id": "T2-2.3-21"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "No puede contener espacios en blanco",
+        "El nombre de una variable puede empezar por un número",
+        "No puede ser una palabra reservada",
+        "Puede contener el guion bajo (_)"
+      ],
+      "ok": 1,
+      "exp": "No puede empezar por número.",
+      "id": "T2-2.3-22"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "Una variable guarda distintos tipos de valores",
+        "let declara una variable de ámbito de bloque",
+        "Al declarar una variable hay que indicar su tipo de dato",
+        "const declara una constante de solo lectura"
+      ],
+      "ok": 2,
+      "exp": "No hay que indicar el tipo.",
+      "id": "T2-2.3-23"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "interpretar",
+      "titol": "Ámbito y const",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "const LIMITE = 3;\nlet total = 0;\n{\n  let extra = 10;\n  total = total + extra;\n}\nconsole.log(total);\nconsole.log(typeof extra);\nconsole.log(LIMITE);",
+      "solucio": "Salida: 10 / undefined / 3. extra solo existe dentro del bloque, por eso typeof extra es 'undefined'; total sí se modificó.",
+      "rubrica": [
+        "10 (0,6)",
+        "undefined (0,7)",
+        "3 (0,3)",
+        "Explicación del ámbito (0,4)"
+      ],
+      "punts": 2,
+      "id": "T2-2.3-24"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "escriure",
+      "titol": "Declarar variables",
+      "q": "Declara una constante PRECIO con valor 18.75 y una variable unidades con valor 14 que más adelante cambiarás. Explica por qué eliges const o let en cada caso.",
+      "codi": "",
+      "solucio": "const PRECIO = 18.75;\nlet unidades = 14;\nPRECIO es un dato fijo (const); unidades cambiará (let).",
+      "rubrica": [
+        "const (0,5)",
+        "let (0,5)",
+        "Justificación (1)"
+      ],
+      "punts": 2,
+      "id": "T2-2.3-25"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "escriure",
+      "titol": "Nombres de variables",
+      "q": "Indica cuáles de estos nombres son válidos y por qué no lo son los demás: total_1, 1total, mi total, function, edadAlumno.",
+      "codi": "",
+      "solucio": "Válidos: total_1 y edadAlumno. 1total empieza por número; mi total tiene un espacio; function es palabra reservada.",
+      "rubrica": [
+        "2 válidos (0,5)",
+        "3 inválidos con motivo (1,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.3-26"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "oberta",
+      "q": "¿Qué es una variable y qué reglas hay para ponerle nombre?",
+      "solucio": "Zona de memoria con nombre donde se guardan datos. El nombre debe estar relacionado con el dato, no puede ser palabra reservada, no puede tener espacios ni símbolos de puntuación (solo alfanuméricos y _) ni empezar por número.",
+      "punts_clau": [
+        "Definición",
+        "Sin reservadas",
+        "Sin espacios/símbolos",
+        "No empieza por número"
+      ],
+      "punts": 2,
+      "id": "T2-2.3-27"
+    },
+    {
+      "apartat": "2.3",
+      "tipus": "oberta",
+      "q": "Diferencia entre let y const, y regla práctica del curso.",
+      "solucio": "let declara una variable de ámbito de bloque que se puede reasignar; const una constante de solo lectura. Regla: empezar siempre con const y pasar a let solo si hay que reasignar.",
+      "punts_clau": [
+        "let",
+        "const",
+        "Regla del curso"
+      ],
+      "punts": 1.5,
+      "id": "T2-2.3-28"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "teoria",
+      "q": "¿Qué operador se usa para asignar un valor a una variable?",
+      "codi": "",
+      "op": [
+        "==",
+        "=>",
+        "===",
+        "="
+      ],
+      "ok": 3,
+      "exp": "Operador igual.",
+      "id": "T2-2.4-01"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "teoria",
+      "q": "¿Cómo funciona el operador =?",
+      "codi": "",
+      "op": [
+        "Asigna el valor de la expresión de la derecha a la variable de la izquierda",
+        "Asigna la variable de la derecha a la izquierda",
+        "Declara una constante",
+        "Compara dos valores"
+      ],
+      "ok": 0,
+      "exp": "Regla del tema.",
+      "id": "T2-2.4-02"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "teoria",
+      "q": "¿Cuál de estos es un operador de asignación?",
+      "codi": "",
+      "op": [
+        "&&",
+        "===",
+        "+=",
+        "?:"
+      ],
+      "ok": 2,
+      "exp": "Compuesto de suma y asigna.",
+      "id": "T2-2.4-03"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "teoria",
+      "q": "¿Qué hace x += 5?",
+      "codi": "",
+      "op": [
+        "x = x * 5",
+        "x = x - 5",
+        "x = x + 5",
+        "x = 5"
+      ],
+      "ok": 2,
+      "exp": "Suma y asigna.",
+      "id": "T2-2.4-04"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "teoria",
+      "q": "¿Qué hace x *= 2?",
+      "codi": "",
+      "op": [
+        "x = x + 2",
+        "x = x * 2",
+        "x = x ** 2",
+        "x = 2"
+      ],
+      "ok": 1,
+      "exp": "Multiplica y asigna.",
+      "id": "T2-2.4-05"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "teoria",
+      "q": "¿Qué hace x %= 3?",
+      "codi": "",
+      "op": [
+        "x = x % 3",
+        "x = 3",
+        "x = x / 3",
+        "x = x - 3"
+      ],
+      "ok": 0,
+      "exp": "Módulo y asigna.",
+      "id": "T2-2.4-06"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "teoria",
+      "q": "¿Qué ventaja dan los operadores como += o ++?",
+      "codi": "",
+      "op": [
+        "Convierten tipos",
+        "Evitan declarar variables",
+        "Hacen el código más lento",
+        "Ahorran tiempo y reducen el código: no repites el nombre de la variable"
+      ],
+      "ok": 3,
+      "exp": "Lo dice el tema.",
+      "id": "T2-2.4-07"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let a = 1;\nlet z = 10;\nz = ++a;\nconsole.log(z);\nconsole.log(a);",
+      "op": [
+        "`2`, `2`",
+        "`2`, `1`",
+        "`1`, `2`",
+        "`10`, `2`"
+      ],
+      "ok": 0,
+      "exp": "++a primero incrementa y luego asigna.",
+      "id": "T2-2.4-08"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let a = 2;\nlet z = a++;\nconsole.log(z);\nconsole.log(a);",
+      "op": [
+        "`2`, `2`",
+        "`3`, `3`",
+        "`2`, `3`",
+        "`3`, `2`"
+      ],
+      "ok": 2,
+      "exp": "a++ primero asigna el valor y luego incrementa.",
+      "id": "T2-2.4-09"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let x = 10;\nx += 5;\nx -= 3;\nx *= 2;\nconsole.log(x);",
+      "op": [
+        "`12`",
+        "`14`",
+        "`24`",
+        "`30`"
+      ],
+      "ok": 2,
+      "exp": "10+5=15; 15-3=12; 12*2=24.",
+      "id": "T2-2.4-10"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let x = 17;\nx %= 5;\nconsole.log(x);\nx /= 2;\nconsole.log(x);",
+      "op": [
+        "`2`, `2`",
+        "`3`, `1.5`",
+        "`5`, `2.5`",
+        "`2`, `1`"
+      ],
+      "ok": 3,
+      "exp": "17%5=2; 2/2=1.",
+      "id": "T2-2.4-11"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let t = 'Hola';\nt += ' mundo';\nconsole.log(t);",
+      "op": [
+        "`NaN`",
+        "`Hola`",
+        "`Hola mundo`",
+        "`Holamundo`"
+      ],
+      "ok": 2,
+      "exp": "+= también concatena texto.",
+      "id": "T2-2.4-12"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "error",
+      "q": "¿Qué problema tiene este código?",
+      "codi": "const total = 10;\ntotal += 5;",
+      "op": [
+        "Falta let a la derecha",
+        "Falta punto y coma",
+        "total es const: no se puede reasignar (TypeError)",
+        "+= no existe"
+      ],
+      "ok": 2,
+      "exp": "Cambiar a let.",
+      "id": "T2-2.4-13"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "+= suma y asigna",
+        "++ incrementa un valor",
+        "= asigna el valor de la derecha a la variable de la izquierda",
+        "El operador = compara el valor de la izquierda con el de la derecha"
+      ],
+      "ok": 3,
+      "exp": "= asigna, no compara.",
+      "id": "T2-2.4-14"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "interpretar",
+      "titol": "Pre y posincremento",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "let a = 1;\nlet b = a++;\nlet c = ++a;\nconsole.log(a);\nconsole.log(b);\nconsole.log(c);",
+      "solucio": "Salida: 3 / 1 / 3. b recibe el valor antes de incrementar (1); luego a vale 2 y ++a lo deja en 3, que se asigna a c.",
+      "rubrica": [
+        "3 (0,5)",
+        "1 (0,5)",
+        "3 (0,5)",
+        "Explicación pre/post (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.4-15"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "interpretar",
+      "titol": "Asignaciones compuestas",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "let n = 20;\nn -= 4;\nn /= 2;\nn += 1;\nn %= 4;\nconsole.log(n);",
+      "solucio": "Salida: 1. 20-4=16; 16/2=8; 8+1=9; 9%4=1.",
+      "rubrica": [
+        "Resultado 1 (1)",
+        "Pasos intermedios (1)"
+      ],
+      "punts": 2,
+      "id": "T2-2.4-16"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "escriure",
+      "titol": "Operadores compuestos",
+      "q": "Reescribe con operadores compuestos: total = total + 5; precio = precio * 2; resto = resto % 3; n = n - 1.",
+      "codi": "",
+      "solucio": "total += 5;\nprecio *= 2;\nresto %= 3;\nn -= 1;  // o n--;",
+      "rubrica": [
+        "4 correctas (0,5 c/u)"
+      ],
+      "punts": 2,
+      "id": "T2-2.4-17"
+    },
+    {
+      "apartat": "2.4",
+      "tipus": "oberta",
+      "q": "Diferencia entre z = ++a y z = a++.",
+      "solucio": "z = ++a incrementa a primero y asigna ese valor a z; z = a++ asigna primero el valor de a a z y después incrementa a.",
+      "punts_clau": [
+        "++a primero incrementa",
+        "a++ primero asigna"
+      ],
+      "punts": 1.5,
+      "id": "T2-2.4-18"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Cómo se llama cualquier variable o valor sobre el que se hace una operación?",
+      "codi": "",
+      "op": [
+        "Bloque",
+        "Operando",
+        "Sentencia",
+        "Operador"
+      ],
+      "ok": 1,
+      "exp": "Operando.",
+      "id": "T2-2.5-01"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué operador comprueba igualdad de valor Y de tipo?",
+      "codi": "",
+      "op": [
+        "===",
+        "!=",
+        "==",
+        "="
+      ],
+      "ok": 0,
+      "exp": "Estrictamente igual.",
+      "id": "T2-2.5-02"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué devuelve \"5\" == 5?",
+      "codi": "",
+      "op": [
+        "false",
+        "true",
+        "Un error",
+        "NaN"
+      ],
+      "ok": 1,
+      "exp": "== convierte antes de comparar.",
+      "id": "T2-2.5-03"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué devuelve \"5\" === 5?",
+      "codi": "",
+      "op": [
+        "false",
+        "NaN",
+        "Un error",
+        "true"
+      ],
+      "ok": 0,
+      "exp": "Distinto tipo.",
+      "id": "T2-2.5-04"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué operador significa «estrictamente diferente»?",
+      "codi": "",
+      "op": [
+        "!=",
+        "!==",
+        "<>",
+        "=!"
+      ],
+      "ok": 1,
+      "exp": "!==.",
+      "id": "T2-2.5-05"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "Al comparar cadenas en JavaScript...",
+      "codi": "",
+      "op": [
+        "No se distingue",
+        "Solo se compara la longitud",
+        "Se distingue entre mayúsculas y minúsculas",
+        "Siempre da error"
+      ],
+      "ok": 2,
+      "exp": "Aviso del tema.",
+      "id": "T2-2.5-06"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué devuelve una comparación?",
+      "codi": "",
+      "op": [
+        "undefined",
+        "Una condición (true o false)",
+        "Un número",
+        "Una cadena"
+      ],
+      "ok": 1,
+      "exp": "Retorna true o false.",
+      "id": "T2-2.5-07"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué devuelve el operador % (módulo)?",
+      "codi": "",
+      "op": [
+        "El cociente",
+        "El porcentaje",
+        "El resto de la división entre los operandos",
+        "El producto"
+      ],
+      "ok": 2,
+      "exp": "Módulo = resto.",
+      "id": "T2-2.5-08"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué hacen los operadores ++ y --?",
+      "codi": "",
+      "op": [
+        "Concatenar cadenas",
+        "Sumar dos operandos",
+        "Comparar valores",
+        "Incrementar y decrementar un valor"
+      ],
+      "ok": 3,
+      "exp": "Aritméticos.",
+      "id": "T2-2.5-09"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué devuelve a && b?",
+      "codi": "",
+      "op": [
+        "true si al menos uno es true",
+        "Invierte el valor",
+        "true solo si los dos valores son true",
+        "Siempre false"
+      ],
+      "ok": 2,
+      "exp": "AND.",
+      "id": "T2-2.5-10"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué devuelve a || b?",
+      "codi": "",
+      "op": [
+        "true solo si los dos son true",
+        "Invierte el valor",
+        "Siempre true",
+        "true si al menos uno es true"
+      ],
+      "ok": 3,
+      "exp": "OR.",
+      "id": "T2-2.5-11"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Qué hace el operador !?",
+      "codi": "",
+      "op": [
+        "Compara dos valores",
+        "Concatena",
+        "Suma",
+        "Invierte el valor booleano de su operando"
+      ],
+      "ok": 3,
+      "exp": "NOT.",
+      "id": "T2-2.5-12"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Para qué sirven los operadores booleanos?",
+      "codi": "",
+      "op": [
+        "Para comentar código",
+        "Para combinar o manipular expresiones lógicas y tomar decisiones",
+        "Para convertir tipos",
+        "Para declarar variables"
+      ],
+      "ok": 1,
+      "exp": "Lo dice el tema.",
+      "id": "T2-2.5-13"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "¿Cuántas partes tiene el operador condicional ?:",
+      "codi": "",
+      "op": [
+        "Dos",
+        "Una",
+        "Tres: la expresión, la acción si es cierta y la acción si es falsa",
+        "Cuatro"
+      ],
+      "ok": 2,
+      "exp": "condición ? valor1 : valor2.",
+      "id": "T2-2.5-14"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "teoria",
+      "q": "En condición ? valor1 : valor2, ¿cuándo se usa valor1?",
+      "codi": "",
+      "op": [
+        "Nunca",
+        "Cuando la condición es cierta",
+        "Siempre",
+        "Cuando es falsa"
+      ],
+      "ok": 1,
+      "exp": "Primer valor si es cierto.",
+      "id": "T2-2.5-15"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra console.log(5 * 4.5);?",
+      "codi": "console.log(5 * 4.5);",
+      "op": [
+        "22",
+        "9.5",
+        "Error",
+        "22.5"
+      ],
+      "ok": 3,
+      "exp": "Pregunta del tema.",
+      "id": "T2-2.5-16"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra console.log(5 < 6);?",
+      "codi": "console.log(5 < 6);",
+      "op": [
+        "Error",
+        "false",
+        "-1",
+        "true"
+      ],
+      "ok": 3,
+      "exp": "5 es menor que 6.",
+      "id": "T2-2.5-17"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra console.log(\"23\" + 95);?",
+      "codi": "console.log(\"23\" + 95);",
+      "op": [
+        "37",
+        "undefined",
+        "NaN",
+        "2395"
+      ],
+      "ok": 3,
+      "exp": "El + concatena si hay texto.",
+      "id": "T2-2.5-18"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log('5' + 1);\nconsole.log('5' - 1);\nconsole.log('5' * 2);\nconsole.log(5 + 1);",
+      "op": [
+        "`51`, `51`, `10`, `6`",
+        "`51`, `4`, `52`, `6`",
+        "`6`, `4`, `10`, `6`",
+        "`51`, `4`, `10`, `6`"
+      ],
+      "ok": 3,
+      "exp": "El + es el único que concatena; los demás convierten a número.",
+      "id": "T2-2.5-19"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log('5' == 5);\nconsole.log('5' === 5);\nconsole.log(0 == false);\nconsole.log(0 === false);\nconsole.log('' == false);",
+      "op": [
+        "`false`, `false`, `true`, `false`, `false`",
+        "`true`, `false`, `true`, `false`, `true`",
+        "`true`, `true`, `true`, `true`, `true`",
+        "`true`, `false`, `false`, `false`, `true`"
+      ],
+      "ok": 1,
+      "exp": "== convierte, === no.",
+      "id": "T2-2.5-20"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log('a' === 'A');\nconsole.log('hola' === 'hola');\nconsole.log('b' > 'a');",
+      "op": [
+        "`false`, `true`, `false`",
+        "`true`, `true`, `true`",
+        "`false`, `true`, `true`",
+        "`false`, `false`, `true`"
+      ],
+      "ok": 2,
+      "exp": "Las cadenas distinguen mayúsculas.",
+      "id": "T2-2.5-21"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log(10 % 3);\nconsole.log(7 / 2);\nconsole.log(2 * 3 + 4);\nconsole.log(2 + 3 * 4);",
+      "op": [
+        "`3`, `3`, `10`, `20`",
+        "`1`, `3`, `10`, `14`",
+        "`1`, `3.5`, `10`, `14`",
+        "`1`, `3.5`, `10`, `20`"
+      ],
+      "ok": 2,
+      "exp": "El * va antes que el +.",
+      "id": "T2-2.5-22"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log(true && false);\nconsole.log(true || false);\nconsole.log(!true);\nconsole.log(!(5 > 3));",
+      "op": [
+        "`false`, `true`, `false`, `false`",
+        "`false`, `false`, `true`, `false`",
+        "`true`, `true`, `false`, `true`",
+        "`false`, `true`, `true`, `true`"
+      ],
+      "ok": 0,
+      "exp": "AND, OR y NOT.",
+      "id": "T2-2.5-23"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const edad = 20;\nconst estado = (edad >= 18) ? 'adulto' : 'menor';\nconsole.log(estado);",
+      "op": [
+        "`adulto`",
+        "`true`",
+        "`menor`",
+        "`undefined`"
+      ],
+      "ok": 0,
+      "exp": "20 >= 18 es cierto.",
+      "id": "T2-2.5-24"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log(3 + 4 + '5');\nconsole.log('3' + 4 + 5);",
+      "op": [
+        "`12`, `12`",
+        "`75`, `75`",
+        "`345`, `345`",
+        "`75`, `345`"
+      ],
+      "ok": 3,
+      "exp": "De izquierda a derecha: 3+4=7 y luego '75'.",
+      "id": "T2-2.5-25"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log(NaN === NaN);\nconsole.log(isNaN(NaN));\nconsole.log(0.1 + 0.2 === 0.3);",
+      "op": [
+        "`true`, `false`, `false`",
+        "`true`, `true`, `true`",
+        "`false`, `true`, `false`",
+        "`false`, `false`, `true`"
+      ],
+      "ok": 2,
+      "exp": "NaN no es igual ni a sí mismo; 0.1+0.2 no es exactamente 0.3.",
+      "id": "T2-2.5-26"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log('10' > '9');\nconsole.log(10 > 9);\nconsole.log('10' > 9);",
+      "op": [
+        "`false`, `true`, `false`",
+        "`true`, `false`, `true`",
+        "`false`, `true`, `true`",
+        "`true`, `true`, `true`"
+      ],
+      "ok": 2,
+      "exp": "Dos textos se comparan carácter a carácter; con un número se convierte.",
+      "id": "T2-2.5-27"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const a = 5, b = 10;\nconsole.log(a < b && b < 20);\nconsole.log(a > b || b === 10);\nconsole.log(a !== 5);",
+      "op": [
+        "`true`, `true`, `false`",
+        "`true`, `false`, `false`",
+        "`true`, `true`, `true`",
+        "`false`, `true`, `true`"
+      ],
+      "ok": 0,
+      "exp": "Combinación de comparaciones.",
+      "id": "T2-2.5-28"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "error",
+      "q": "¿Qué problema tiene esta condición?",
+      "codi": "let nota = 3;\nif (nota = 5) {\n  console.log('Es cinco');\n}",
+      "op": [
+        "Falta else",
+        "Usa = (asignación) en lugar de === (comparación); siempre es cierta",
+        "nota es palabra reservada",
+        "Falta let"
+      ],
+      "ok": 1,
+      "exp": "= asigna.",
+      "id": "T2-2.5-29"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "error",
+      "q": "¿Qué error de comparación hay?",
+      "codi": "const entrada = '18';\nif (entrada === 18) {\n  console.log('Mayor de edad');\n}",
+      "op": [
+        "Falta else",
+        "'18' es texto y 18 es número: === da false y no entra",
+        "=== no existe",
+        "Falta let"
+      ],
+      "ok": 1,
+      "exp": "Distinto tipo.",
+      "id": "T2-2.5-30"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "error",
+      "q": "¿Qué problema tiene esto?",
+      "codi": "const a = '10';\nconst b = '20';\nconsole.log(a + b);",
+      "op": [
+        "El + concatena los textos: sale '1020', no 30",
+        "No hay problema, sale 30",
+        "Falta parseInt en la consola",
+        "Falta const"
+      ],
+      "ok": 0,
+      "exp": "Textos concatenados.",
+      "id": "T2-2.5-31"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "!== es estrictamente diferente",
+        "Las cadenas distinguen mayúsculas y minúsculas",
+        "El operador == compara también el tipo de dato",
+        "=== compara valor y tipo"
+      ],
+      "ok": 2,
+      "exp": "== solo compara el valor tras convertir.",
+      "id": "T2-2.5-32"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "El operador || devuelve true solo si todos los valores son true",
+        "! invierte el valor booleano",
+        "&& devuelve true solo si todos son true",
+        "% devuelve el resto de la división"
+      ],
+      "ok": 0,
+      "exp": "|| es true con que uno lo sea.",
+      "id": "T2-2.5-33"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "interpretar",
+      "titol": "Concatenar o sumar",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "console.log(1 + 2);\nconsole.log('1' + 2);\nconsole.log('1' - 2);\nconsole.log(1 + 2 + '3');\nconsole.log('1' + 2 + 3);",
+      "solucio": "Salida: 3 / 12 / -1 / 33 / 123. El + concatena en cuanto aparece un texto; el - siempre convierte a número. En la última línea '1'+2 ya es '12' y luego '123'.",
+      "rubrica": [
+        "3 (0,3)",
+        "12 (0,3)",
+        "-1 (0,3)",
+        "33 (0,4)",
+        "123 y explicación (0,7)"
+      ],
+      "punts": 2,
+      "id": "T2-2.5-34"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "interpretar",
+      "titol": "Comparaciones y lógicos",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "const x = 7;\nconsole.log(x > 5 && x < 10);\nconsole.log(x === '7');\nconsole.log(x == '7');\nconsole.log(!(x % 2 === 0));\nconsole.log(x > 10 || x === 7);",
+      "solucio": "Salida: true / false / true / true / true. == convierte el texto; === no. x%2 es 1, no 0, y ! lo invierte.",
+      "rubrica": [
+        "true (0,4)",
+        "false (0,4)",
+        "true (0,4)",
+        "true (0,4)",
+        "true y explicación (0,4)"
+      ],
+      "punts": 2,
+      "id": "T2-2.5-35"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "escriure",
+      "titol": "Operador ternario",
+      "q": "Escribe con el operador ternario una constante resultado que valga 'Aprobado' si nota >= 5 y 'Suspendido' si no.",
+      "codi": "",
+      "solucio": "const resultado = (nota >= 5) ? 'Aprobado' : 'Suspendido';",
+      "rubrica": [
+        "Condición (0,7)",
+        "?: correcto (0,7)",
+        "Los dos valores (0,6)"
+      ],
+      "punts": 2,
+      "id": "T2-2.5-36"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "escriure",
+      "titol": "Condición compuesta",
+      "q": "Escribe una condición que sea cierta cuando edad esté entre 18 y 65 (ambos incluidos) o cuando esJubilado sea true.",
+      "codi": "",
+      "solucio": "(edad >= 18 && edad <= 65) || esJubilado",
+      "rubrica": [
+        "&& para el rango (1)",
+        "|| con esJubilado (0,5)",
+        "Paréntesis/límites (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.5-37"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "oberta",
+      "q": "Diferencia entre == y === con un ejemplo. ¿Cuál se usa en el curso?",
+      "solucio": "== compara el valor tras convertir ('5' == 5 es true); === compara valor y tipo ('5' === 5 es false). En el curso se usa siempre ===.",
+      "punts_clau": [
+        "== convierte",
+        "=== valor y tipo",
+        "Ejemplo",
+        "Usar siempre ==="
+      ],
+      "punts": 1.5,
+      "id": "T2-2.5-38"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "oberta",
+      "q": "Explica los tipos de operadores de JavaScript que cita el tema.",
+      "solucio": "Comparación (<, <=, ==, >, >=, !=, ===, !==), aritméticos (+, -, *, /, %, ++, --), booleanos (&&, ||, !), de asignación (+=, -=, *=, /=, %=) y condicional (?:).",
+      "punts_clau": [
+        "Comparación",
+        "Aritméticos",
+        "Booleanos",
+        "Asignación",
+        "Condicional"
+      ],
+      "punts": 2,
+      "id": "T2-2.5-39"
+    },
+    {
+      "apartat": "2.5",
+      "tipus": "oberta",
+      "q": "¿Por qué \"23\" + 95 da \"2395\" y no 118?",
+      "solucio": "Porque el + concatena cuando uno de los operandos es texto, así que convierte el 95 a texto y los une.",
+      "punts_clau": [
+        "+ concatena",
+        "Un operando es texto"
+      ],
+      "punts": 1,
+      "id": "T2-2.5-40"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Cómo está formada una sentencia de JavaScript?",
+      "codi": "",
+      "op": [
+        "Solo por números",
+        "Solo por una palabra clave",
+        "Por una palabra clave o un grupo de palabras clave con sintaxis propia",
+        "Solo por comentarios"
+      ],
+      "ok": 2,
+      "exp": "No es una sola palabra clave, sino un grupo.",
+      "id": "T2-2.6-01"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Cómo se ponen varias sentencias en una sola línea?",
+      "codi": "",
+      "op": [
+        "No se puede",
+        "Separadas por espacio",
+        "Separadas por punto y coma",
+        "Separadas por coma"
+      ],
+      "ok": 2,
+      "exp": "Punto y coma.",
+      "id": "T2-2.6-02"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Puede una sentencia ocupar varias líneas?",
+      "codi": "",
+      "op": [
+        "No",
+        "Solo en HTML",
+        "Sí",
+        "Solo con const"
+      ],
+      "ok": 2,
+      "exp": "Múltiples líneas.",
+      "id": "T2-2.6-03"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué hace la sentencia block?",
+      "codi": "",
+      "op": [
+        "Declara una variable",
+        "Lanza una excepción",
+        "Agrupa sentencias delimitadas por llaves",
+        "Sale de un bucle"
+      ],
+      "ok": 2,
+      "exp": "Bloque entre { }.",
+      "id": "T2-2.6-04"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué hace break?",
+      "codi": "",
+      "op": [
+        "Declara una función",
+        "Lanza una excepción",
+        "Salta a la siguiente iteración",
+        "Finaliza un bucle, switch o label y pasa el control a la siguiente sentencia"
+      ],
+      "ok": 3,
+      "exp": "break.",
+      "id": "T2-2.6-05"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué hace continue?",
+      "codi": "",
+      "op": [
+        "Detiene el programa",
+        "Declara una constante",
+        "Sale del bucle",
+        "Finaliza la iteración actual y continúa con la siguiente"
+      ],
+      "ok": 3,
+      "exp": "continue.",
+      "id": "T2-2.6-06"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué es una sentencia empty?",
+      "codi": "",
+      "op": [
+        "Una «no sentencia» donde la sintaxis esperaba una",
+        "Una variable vacía",
+        "Un comentario",
+        "Un bucle infinito"
+      ],
+      "ok": 0,
+      "exp": "Sentencia vacía.",
+      "id": "T2-2.6-07"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué hace la sentencia throw?",
+      "codi": "",
+      "op": [
+        "Declara una clase",
+        "Captura errores",
+        "Sale de un bucle",
+        "Lanza una excepción definida por el usuario"
+      ],
+      "ok": 3,
+      "exp": "throw.",
+      "id": "T2-2.6-08"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué hace try…catch?",
+      "codi": "",
+      "op": [
+        "Prueba un bloque y especifica una respuesta si se lanza una excepción",
+        "Declara una variable",
+        "Itera sobre un objeto",
+        "Importa un script"
+      ],
+      "ok": 0,
+      "exp": "try… catch.",
+      "id": "T2-2.6-09"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué sentencia declara una variable local de ámbito de bloque?",
+      "codi": "",
+      "op": [
+        "function",
+        "const",
+        "var",
+        "let"
+      ],
+      "ok": 3,
+      "exp": "let.",
+      "id": "T2-2.6-10"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué sentencia declara una constante de solo lectura?",
+      "codi": "",
+      "op": [
+        "class",
+        "let",
+        "const",
+        "var"
+      ],
+      "ok": 2,
+      "exp": "const.",
+      "id": "T2-2.6-11"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué sentencia declara una función?",
+      "codi": "",
+      "op": [
+        "return",
+        "function",
+        "class",
+        "import"
+      ],
+      "ok": 1,
+      "exp": "function.",
+      "id": "T2-2.6-12"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué hace return?",
+      "codi": "",
+      "op": [
+        "Lanza una excepción",
+        "Especifica el valor que devuelve una función",
+        "Sale de un bucle",
+        "Declara una función"
+      ],
+      "ok": 1,
+      "exp": "return.",
+      "id": "T2-2.6-13"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué sentencia declara una clase?",
+      "codi": "",
+      "op": [
+        "with",
+        "function",
+        "class",
+        "let"
+      ],
+      "ok": 2,
+      "exp": "class.",
+      "id": "T2-2.6-14"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué sentencia itera sobre las propiedades de un objeto?",
+      "codi": "",
+      "op": [
+        "if…else",
+        "while",
+        "for…in",
+        "do…while"
+      ],
+      "ok": 2,
+      "exp": "for… in.",
+      "id": "T2-2.6-15"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué sentencia ejecuta el bloque como mínimo una vez?",
+      "codi": "",
+      "op": [
+        "for",
+        "while",
+        "if",
+        "do…while"
+      ],
+      "ok": 3,
+      "exp": "La condición se evalúa después.",
+      "id": "T2-2.6-16"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Cuáles son las tres formas de repetición?",
+      "codi": "",
+      "op": [
+        "for, while y do…while",
+        "let, const y var",
+        "if, switch y for",
+        "try, catch y throw"
+      ],
+      "ok": 0,
+      "exp": "Tres bucles.",
+      "id": "T2-2.6-17"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué hace debugger?",
+      "codi": "",
+      "op": [
+        "Declara una variable",
+        "Carga un script",
+        "Invoca una funcionalidad de depuración si está disponible",
+        "Sale de un bucle"
+      ],
+      "ok": 2,
+      "exp": "Si no hay depurador, no tiene efecto.",
+      "id": "T2-2.6-18"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Para qué sirven export e import?",
+      "codi": "",
+      "op": [
+        "Para compartir propiedades, funciones y objetos entre scripts",
+        "Para hacer bucles",
+        "Para comentar código",
+        "Para declarar variables"
+      ],
+      "ok": 0,
+      "exp": "Export/import.",
+      "id": "T2-2.6-19"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué proporciona label?",
+      "codi": "",
+      "op": [
+        "Una variable",
+        "Un comentario",
+        "Una instrucción con un identificador al que pueden referirse break o continue",
+        "Una clase"
+      ],
+      "ok": 2,
+      "exp": "Etiqueta.",
+      "id": "T2-2.6-20"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "teoria",
+      "q": "¿Qué declara function*?",
+      "codi": "",
+      "op": [
+        "Una variable",
+        "Un generador, que facilita escribir iteradores",
+        "Una clase",
+        "Un error"
+      ],
+      "ok": 1,
+      "exp": "Generadores.",
+      "id": "T2-2.6-21"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "try {\n  throw new Error('ups');\n} catch (e) {\n  console.log('Capturado: ' + e.message);\n}\nconsole.log('fin');",
+      "op": [
+        "`Capturado: ups`, `fin`",
+        "`Capturado: ups`",
+        "`ups`, `fin`",
+        "`fin`"
+      ],
+      "ok": 0,
+      "exp": "throw salta al catch y luego el programa continúa.",
+      "id": "T2-2.6-22"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const obj = { a: 1, b: 2 };\nfor (const k in obj) {\n  console.log(k);\n}",
+      "op": [
+        "`1`, `2`",
+        "`obj`",
+        "`a`, `b`, `a`",
+        "`a`, `b`"
+      ],
+      "ok": 3,
+      "exp": "for…in recorre las propiedades.",
+      "id": "T2-2.6-23"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "error",
+      "q": "¿Por qué siempre se muestra 'Hola' aunque x valga 1?",
+      "codi": "let x = 1;\nif (x > 3);\n{\n  console.log('Hola');\n}",
+      "op": [
+        "console.log no puede ir entre llaves",
+        "Falta let",
+        "El ; tras el if es una sentencia vacía: el bloque siempre se ejecuta",
+        "Falta else"
+      ],
+      "ok": 2,
+      "exp": "Sentencia empty.",
+      "id": "T2-2.6-24"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "error",
+      "q": "¿Cuál es el error?",
+      "codi": "let n = 0;\nfor (let i = 0; i < 3; i++);\n{\n  n++;\n}\nconsole.log(n); // esperábamos 3",
+      "op": [
+        "El ; final del for es una sentencia vacía: el bloque solo se ejecuta una vez",
+        "Falta let",
+        "n es reservada",
+        "Falta const"
+      ],
+      "ok": 0,
+      "exp": "for con ; vacío.",
+      "id": "T2-2.6-25"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "Una sentencia es un grupo de palabras clave",
+        "Varias sentencias pueden ir en una línea separadas por ;",
+        "Una sentencia solo puede ocupar una línea",
+        "Una sentencia puede ocupar varias líneas"
+      ],
+      "ok": 2,
+      "exp": "Pueden ocupar varias líneas.",
+      "id": "T2-2.6-26"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "interpretar",
+      "titol": "try…catch",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "try {\n  console.log('A');\n  throw new Error('fallo');\n  console.log('B');\n} catch (e) {\n  console.log('C: ' + e.message);\n}\nconsole.log('D');",
+      "solucio": "Salida: A / C: fallo / D. Al hacer throw se salta el resto del try (B no sale) y se ejecuta el catch; luego sigue el programa.",
+      "rubrica": [
+        "A (0,3)",
+        "C: fallo (0,7)",
+        "D (0,3)",
+        "B no sale, explicación (0,7)"
+      ],
+      "punts": 2,
+      "id": "T2-2.6-27"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "escriure",
+      "titol": "try…catch",
+      "q": "Escribe un try…catch que lance un error con throw si la edad es negativa y lo muestre por consola.",
+      "codi": "",
+      "solucio": "try {\n  if (edad < 0) {\n    throw new Error('Edad negativa');\n  }\n} catch (e) {\n  console.log(e.message);\n}",
+      "rubrica": [
+        "try con throw (1)",
+        "catch con mensaje (1)"
+      ],
+      "punts": 2,
+      "id": "T2-2.6-28"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "oberta",
+      "q": "Explica qué es una sentencia y cita cinco tipos.",
+      "solucio": "Grupo de palabras clave con sintaxis propia; puede ocupar varias líneas o haber varias en una línea separadas por ;. Tipos: if…else, switch, for, while, do…while, try…catch, let, const, function, class…",
+      "punts_clau": [
+        "Definición",
+        "Cinco ejemplos"
+      ],
+      "punts": 2,
+      "id": "T2-2.6-29"
+    },
+    {
+      "apartat": "2.6",
+      "tipus": "oberta",
+      "q": "Diferencia entre break y continue.",
+      "solucio": "break sale del bucle (o switch); continue se salta la iteración actual y pasa a la siguiente.",
+      "punts_clau": [
+        "break sale",
+        "continue salta"
+      ],
+      "punts": 1,
+      "id": "T2-2.6-30"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cómo se ejecutan las instrucciones por defecto?",
+      "codi": "",
+      "op": [
+        "De manera secuencial, de arriba abajo",
+        "En paralelo",
+        "De abajo arriba",
+        "Aleatoriamente"
+      ],
+      "ok": 0,
+      "exp": "Programa secuencial.",
+      "id": "T2-2.7-01"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Qué tres tipos de sentencias condicionales cita el tema?",
+      "codi": "",
+      "op": [
+        "if, switch y bucles while/for",
+        "if, else y try",
+        "for, break y continue",
+        "let, const y var"
+      ],
+      "ok": 0,
+      "exp": "Tres tipos.",
+      "id": "T2-2.7-02"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cuándo se ejecutan las instrucciones de un if simple?",
+      "codi": "",
+      "op": [
+        "Nunca",
+        "Cuando la expresión lógica es cierta",
+        "Cuando es falsa",
+        "Siempre"
+      ],
+      "ok": 1,
+      "exp": "Solo si es cierta.",
+      "id": "T2-2.7-03"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cuándo se necesitan las llaves { } en un if?",
+      "codi": "",
+      "op": [
+        "Nunca",
+        "Siempre",
+        "Solo con else",
+        "Cuando hay más de una instrucción"
+      ],
+      "ok": 3,
+      "exp": "Con una sola instrucción se pueden omitir.",
+      "id": "T2-2.7-04"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Para qué sirve el else?",
+      "codi": "",
+      "op": [
+        "Para declarar variables",
+        "Para repetir",
+        "Para salir de un bucle",
+        "Para ejecutar instrucciones cuando la condición no es cierta"
+      ],
+      "ok": 3,
+      "exp": "Camino alternativo.",
+      "id": "T2-2.7-05"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Qué es una estructura anidada (imbricada)?",
+      "codi": "",
+      "op": [
+        "Un comentario",
+        "Dos ifs separados",
+        "Un bucle dentro de un switch",
+        "Un if dentro de otro if (estructura tipo nido)"
+      ],
+      "ok": 3,
+      "exp": "Nido de ifs.",
+      "id": "T2-2.7-06"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cómo se conoce la sintaxis simplificada de ifs anidados?",
+      "codi": "",
+      "op": [
+        "switch",
+        "if-else-if",
+        "ternario",
+        "do-while"
+      ],
+      "ok": 1,
+      "exp": "Más legible.",
+      "id": "T2-2.7-07"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cuándo se ejecuta el default de un switch?",
+      "codi": "",
+      "op": [
+        "Cuando ningún caso coincide con el valor de la expresión",
+        "Siempre",
+        "Nunca",
+        "Solo si hay break"
+      ],
+      "ok": 0,
+      "exp": "default.",
+      "id": "T2-2.7-08"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Para qué sirve el break dentro de un switch?",
+      "codi": "",
+      "op": [
+        "Reinicia el switch",
+        "Detiene la ejecución del switch cuando un caso es cierto",
+        "Salta al default",
+        "Sale del programa"
+      ],
+      "ok": 1,
+      "exp": "Evita seguir evaluando.",
+      "id": "T2-2.7-09"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Qué pasa si olvidas el break en un caso de un switch?",
+      "codi": "",
+      "op": [
+        "Error de sintaxis",
+        "La ejecución cae a los casos siguientes aunque no coincidan",
+        "Se repite el caso",
+        "Nada"
+      ],
+      "ok": 1,
+      "exp": "Caída (fall-through).",
+      "id": "T2-2.7-10"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Qué bucle se usa para repetir un número limitado de veces?",
+      "codi": "",
+      "op": [
+        "if",
+        "do…while",
+        "for",
+        "switch"
+      ],
+      "ok": 2,
+      "exp": "for.",
+      "id": "T2-2.7-11"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Qué tres partes tiene la cabecera de un for?",
+      "codi": "",
+      "op": [
+        "Expresión inicial, condición e incremento",
+        "Condición, bloque y else",
+        "break, continue y default",
+        "let, const y var"
+      ],
+      "ok": 0,
+      "exp": "Separadas por ;.",
+      "id": "T2-2.7-12"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "El bucle while se ejecuta...",
+      "codi": "",
+      "op": [
+        "Mientras se cumple una condición, evaluada antes de ejecutar el bloque",
+        "Solo una vez",
+        "Nunca",
+        "Siempre al menos una vez"
+      ],
+      "ok": 0,
+      "exp": "Condición primero.",
+      "id": "T2-2.7-13"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cuál es la única diferencia entre while y do…while?",
+      "codi": "",
+      "op": [
+        "El while es más rápido",
+        "El do…while no tiene condición",
+        "El while no lleva llaves",
+        "El do…while se ejecuta al menos una vez"
+      ],
+      "ok": 3,
+      "exp": "Condición al final.",
+      "id": "T2-2.7-14"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cuándo es útil do…while?",
+      "codi": "",
+      "op": [
+        "Para decisiones de dos opciones",
+        "Para comentar código",
+        "Cuando no se sabe cuántas veces y hay que ejecutarlo al menos una",
+        "Para declarar variables"
+      ],
+      "ok": 2,
+      "exp": "Tema.",
+      "id": "T2-2.7-15"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Qué pasa si en un while nada cambia la condición?",
+      "codi": "",
+      "op": [
+        "SyntaxError",
+        "Bucle infinito: la pestaña se cuelga",
+        "Se ejecuta una vez",
+        "Se salta"
+      ],
+      "ok": 1,
+      "exp": "Falta el i++.",
+      "id": "T2-2.7-16"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cuántos valores se consideran falsos en una condición?",
+      "codi": "",
+      "op": [
+        "Seis: false, 0, \"\", null, undefined y NaN",
+        "Ninguno",
+        "Tres",
+        "Dos"
+      ],
+      "ok": 0,
+      "exp": "Todo lo demás es cierto.",
+      "id": "T2-2.7-17"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cuál de estos valores se considera FALSO?",
+      "codi": "",
+      "op": [
+        "\"0\"",
+        "29",
+        "\"false\"",
+        "\"\" (texto vacío)"
+      ],
+      "ok": 3,
+      "exp": "\"0\" y \"false\" como texto son ciertos.",
+      "id": "T2-2.7-18"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Cuál de estos valores se considera CIERTO?",
+      "codi": "",
+      "op": [
+        "NaN",
+        "0",
+        "\"0\" (texto)",
+        "null"
+      ],
+      "ok": 2,
+      "exp": "Un texto no vacío es cierto.",
+      "id": "T2-2.7-19"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Por qué importa el orden en un if-else-if de notas?",
+      "codi": "",
+      "op": [
+        "Porque el else va primero",
+        "Porque cambia el tipo",
+        "Porque se evalúa de arriba abajo y se para en el primero cierto",
+        "Porque no importa"
+      ],
+      "ok": 2,
+      "exp": "Orden descendente.",
+      "id": "T2-2.7-20"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "¿Qué operador sustituye a un if-else sencillo de un solo valor?",
+      "codi": "",
+      "op": [
+        "switch",
+        "El operador ternario ?:",
+        "for",
+        "&&"
+      ],
+      "ok": 1,
+      "exp": "condición ? valor1 : valor2.",
+      "id": "T2-2.7-21"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "teoria",
+      "q": "Un switch compara la expresión con los casos con...",
+      "codi": "",
+      "op": [
+        "<",
+        "Igualdad flexible (==)",
+        "Ninguna comparación",
+        "Igualdad estricta (===)"
+      ],
+      "ok": 3,
+      "exp": "switch usa ===.",
+      "id": "T2-2.7-22"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra el código siguiente?",
+      "codi": "let v = 10;\nwhile (v > 0) {\n  console.log(v-- + ' ');\n}",
+      "op": [
+        "10 9 8 7 6 5 4 3 2 1",
+        "9 8 7 6 5 4 3 2 1",
+        "9 8 7 6 5 4 3 2 1 0",
+        "No mostrará nada"
+      ],
+      "ok": 0,
+      "exp": "v-- muestra el valor y después decrementa.",
+      "id": "T2-2.7-23"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra el código siguiente?",
+      "codi": "let x = 29;\nif (x) {\n  console.log('Correcto');\n}",
+      "op": [
+        "Nada",
+        "29",
+        "Correcto",
+        "Se produce un error"
+      ],
+      "ok": 2,
+      "exp": "29 es un valor cierto (truthy).",
+      "id": "T2-2.7-24"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Cuántas veces se ejecuta el bucle?",
+      "codi": "let c = 0;\nfor (let i = 1; i <= 40; i++) {\n  c++;\n}\nconsole.log(c);",
+      "op": [
+        "`1`",
+        "`41`",
+        "`39`",
+        "`40`"
+      ],
+      "ok": 3,
+      "exp": "Del 1 al 40 incluidos: 40.",
+      "id": "T2-2.7-25"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Cuántas vueltas da este while?",
+      "codi": "let i = 0;\nlet vueltas = 0;\nwhile (i <= 10) {\n  vueltas++;\n  i++;\n}\nconsole.log(vueltas);",
+      "op": [
+        "`12`",
+        "`10`",
+        "`11`",
+        "`0`"
+      ],
+      "ok": 2,
+      "exp": "De 0 a 10 incluidos: 11 vueltas.",
+      "id": "T2-2.7-26"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let a = 1;\ndo {\n  console.log('El valor de a es: ' + a);\n  a++;\n} while (a < 3);",
+      "op": [
+        "`El valor de a es: 2`",
+        "`El valor de a es: 1`, `El valor de a es: 2`",
+        "`El valor de a es: 1`",
+        "`El valor de a es: 1`, `El valor de a es: 2`, `El valor de a es: 3`"
+      ],
+      "ok": 1,
+      "exp": "Muestra 1 y 2.",
+      "id": "T2-2.7-27"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let n = 100;\ndo {\n  console.log('paso con n = ' + n);\n} while (n < 10);",
+      "op": [
+        "`paso con n = 100`",
+        "`Bucle infinito`",
+        "`paso con n = 100`, `paso con n = 100`",
+        "`No muestra nada`"
+      ],
+      "ok": 0,
+      "exp": "El do…while se ejecuta una vez.",
+      "id": "T2-2.7-28"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "for (let i = 0; i < 5; i++) {\n  if (i === 2) {\n    continue;\n  }\n  console.log(i);\n}",
+      "op": [
+        "`0`, `1`, `2`, `3`, `4`",
+        "`2`",
+        "`0`, `1`",
+        "`0`, `1`, `3`, `4`"
+      ],
+      "ok": 3,
+      "exp": "continue se salta el 2.",
+      "id": "T2-2.7-29"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "for (let k = 1; k <= 5; k++) {\n  if (k === 3) {\n    break;\n  }\n  console.log(k);\n}",
+      "op": [
+        "`1`, `2`",
+        "`1`, `2`, `4`, `5`",
+        "`1`, `2`, `3`",
+        "`3`"
+      ],
+      "ok": 0,
+      "exp": "break sale al llegar a 3.",
+      "id": "T2-2.7-30"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const dia = 3;\nswitch (dia) {\n  case 1:\n    console.log('Lunes');\n    break;\n  case 3:\n    console.log('Miércoles');\n    break;\n  default:\n    console.log('Otro');\n}",
+      "op": [
+        "`Miércoles`, `Otro`",
+        "`Otro`",
+        "`Miércoles`",
+        "`Lunes`"
+      ],
+      "ok": 2,
+      "exp": "Coincide con el caso 3.",
+      "id": "T2-2.7-31"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const dia = 2;\nswitch (dia) {\n  case 2:\n    console.log('Martes');\n  case 3:\n    console.log('Miércoles');\n    break;\n  default:\n    console.log('Otro');\n}",
+      "op": [
+        "`Miércoles`",
+        "`Martes`",
+        "`Martes`, `Miércoles`",
+        "`Martes`, `Miércoles`, `Otro`"
+      ],
+      "ok": 2,
+      "exp": "Sin break cae al caso siguiente.",
+      "id": "T2-2.7-32"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const x = '1';\nswitch (x) {\n  case 1:\n    console.log('número');\n    break;\n  default:\n    console.log('default');\n}",
+      "op": [
+        "`número`",
+        "`default`",
+        "`número`, `default`",
+        "`Un error`"
+      ],
+      "ok": 1,
+      "exp": "'1' !== 1, así que va al default.",
+      "id": "T2-2.7-33"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const nota = 8;\nif (nota >= 5) {\n  console.log('Aprobado');\n} else if (nota >= 9) {\n  console.log('Excelente');\n} else {\n  console.log('Suspenso');\n}",
+      "op": [
+        "`Aprobado`",
+        "`Suspenso`",
+        "`Excelente`",
+        "`Aprobado`, `Excelente`"
+      ],
+      "ok": 0,
+      "exp": "El primero cierto se ejecuta y el resto se ignora.",
+      "id": "T2-2.7-34"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "if ('0') { console.log('A'); }\nif (!'') { console.log('B'); }\nif (NaN) { console.log('C'); }\nif ('false') { console.log('D'); }\nif (null) { console.log('E'); }",
+      "op": [
+        "`A`, `C`, `D`",
+        "`A`, `B`, `D`",
+        "`A`, `B`, `E`",
+        "`B`, `D`, `E`"
+      ],
+      "ok": 1,
+      "exp": "Ciertos: '0', !'' y 'false'.",
+      "id": "T2-2.7-35"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let t = 0;\nfor (let i = 1; i <= 5; i++) {\n  t += i;\n}\nconsole.log(t);",
+      "op": [
+        "`15`",
+        "`5`",
+        "`120`",
+        "`10`"
+      ],
+      "ok": 0,
+      "exp": "1+2+3+4+5.",
+      "id": "T2-2.7-36"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let t = 0;\nfor (let i = 1; i < 10; i++) {\n  if (i % 2 === 0) {\n    t += i;\n  }\n}\nconsole.log(t);",
+      "op": [
+        "`20`",
+        "`10`",
+        "`25`",
+        "`45`"
+      ],
+      "ok": 0,
+      "exp": "2+4+6+8.",
+      "id": "T2-2.7-37"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let r = '';\nfor (let i = 1; i <= 3; i++) {\n  for (let j = 1; j <= i; j++) {\n    r += '*';\n  }\n  r += '|';\n}\nconsole.log(r);",
+      "op": [
+        "`***|***|***|`",
+        "`*|*|*|`",
+        "`*|**|***|`",
+        "`*|**|***`"
+      ],
+      "ok": 2,
+      "exp": "1, 2 y 3 asteriscos.",
+      "id": "T2-2.7-38"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "for (let i = 3; i > 0; i--) {\n  console.log(i);\n}",
+      "op": [
+        "`3`, `2`, `1`, `0`",
+        "`3`, `2`, `1`",
+        "`2`, `1`, `0`",
+        "`1`, `2`, `3`"
+      ],
+      "ok": 1,
+      "exp": "Decremento.",
+      "id": "T2-2.7-39"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Cuántas vueltas da?",
+      "codi": "let v = 0;\nfor (let i = 0; i <= 10; i += 2) {\n  v++;\n}\nconsole.log(v);",
+      "op": [
+        "`5`",
+        "`11`",
+        "`6`",
+        "`10`"
+      ],
+      "ok": 2,
+      "exp": "0,2,4,6,8,10.",
+      "id": "T2-2.7-40"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "for (let i = 0; i < 3; i++) {}\nconsole.log(typeof i);",
+      "op": [
+        "`undefined`",
+        "`3`",
+        "`Un error`",
+        "`number`"
+      ],
+      "ok": 0,
+      "exp": "let hace que i solo exista dentro del for.",
+      "id": "T2-2.7-41"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "for (var i = 0; i < 3; i++) {}\nconsole.log(i);",
+      "op": [
+        "`undefined`",
+        "`3`",
+        "`Un error`",
+        "`2`"
+      ],
+      "ok": 1,
+      "exp": "Con var, i sigue existiendo y vale 3.",
+      "id": "T2-2.7-42"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "function sumaHasta(limite) {\n  let total = 0;\n  for (let i = 1; i <= limite; i++) {\n    total = total + i;\n  }\n  return total;\n}\nconsole.log(sumaHasta(10));",
+      "op": [
+        "`45`",
+        "`55`",
+        "`50`",
+        "`10`"
+      ],
+      "ok": 1,
+      "exp": "1+2+…+10 = 55.",
+      "id": "T2-2.7-43"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "function sumaHasta(limite) {\n  let total = 0;\n  for (let i = 0; i < limite; i++) {\n    total = total + i;\n  }\n  return total;\n}\nconsole.log(sumaHasta(10));",
+      "op": [
+        "`55`",
+        "`10`",
+        "`100`",
+        "`45`"
+      ],
+      "ok": 3,
+      "exp": "Falta la vuelta del 10: error de desplazamiento de uno.",
+      "id": "T2-2.7-44"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const arr = [10, 20, 30];\nfor (let i = 0; i <= arr.length; i++) {\n  console.log(arr[i]);\n}",
+      "op": [
+        "`10`, `20`",
+        "`20`, `30`, `undefined`",
+        "`10`, `20`, `30`",
+        "`10`, `20`, `30`, `undefined`"
+      ],
+      "ok": 3,
+      "exp": "<= arr.length llega al índice 3, que no existe.",
+      "id": "T2-2.7-45"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "let i = 0;\nwhile (true) {\n  i++;\n  if (i === 4) {\n    break;\n  }\n}\nconsole.log(i);",
+      "op": [
+        "`4`",
+        "`5`",
+        "`Bucle infinito`",
+        "`3`"
+      ],
+      "ok": 0,
+      "exp": "break sale cuando i vale 4.",
+      "id": "T2-2.7-46"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const edad = 20;\nconsole.log(edad >= 65 ? 'jubilado' : edad >= 18 ? 'adulto' : 'menor');",
+      "op": [
+        "`adulto`",
+        "`true`",
+        "`jubilado`",
+        "`menor`"
+      ],
+      "ok": 0,
+      "exp": "Ternario encadenado.",
+      "id": "T2-2.7-47"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "¿Por qué se muestran Martes y Miércoles cuando dia vale 2?",
+      "codi": "const dia = 2;\nswitch (dia) {\n  case 2:\n    console.log('Martes');\n  case 3:\n    console.log('Miércoles');\n    break;\n}",
+      "op": [
+        "Falta default",
+        "El switch no admite números",
+        "Falta el break del caso 2: cae al caso 3",
+        "Falta let"
+      ],
+      "ok": 2,
+      "exp": "Fall-through.",
+      "id": "T2-2.7-48"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "¿Por qué este bucle no termina?",
+      "codi": "let z = 0;\nwhile (z < 10) {\n  console.log('no acabo');\n}",
+      "op": [
+        "Falta let",
+        "No hay z++ dentro del bucle: la condición no cambia nunca",
+        "while no admite números",
+        "console.log no puede ir dentro"
+      ],
+      "ok": 1,
+      "exp": "Bucle infinito.",
+      "id": "T2-2.7-49"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "¿Cuál es el error de sintaxis?",
+      "codi": "for (let i = 0, i < 5, i++) {\n  console.log(i);\n}",
+      "op": [
+        "La cabecera del for se separa con ; y no con comas",
+        "Falta const",
+        "Falta else",
+        "i no puede ser let"
+      ],
+      "ok": 0,
+      "exp": "for (ini; condición; incremento).",
+      "id": "T2-2.7-50"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "¿Cuál es el error de sintaxis?",
+      "codi": "const x = 2;\nif (x === 1) {\n  console.log('uno');\n} else (x === 2) {\n  console.log('dos');\n}",
+      "op": [
+        "else no admite llaves",
+        "if no admite ===",
+        "Falta el if tras el else: else if (…)",
+        "Falta let"
+      ],
+      "ok": 2,
+      "exp": "else if.",
+      "id": "T2-2.7-51"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "¿Cuál es el problema de este bucle?",
+      "codi": "const lista = [1, 2, 3];\nfor (let i = 0; i <= lista.length; i++) {\n  console.log(lista[i]);\n}",
+      "op": [
+        "length no existe",
+        "Falta break",
+        "<= llega un elemento de más: el último sale undefined",
+        "Falta let"
+      ],
+      "ok": 2,
+      "exp": "Error de desplazamiento de uno.",
+      "id": "T2-2.7-52"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "¿Cuál es el problema?",
+      "codi": "const nota = 9;\nif (nota >= 5) {\n  console.log('Aprobado');\n} else if (nota >= 9) {\n  console.log('Excelente');\n}",
+      "op": [
+        "else if no existe",
+        "Falta let",
+        "El orden: el primer if ya captura el 9 y Excelente nunca se ejecuta",
+        "Falta break"
+      ],
+      "ok": 2,
+      "exp": "Hay que poner las condiciones de mayor a menor.",
+      "id": "T2-2.7-53"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "¿Cuál es el problema?",
+      "codi": "const nombre = 'Aina';\nswitch (nombre) {\n  case 'Aina':\n    console.log('Hola Aina');\n  default:\n    console.log('¿Quién eres?');\n}",
+      "op": [
+        "Falta let",
+        "switch no admite cadenas",
+        "Falta el break tras el caso: también se ejecuta el default",
+        "Falta else"
+      ],
+      "ok": 2,
+      "exp": "Fall-through.",
+      "id": "T2-2.7-54"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "¿Por qué nunca se cumple este caso?",
+      "codi": "const x = '1';\nswitch (x) {\n  case 1:\n    console.log('uno');\n    break;\n}",
+      "op": [
+        "Falta default",
+        "switch no usa números",
+        "Falta let",
+        "switch compara con === y '1' (texto) no es 1 (número)"
+      ],
+      "ok": 3,
+      "exp": "Igualdad estricta.",
+      "id": "T2-2.7-55"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "El do…while se ejecuta al menos una vez",
+        "El break sale del bucle",
+        "El while evalúa la condición después de ejecutar el bloque",
+        "El for tiene tres expresiones en la cabecera"
+      ],
+      "ok": 2,
+      "exp": "El while evalúa la condición antes.",
+      "id": "T2-2.7-56"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "El texto \"false\" es cierto",
+        "El texto \"0\" es falso",
+        "Un número como 29 es cierto",
+        "Los valores falsos son false, 0, \"\", null, undefined y NaN"
+      ],
+      "ok": 1,
+      "exp": "Un texto no vacío es cierto aunque sea \"0\".",
+      "id": "T2-2.7-57"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "interpretar",
+      "titol": "Bucle con continue",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "let t = 0;\nfor (let i = 1; i <= 6; i++) {\n  if (i % 3 === 0) {\n    continue;\n  }\n  t += i;\n  console.log('i=' + i + ' t=' + t);\n}\nconsole.log('final ' + t);",
+      "solucio": "Salida: i=1 t=1 / i=2 t=3 / i=4 t=7 / i=5 t=12 / final 12. continue salta las vueltas 3 y 6; t acumula 1+2+4+5.",
+      "rubrica": [
+        "Líneas de i=1,2,4,5 (1,5)",
+        "final 12 (0,3)",
+        "Explicación de continue (0,2)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-58"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "interpretar",
+      "titol": "Switch con caída",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "const n = 2;\nswitch (n) {\n  case 1:\n    console.log('uno');\n  case 2:\n    console.log('dos');\n  case 3:\n    console.log('tres');\n    break;\n  default:\n    console.log('otro');\n}\nconsole.log('fin');",
+      "solucio": "Salida: dos / tres / fin. Entra en el caso 2 y, sin break, cae al 3; el break lo detiene.",
+      "rubrica": [
+        "dos y tres (1)",
+        "fin (0,3)",
+        "Explicación fall-through (0,7)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-59"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "interpretar",
+      "titol": "while y do…while",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "let a = 5;\nwhile (a < 3) {\n  console.log('while ' + a);\n  a++;\n}\nlet b = 5;\ndo {\n  console.log('do ' + b);\n  b++;\n} while (b < 3);",
+      "solucio": "Salida: do 5. El while no entra porque 5 < 3 es falso; el do…while entra una vez.",
+      "rubrica": [
+        "Solo 'do 5' (1,2)",
+        "Explicación (0,8)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-60"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "interpretar",
+      "titol": "Construir una cadena",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "let r = '';\nfor (let i = 1; i <= 4; i++) {\n  r += i;\n  if (i < 4) {\n    r += ',';\n  }\n}\nconsole.log(r);\nconsole.log(r.length);",
+      "solucio": "Salida: 1,2,3,4 / 7. Construye '1,2,3,4', que tiene 7 caracteres.",
+      "rubrica": [
+        "1,2,3,4 (1)",
+        "7 (0,5)",
+        "Explicación (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-61"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "interpretar",
+      "titol": "Suma con error de desplazamiento",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "function suma(limite) {\n  let total = 0;\n  for (let i = 0; i < limite; i++) {\n    total += i;\n  }\n  return total;\n}\nconsole.log(suma(5));\nconsole.log(suma(10));",
+      "solucio": "Salida: 10 / 45. Con i < limite se queda fuera la vuelta del límite: suma(5) da 10 (no 15) y suma(10) da 45 (no 55).",
+      "rubrica": [
+        "10 (0,6)",
+        "45 (0,6)",
+        "Explicación del error de uno (0,8)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-62"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "interpretar",
+      "titol": "Ternario y truthy",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "const v = '0';\nconst r1 = v ? 'cierto' : 'falso';\nconst n = 0;\nconst r2 = n ? 'cierto' : 'falso';\nconsole.log(r1);\nconsole.log(r2);",
+      "solucio": "Salida: cierto / falso. El texto '0' no está vacío y cuenta como cierto; el número 0 es falso.",
+      "rubrica": [
+        "cierto (0,7)",
+        "falso (0,7)",
+        "Explicación (0,6)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-63"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "oberta",
+      "q": "Diferencia entre while y do…while.",
+      "solucio": "El while evalúa la condición antes y puede no ejecutarse nunca; el do…while la evalúa al final y se ejecuta al menos una vez.",
+      "punts_clau": [
+        "while condición primero",
+        "do-while al menos una vez"
+      ],
+      "punts": 1.5,
+      "id": "T2-2.7-64"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "oberta",
+      "q": "¿Cuándo usarías for y cuándo while?",
+      "solucio": "for cuando se sabe el número de vueltas; while cuando depende de una condición que puede cambiar.",
+      "punts_clau": [
+        "for número limitado",
+        "while condición"
+      ],
+      "punts": 1,
+      "id": "T2-2.7-65"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "oberta",
+      "q": "¿Para qué sirve break en un switch y qué pasa si se olvida?",
+      "solucio": "Detiene el switch cuando un caso es cierto; si se olvida, la ejecución cae a los casos siguientes (fall-through).",
+      "punts_clau": [
+        "break detiene",
+        "Caída"
+      ],
+      "punts": 1.5,
+      "id": "T2-2.7-66"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "oberta",
+      "q": "¿Qué valores se consideran falsos en una condición?",
+      "solucio": "false, 0, \"\" (texto vacío), null, undefined y NaN. Todo lo demás es cierto, incluidos \"0\" y \"false\" como texto.",
+      "punts_clau": [
+        "Los seis",
+        "\"0\" y \"false\" son ciertos"
+      ],
+      "punts": 1.5,
+      "id": "T2-2.7-67"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "oberta",
+      "q": "Explica la diferencia entre un if anidado y un if-else-if.",
+      "solucio": "El anidado coloca un if dentro de otro (nido); el if-else-if encadena condiciones de forma más legible, se evalúa de arriba abajo y se para en el primero cierto.",
+      "punts_clau": [
+        "Nido",
+        "else if",
+        "Más legible"
+      ],
+      "punts": 1.5,
+      "id": "T2-2.7-68"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "Contar aprobados",
+      "q": "Escribe una función aprobados(notas) que reciba un array de números y devuelva cuántos son >= 5. Usa un for.",
+      "codi": "",
+      "solucio": "function aprobados(notas) {\n  let n = 0;\n  for (let i = 0; i < notas.length; i++) {\n    if (notas[i] >= 5) {\n      n++;\n    }\n  }\n  return n;\n}",
+      "rubrica": [
+        "Función con parámetro (0,5)",
+        "for correcto (0,7)",
+        "if >= 5 (0,4)",
+        "return (0,4)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-69"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "Suma hasta n",
+      "q": "Escribe una función sumaHasta(n) que devuelva 1+2+…+n con un bucle for.",
+      "codi": "",
+      "solucio": "function sumaHasta(n) {\n  let total = 0;\n  for (let i = 1; i <= n; i++) {\n    total += i;\n  }\n  return total;\n}",
+      "rubrica": [
+        "let total (0,4)",
+        "for 1..n incluido (1)",
+        "return (0,6)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-70"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "Calificación",
+      "q": "Escribe un if-else-if que muestre 'Excelente' (>= 9), 'Notable' (>= 7), 'Aprobado' (>= 5) o 'Suspenso'.",
+      "codi": "",
+      "solucio": "if (nota >= 9) { console.log('Excelente'); }\nelse if (nota >= 7) { console.log('Notable'); }\nelse if (nota >= 5) { console.log('Aprobado'); }\nelse { console.log('Suspenso'); }",
+      "rubrica": [
+        "Orden descendente (1)",
+        "Cuatro casos (1)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-71"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "Día de la semana",
+      "q": "Escribe un switch que, dado dia (1-7), muestre 'Lunes'… y 'Día no válido' por defecto (bastan tres casos y el default).",
+      "codi": "",
+      "solucio": "switch (dia) {\n  case 1: console.log('Lunes'); break;\n  case 2: console.log('Martes'); break;\n  case 3: console.log('Miércoles'); break;\n  default: console.log('Día no válido');\n}",
+      "rubrica": [
+        "switch (0,5)",
+        "case con break (1)",
+        "default (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-72"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "Tabla de multiplicar",
+      "q": "Escribe un for que muestre por consola la tabla del 7, de 7 x 1 a 7 x 10.",
+      "codi": "",
+      "solucio": "for (let i = 1; i <= 10; i++) {\n  console.log('7 x ' + i + ' = ' + (7 * i));\n}",
+      "rubrica": [
+        "for 1..10 (1)",
+        "Producto (0,5)",
+        "Texto (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-73"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "Números pares",
+      "q": "Escribe un bucle que muestre los pares del 1 al 20 usando el módulo.",
+      "codi": "",
+      "solucio": "for (let i = 1; i <= 20; i++) {\n  if (i % 2 === 0) {\n    console.log(i);\n  }\n}",
+      "rubrica": [
+        "for (0,7)",
+        "% 2 === 0 (1)",
+        "console.log (0,3)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-74"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "do…while",
+      "q": "Escribe un do…while que muestre n una vez aunque n valga 100 y la condición sea n < 10.",
+      "codi": "",
+      "solucio": "let n = 100;\ndo {\n  console.log('n = ' + n);\n} while (n < 10);",
+      "rubrica": [
+        "do { } (0,7)",
+        "while con ; (0,7)",
+        "Muestra una vez (0,6)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-75"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "Contar vocales",
+      "q": "Escribe una función contarA(texto) que devuelva cuántas letras 'a' tiene un texto, con un for.",
+      "codi": "",
+      "solucio": "function contarA(texto) {\n  let n = 0;\n  for (let i = 0; i < texto.length; i++) {\n    if (texto[i] === 'a') {\n      n++;\n    }\n  }\n  return n;\n}",
+      "rubrica": [
+        "Contador (0,4)",
+        "for hasta length (0,6)",
+        "if === 'a' (0,6)",
+        "return (0,4)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-76"
+    },
+    {
+      "apartat": "2.7",
+      "tipus": "escriure",
+      "titol": "Máximo de un array",
+      "q": "Escribe una función maximo(arr) que devuelva el mayor número de un array no vacío, sin usar Math.max.",
+      "codi": "",
+      "solucio": "function maximo(arr) {\n  let m = arr[0];\n  for (let i = 1; i < arr.length; i++) {\n    if (arr[i] > m) {\n      m = arr[i];\n    }\n  }\n  return m;\n}",
+      "rubrica": [
+        "Inicializar con arr[0] (0,5)",
+        "for (0,5)",
+        "Comparar y actualizar (0,7)",
+        "return (0,3)"
+      ],
+      "punts": 2,
+      "id": "T2-2.7-77"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "teoria",
+      "q": "¿Qué son los comentarios?",
+      "codi": "",
+      "op": [
+        "Sentencias que el intérprete no tiene en cuenta",
+        "Variables especiales",
+        "Errores de sintaxis",
+        "Instrucciones que se ejecutan al final"
+      ],
+      "ok": 0,
+      "exp": "Los ignora.",
+      "id": "T2-2.8-01"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "teoria",
+      "q": "¿Para qué sirven los comentarios?",
+      "codi": "",
+      "op": [
+        "Para dejar anotaciones sobre las decisiones tomadas al desarrollar el código",
+        "Para declarar variables",
+        "Para ejecutar código",
+        "Para acelerar el programa"
+      ],
+      "ok": 0,
+      "exp": "Anotaciones.",
+      "id": "T2-2.8-02"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "teoria",
+      "q": "¿Cuántos tipos de comentarios tiene JavaScript?",
+      "codi": "",
+      "op": [
+        "Uno",
+        "Tres",
+        "Dos: de una línea y multilínea",
+        "Cuatro"
+      ],
+      "ok": 2,
+      "exp": "// y /* */.",
+      "id": "T2-2.8-03"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "teoria",
+      "q": "¿Cómo se comenta una sola línea?",
+      "codi": "",
+      "op": [
+        "//",
+        "#",
+        "*/ /*",
+        "<!-- -->"
+      ],
+      "ok": 0,
+      "exp": "Comentario de una línea.",
+      "id": "T2-2.8-04"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "teoria",
+      "q": "¿Cómo se comenta un bloque de varias líneas?",
+      "codi": "",
+      "op": [
+        "Con //",
+        "Con #",
+        "Con <!-- -->",
+        "Entre /* y */"
+      ],
+      "ok": 3,
+      "exp": "Multilínea.",
+      "id": "T2-2.8-05"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "teoria",
+      "q": "¿Ocupan espacio los comentarios en el código fuente?",
+      "codi": "",
+      "op": [
+        "Sí, forman parte del código fuente y siempre se pueden consultar",
+        "Solo en el servidor",
+        "Solo con let",
+        "No, desaparecen"
+      ],
+      "ok": 0,
+      "exp": "Se ven con Ctrl+U.",
+      "id": "T2-2.8-06"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "teoria",
+      "q": "¿Cuál de estos NO es un comentario de JavaScript?",
+      "codi": "",
+      "op": [
+        "/*\n comentario \n*/",
+        "// comentario",
+        "/* comentario */",
+        "# comentario"
+      ],
+      "ok": 3,
+      "exp": "# no es de JavaScript.",
+      "id": "T2-2.8-07"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "teoria",
+      "q": "Para comentar solamente una línea de código, ¿qué carácter se utiliza?",
+      "codi": "",
+      "op": [
+        "*/ /*",
+        "#",
+        "<!-- -->",
+        "//"
+      ],
+      "ok": 3,
+      "exp": "Pregunta del tema.",
+      "id": "T2-2.8-08"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log(1);\n// console.log(2);\nconsole.log(3);",
+      "op": [
+        "`1`, `2`",
+        "`1`, `2`, `3`",
+        "`1`, `3`",
+        "`2`"
+      ],
+      "ok": 2,
+      "exp": "La línea comentada no se ejecuta.",
+      "id": "T2-2.8-09"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "console.log('a');\n/*\nconsole.log('b');\nconsole.log('c');\n*/\nconsole.log('d');",
+      "op": [
+        "`a`",
+        "`d`",
+        "`a`, `b`, `c`, `d`",
+        "`a`, `d`"
+      ],
+      "ok": 3,
+      "exp": "El bloque comentado se ignora.",
+      "id": "T2-2.8-10"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "codi",
+      "q": "¿Qué muestra la consola?",
+      "codi": "const x = 5; // x = 10;\nconsole.log(x);",
+      "op": [
+        "`10`",
+        "`undefined`",
+        "`Un error`",
+        "`5`"
+      ],
+      "ok": 3,
+      "exp": "El // comenta lo que va después.",
+      "id": "T2-2.8-11"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "error",
+      "q": "¿Cuál es el error de este código?",
+      "codi": "/* primero /* segundo */ tercero */\nconsole.log('hola');",
+      "op": [
+        "Falta let",
+        "console.log no existe",
+        "Falta //",
+        "Los comentarios multilínea no se anidan: termina en el primer */"
+      ],
+      "ok": 3,
+      "exp": "'tercero */' queda como código.",
+      "id": "T2-2.8-12"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "error",
+      "q": "¿Cuál es el error de este código?",
+      "codi": "# Esto es un comentario\nconsole.log('hola');",
+      "op": [
+        "Falta punto y coma",
+        "Falta let",
+        "console.log no existe",
+        "# no es válido para comentar en JavaScript"
+      ],
+      "ok": 3,
+      "exp": "Hay que usar //.",
+      "id": "T2-2.8-13"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "oberta",
+      "q": "Explica los dos tipos de comentarios y para qué sirven.",
+      "solucio": "// para una sola línea y /* … */ para varias; son anotaciones que el intérprete ignora pero quedan en el código fuente.",
+      "punts_clau": [
+        "// una línea",
+        "/* */ multilínea",
+        "Ignorados por el intérprete"
+      ],
+      "punts": 1.5,
+      "id": "T2-2.8-14"
+    },
+    {
+      "apartat": "2.8",
+      "tipus": "escriure",
+      "titol": "Comenta el código",
+      "q": "Añade un comentario de una línea y uno multilínea a: const total = 5 + 3;",
+      "codi": "",
+      "solucio": "// Suma inicial\n/* Comentario\n   de varias líneas */\nconst total = 5 + 3;",
+      "rubrica": [
+        "// (0,5)",
+        "/* */ (0,5)"
+      ],
+      "punts": 1,
+      "id": "T2-2.8-15"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué editor vale para escribir JavaScript?",
+      "codi": "",
+      "op": [
+        "Cualquiera, pero uno pensado para programar ahorra horas",
+        "Solo un WYSIWYG",
+        "Solo un IDE de pago",
+        "Solo el navegador"
+      ],
+      "ok": 0,
+      "exp": "Cualquier editor vale.",
+      "id": "T2-2.9-01"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Cuántas funciones marcan la diferencia en un editor de código según el tema?",
+      "codi": "",
+      "op": [
+        "Cinco",
+        "Siete",
+        "Tres",
+        "Diez"
+      ],
+      "ok": 1,
+      "exp": "Coloreado, selección y navegación, buscar y reemplazar, autocorrección, abreviaturas, extensiones y VS Code.",
+      "id": "T2-2.9-02"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué hace el coloreado de sintaxis?",
+      "codi": "",
+      "op": [
+        "Corrige errores",
+        "Genera código",
+        "Distingue de un vistazo palabras clave, cadenas, números y variables",
+        "Ejecuta el código"
+      ],
+      "ok": 2,
+      "exp": "Coloreado de sintaxis.",
+      "id": "T2-2.9-03"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué permite la búsqueda y reemplazo en varios archivos?",
+      "codi": "",
+      "op": [
+        "Ejecutar el código",
+        "Cambiar el nombre de una variable en todo el proyecto de una vez",
+        "Validar el HTML",
+        "Comprimir el proyecto"
+      ],
+      "ok": 1,
+      "exp": "Buscar y reemplazar.",
+      "id": "T2-2.9-04"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué hace la autocorrección?",
+      "codi": "",
+      "op": [
+        "Abre el navegador",
+        "Elimina comentarios",
+        "Corrige el código sola",
+        "Te avisa del error mientras escribes, no cuando ya lo has ejecutado"
+      ],
+      "ok": 3,
+      "exp": "Aviso inmediato.",
+      "id": "T2-2.9-05"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué son las abreviaturas?",
+      "codi": "",
+      "op": [
+        "Escribes «cl», pulsas tabulador y aparece console.log()",
+        "Comentarios",
+        "Nombres cortos de variables",
+        "Un tipo de error"
+      ],
+      "ok": 0,
+      "exp": "Snippets.",
+      "id": "T2-2.9-06"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué extensiones cita el tema?",
+      "codi": "",
+      "op": [
+        "Node y Express",
+        "Live Server, Prettier y ESLint",
+        "Dreamweaver y FrontPage",
+        "Git y Docker"
+      ],
+      "ok": 1,
+      "exp": "Convierten el editor en un entorno de trabajo.",
+      "id": "T2-2.9-07"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué editor se usará en clase?",
+      "codi": "",
+      "op": [
+        "Notepad",
+        "VS Code",
+        "Eclipse",
+        "Dreamweaver"
+      ],
+      "ok": 1,
+      "exp": "Gratuito y con las siete funciones.",
+      "id": "T2-2.9-08"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Cuántas familias de editores distingue el tema?",
+      "codi": "",
+      "op": [
+        "Cinco",
+        "Cuatro",
+        "Tres",
+        "Siete"
+      ],
+      "ok": 0,
+      "exp": "Multipropósito, específicos para web, IDE, WYSIWYG y online.",
+      "id": "T2-2.9-09"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué tipo de editor es Sublime Text o Notepad++?",
+      "codi": "",
+      "op": [
+        "Online",
+        "WYSIWYG",
+        "Multipropósito",
+        "IDE"
+      ],
+      "ok": 2,
+      "exp": "Rápidos y ligeros.",
+      "id": "T2-2.9-10"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿A qué familia pertenece Visual Studio Code?",
+      "codi": "",
+      "op": [
+        "Multipropósito",
+        "IDE",
+        "WYSIWYG",
+        "Específicos para web"
+      ],
+      "ok": 3,
+      "exp": "También Atom, Codekit y Brackets.",
+      "id": "T2-2.9-11"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué familia son WebStorm, NetBeans, Komodo y Visual Studio?",
+      "codi": "",
+      "op": [
+        "IDE (desarrollo integrado)",
+        "Online",
+        "Multipropósito",
+        "WYSIWYG"
+      ],
+      "ok": 0,
+      "exp": "Entornos completos, más pesados y normalmente de pago.",
+      "id": "T2-2.9-12"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué significa WYSIWYG?",
+      "codi": "",
+      "op": [
+        "Web you see is web you get",
+        "Write your style in web graphics",
+        "What you see is what you get",
+        "What you see is what you generate"
+      ],
+      "ok": 2,
+      "exp": "Lo que ves es lo que obtienes.",
+      "id": "T2-2.9-13"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Cuál de estas herramientas es un editor WYSIWYG?",
+      "codi": "",
+      "op": [
+        "Dreamweaver",
+        "CodePen",
+        "Notepad++",
+        "VS Code"
+      ],
+      "ok": 0,
+      "exp": "También SeaMonkey, Coffee Cup y Mobirise.",
+      "id": "T2-2.9-14"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué tipo de editor no requiere instalación y permite ver el resultado al instante?",
+      "codi": "",
+      "op": [
+        "IDE",
+        "Multipropósito",
+        "Específico para web",
+        "Online"
+      ],
+      "ok": 3,
+      "exp": "CodePen, Webmakerapp, CSS Deck.",
+      "id": "T2-2.9-15"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué tipo de editor se usa para pequeños trozos de código y demostraciones?",
+      "codi": "",
+      "op": [
+        "Online",
+        "IDE",
+        "WYSIWYG",
+        "Multipropósito"
+      ],
+      "ok": 0,
+      "exp": "Editores online.",
+      "id": "T2-2.9-16"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué inconvenientes tienen los IDE según el tema?",
+      "codi": "",
+      "op": [
+        "Son ligeros y gratuitos",
+        "Son más pesados, tardan en ejecutarse y normalmente son de pago",
+        "No tienen herramientas",
+        "Solo funcionan en línea"
+      ],
+      "ok": 1,
+      "exp": "Entornos completos.",
+      "id": "T2-2.9-17"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Cuál es el último paso una vez hecho el código HTML/JavaScript?",
+      "codi": "",
+      "op": [
+        "Visualizarlo en un navegador",
+        "Compilarlo",
+        "Borrar los comentarios",
+        "Imprimirlo"
+      ],
+      "ok": 0,
+      "exp": "Visualizarlo en cualquier navegador.",
+      "id": "T2-2.9-18"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Qué necesitamos como mínimo para crear una página web?",
+      "codi": "",
+      "op": [
+        "Un servidor",
+        "Un IDE de pago",
+        "Una base de datos",
+        "Un editor de texto y un navegador web"
+      ],
+      "ok": 3,
+      "exp": "¡RECUERDA!",
+      "id": "T2-2.9-19"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "teoria",
+      "q": "¿Por qué son útiles los navegadores para el programador?",
+      "codi": "",
+      "op": [
+        "Compilan el código",
+        "Facilitan la visualización del código y la identificación de errores",
+        "Hacen copias de seguridad",
+        "Escriben el código"
+      ],
+      "ok": 1,
+      "exp": "Herramientas de depuración.",
+      "id": "T2-2.9-20"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "error",
+      "q": "Detecta la afirmación FALSA.",
+      "codi": "",
+      "op": [
+        "Los editores multipropósito son rápidos y ligeros",
+        "Los editores online no requieren instalación",
+        "Los IDE suelen ser de pago",
+        "Los editores WYSIWYG son ideales para el desarrollo web"
+      ],
+      "ok": 3,
+      "exp": "Los WYSIWYG no son ideales.",
+      "id": "T2-2.9-21"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "oberta",
+      "q": "Describe las cinco familias de editores con un ejemplo de cada una.",
+      "solucio": "Multipropósito (Sublime, Notepad++), específicos para web (VS Code), IDE (WebStorm, NetBeans), WYSIWYG (Dreamweaver) y online (CodePen).",
+      "punts_clau": [
+        "5 familias",
+        "Un ejemplo de cada una"
+      ],
+      "punts": 2,
+      "id": "T2-2.9-22"
+    },
+    {
+      "apartat": "2.9",
+      "tipus": "oberta",
+      "q": "¿Cuáles son las siete funciones que hacen bueno a un editor de código?",
+      "solucio": "Coloreado de sintaxis, selección y navegación, búsqueda y reemplazo en varios archivos, autocorrección, abreviaturas, extensiones y que VS Code lo tiene todo.",
+      "punts_clau": [
+        "Al menos 5 funciones"
+      ],
+      "punts": 2,
+      "id": "T2-2.9-23"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D1: ¿qué muestra la consola?",
+      "codi": "let puntos = 10;\nconsole.log('puntos vale ' + puntos);\npuntos = 25;\nconsole.log('ahora puntos vale ' + puntos);\nconst IVA = 0.21;\nconsole.log('IVA vale ' + IVA);",
+      "op": [
+        "`puntos vale 10`, `ahora puntos vale 10`, `IVA vale 0.21`",
+        "`puntos vale 25`, `ahora puntos vale 25`, `IVA vale 0.21`",
+        "`puntos vale 10`, `ahora puntos vale 25`, `IVA vale 0.21`",
+        "`puntos vale 10`, `ahora puntos vale 25`, `IVA vale 21`"
+      ],
+      "ok": 2,
+      "exp": "let permite reasignar.",
+      "id": "T2-pract-01"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D1: ¿qué muestra la consola?",
+      "codi": "console.log(typeof 42);\nconsole.log(typeof 'hola');\nconsole.log(typeof true);\nconsole.log(typeof undefined);\nconsole.log(typeof {a: 1});\nconsole.log(typeof null);",
+      "op": [
+        "`number`, `string`, `boolean`, `null`, `object`, `object`",
+        "`number`, `text`, `boolean`, `undefined`, `object`, `object`",
+        "`number`, `string`, `boolean`, `undefined`, `object`, `object`",
+        "`number`, `string`, `boolean`, `undefined`, `object`, `null`"
+      ],
+      "ok": 2,
+      "exp": "typeof null es 'object': error histórico de 1995.",
+      "id": "T2-pract-02"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D2: ¿qué muestra la consola?",
+      "codi": "console.log(parseInt('23'));\nconsole.log(parseInt('23.932'));\nconsole.log(parseInt('23,932'));\nconsole.log(parseFloat('23.932'));\nconsole.log(parseFloat('23,932'));",
+      "op": [
+        "`23`, `23`, `23`, `23.932`, `23`",
+        "`23`, `24`, `23`, `23.932`, `23.932`",
+        "`23`, `23`, `23`, `23.932`, `23.932`",
+        "`23`, `23`, `23.932`, `23.932`, `23`"
+      ],
+      "ok": 0,
+      "exp": "parseFloat('23,932') es 23: la coma no es decimal.",
+      "id": "T2-pract-03"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D2: ¿qué muestra la consola?",
+      "codi": "console.log(parseInt('hola'));\nconsole.log(NaN === NaN);\nconsole.log(isNaN(NaN));",
+      "op": [
+        "`NaN`, `true`, `true`",
+        "`0`, `false`, `true`",
+        "`NaN`, `false`, `true`",
+        "`NaN`, `false`, `false`"
+      ],
+      "ok": 2,
+      "exp": "NaN no es igual ni a sí mismo.",
+      "id": "T2-pract-04"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "D2: ¿por qué son frecuentes los errores del + con formularios?",
+      "codi": "",
+      "op": [
+        "Porque los inputs son números",
+        "Porque el navegador los suma",
+        "Porque lo que escribe el usuario en un <input> llega como texto",
+        "Porque + no existe"
+      ],
+      "ok": 2,
+      "exp": "D2.",
+      "id": "T2-pract-05"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "D2: ¿qué regla se da para todo el curso sobre la igualdad?",
+      "codi": "",
+      "op": [
+        "Usar siempre ===",
+        "Evitar comparar",
+        "Usar siempre ==",
+        "Mezclarlos"
+      ],
+      "ok": 0,
+      "exp": "== falla de forma silenciosa.",
+      "id": "T2-pract-06"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D3: ¿qué muestra la consola?",
+      "codi": "const nota = 7;\nif (nota >= 9) {\n  console.log('Excelente');\n} else if (nota >= 7) {\n  console.log('Notable');\n} else if (nota >= 5) {\n  console.log('Aprobado');\n} else {\n  console.log('Suspenso');\n}",
+      "op": [
+        "`Notable`, `Aprobado`",
+        "`Excelente`",
+        "`Aprobado`",
+        "`Notable`"
+      ],
+      "ok": 3,
+      "exp": "Entra en el primero cierto.",
+      "id": "T2-pract-07"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D3: ¿qué muestra la consola?",
+      "codi": "if (29)     { console.log('A'); }\nif (!0)     { console.log('B'); }\nif (!'')    { console.log('C'); }\nif ('0')    { console.log('D'); }\nif (!null)  { console.log('E'); }",
+      "op": [
+        "`A`, `B`, `C`, `D`, `E`",
+        "`B`, `C`, `E`",
+        "`A`, `B`, `C`, `E`",
+        "`A`, `B`, `C`"
+      ],
+      "ok": 0,
+      "exp": "Todos son ciertos, incluido '0' como texto.",
+      "id": "T2-pract-08"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "D3: ¿qué es la caída en un switch?",
+      "codi": "",
+      "op": [
+        "Cuando el switch se cuelga",
+        "Un error de sintaxis",
+        "Cuando el default se ejecuta primero",
+        "Cuando no hay break y la ejecución continúa en los casos siguientes"
+      ],
+      "ok": 3,
+      "exp": "D3.",
+      "id": "T2-pract-09"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D4: ¿qué muestra la consola?",
+      "codi": "for (let k = 1; k <= 5; k++) {\n  if (k === 3) {\n    continue;\n  }\n  console.log(k);\n}",
+      "op": [
+        "`1`, `2`, `4`, `5`",
+        "`1`, `2`, `3`, `4`, `5`",
+        "`1`, `2`",
+        "`3`"
+      ],
+      "ok": 0,
+      "exp": "continue se salta el 3.",
+      "id": "T2-pract-10"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D4: ¿qué muestra la consola?",
+      "codi": "let n = 100;\ndo {\n  console.log('DO...WHILE con n = ' + n);\n} while (n < 10);",
+      "op": [
+        "`Bucle infinito`",
+        "`DO...WHILE con n = 100`",
+        "`DO...WHILE con n = 100`, `DO...WHILE con n = 100`",
+        "`No muestra nada`"
+      ],
+      "ok": 1,
+      "exp": "Condición falsa pero entra una vez: pregunta típica de examen.",
+      "id": "T2-pract-11"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D4: ¿qué pasa si en el while te olvidas del z++?",
+      "codi": "let z = 0;\nwhile (z < 10) {\n  mostra('no acabo nunca');\n}",
+      "op": [
+        "Da error de sintaxis",
+        "Bucle infinito: la pestaña se cuelga",
+        "Hace una vuelta",
+        "No hace nada"
+      ],
+      "ok": 1,
+      "exp": "La condición no cambia nunca.",
+      "id": "T2-pract-12"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "D5: ¿cuál es el error de la función sumaHasta?",
+      "codi": "for (let i = 0; i < limite; i++) {\n  total = total + i;\n}",
+      "op": [
+        "total no existe",
+        "let es incorrecto",
+        "Falta return",
+        "Empieza en 0 y la condición es < limite: falta la vuelta del 10 (sale 45 en vez de 55)"
+      ],
+      "ok": 3,
+      "exp": "Error de desplazamiento de uno.",
+      "id": "T2-pract-13"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "D5: ¿cómo se corrige el for de sumaHasta?",
+      "codi": "",
+      "op": [
+        "for (let i = 1; i < limite; i++)",
+        "for (let i = 0; i <= limite - 1; i++)",
+        "for (let i = 1; i <= limite; i++)",
+        "for (let i = 0; i < limite; i++)"
+      ],
+      "ok": 2,
+      "exp": "Hace falta 1..limite incluido.",
+      "id": "T2-pract-14"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "D5: ¿qué es el «error de desplazamiento de uno»?",
+      "codi": "",
+      "op": [
+        "Confundir = con ==",
+        "Olvidar const",
+        "Confundir < con <= y dejarse el primer o el último elemento",
+        "Escribir ; de más"
+      ],
+      "ok": 2,
+      "exp": "Nombre propio del error.",
+      "id": "T2-pract-15"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P01: ¿por qué IVA y PRECIO_UNIDAD son const y unidades es let?",
+      "codi": "",
+      "op": [
+        "No hay diferencia",
+        "Porque const es más rápido",
+        "Porque los datos de configuración no cambian y unidades se cambiará",
+        "Porque let es obligatorio en números"
+      ],
+      "ok": 2,
+      "exp": "R1.",
+      "id": "T2-pract-16"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "P01: ¿qué muestra la consola con 14 unidades?",
+      "codi": "const PRECIO_UNIDAD = 18.75;\nconst UMBRAL_DESCUENTO = 200;\nconst PORCENTAJE_DESCUENTO = 0.10;\nconst COSTE_ENVIO = 4.50;\nconst ENVIO_GRATIS_DESDE = 300;\nlet unidades = 14;\nconst base = PRECIO_UNIDAD * unidades;\nconst descuento = base >= UMBRAL_DESCUENTO ? base * PORCENTAJE_DESCUENTO : 0;\nconst baseConDescuento = base - descuento;\nconst envio = baseConDescuento >= ENVIO_GRATIS_DESDE ? 0 : COSTE_ENVIO;\nconsole.log(base, descuento, baseConDescuento, envio);",
+      "op": [
+        "`250 25 225 4.5`",
+        "`262.5 0 262.5 4.5`",
+        "`262.5 26.25 262.5 0`",
+        "`262.5 26.25 236.25 4.5`"
+      ],
+      "ok": 3,
+      "exp": "Base 262.5; descuento 26.25; base con descuento 236.25; envío 4.5.",
+      "id": "T2-pract-17"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "P01: ¿qué muestra la consola con 24 unidades?",
+      "codi": "const base = 18.75 * 24;\nconst descuento = base >= 200 ? base * 0.10 : 0;\nconst bd = base - descuento;\nconsole.log(bd, bd >= 300 ? 0 : 4.5);",
+      "op": [
+        "`450 0`",
+        "`405 4.5`",
+        "`450 4.5`",
+        "`405 0`"
+      ],
+      "ok": 3,
+      "exp": "450 - 45 = 405 >= 300: envío gratis.",
+      "id": "T2-pract-18"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P01: ¿por qué el envío gratis se mira sobre la base con descuento?",
+      "codi": "",
+      "op": [
+        "Porque el descuento se resta antes de decidir el envío",
+        "Porque el orden no importa",
+        "Porque es un error",
+        "Porque lo exige el IVA"
+      ],
+      "ok": 0,
+      "exp": "El orden de los cálculos importa.",
+      "id": "T2-pract-19"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "P01: laboratorio de conversiones. ¿Qué muestra la consola?",
+      "codi": "console.log('14' + 1);\nconsole.log('14' - 1);\nconsole.log(5 + '5' + 5);\nconsole.log('10' * '2');\nconsole.log(0.1 + 0.2);\nconsole.log('5' == 5);\nconsole.log('5' === 5);\nconsole.log(Number('18,75'));",
+      "op": [
+        "`15`, `13`, `15`, `20`, `0.3`, `true`, `true`, `18.75`",
+        "`141`, `13`, `15`, `20`, `0.30000000000000004`, `true`, `false`, `18`",
+        "`141`, `13`, `555`, `20`, `0.3`, `true`, `false`, `NaN`",
+        "`141`, `13`, `555`, `20`, `0.30000000000000004`, `true`, `false`, `NaN`"
+      ],
+      "ok": 3,
+      "exp": "5 + '5' ya es '55' y luego '555'; 0.1+0.2 no es 0.3; Number('18,75') es NaN.",
+      "id": "T2-pract-20"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P01: ¿qué conversión te estropearía un presupuesto de verdad?",
+      "codi": "",
+      "op": [
+        "'10' * '2'",
+        "'5' == 5",
+        "Number('18,75'): da NaN si el usuario escribe con coma y todos los cálculos salen NaN",
+        "'14' + 1"
+      ],
+      "ok": 2,
+      "exp": "El usuario puede escribir con coma decimal.",
+      "id": "T2-pract-21"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P01: ¿cómo se evitan los errores de importes con decimales?",
+      "codi": "",
+      "op": [
+        "Guardando los importes en céntimos (enteros) o redondeando",
+        "Usando var",
+        "Usando ==",
+        "Usando siempre parseInt"
+      ],
+      "ok": 0,
+      "exp": "Los decimales no son exactos en binario.",
+      "id": "T2-pract-22"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P01: ¿por qué el presupuesto se puede calcular en el navegador sin el servidor?",
+      "codi": "",
+      "op": [
+        "Porque JS escribe en el servidor",
+        "Porque el servidor no existe",
+        "Porque el navegador ya tiene el código y los datos (precios, IVA, umbrales)",
+        "Porque no hay cálculos"
+      ],
+      "ok": 2,
+      "exp": "R6.",
+      "id": "T2-pract-23"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P01: si el cliente cambia los precios desde las DevTools, ¿qué presupuesto vale?",
+      "codi": "",
+      "op": [
+        "Ninguno",
+        "El de la tienda",
+        "El que diga el navegador",
+        "El suyo; por eso el servidor debe volver a validar los precios"
+      ],
+      "ok": 3,
+      "exp": "Todo lo que está en el cliente se puede modificar.",
+      "id": "T2-pract-24"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "P02: ¿qué devuelve la tarifa de 12 kg a Baleares siendo socio?",
+      "codi": "function tarifa(peso, destino, esSocio) {\n  if (peso > 30) return null;\n  let p;\n  if (peso <= 2) p = 3.95;\n  else if (peso <= 10) p = 5.90;\n  else p = 5.90 + 0.45 * (peso - 10);\n  let t;\n  switch (destino) {\n    case 'peninsula': t = p; break;\n    case 'baleares':\n    case 'canarias': t = p * 1.8; break;\n    default: return null;\n  }\n  if (esSocio) { t = peso < 1 ? 0 : t * 0.85; }\n  return t;\n}\nconsole.log(tarifa(12, 'baleares', true).toFixed(2));",
+      "op": [
+        "`12.24`",
+        "`7.50`",
+        "`6.80`",
+        "`10.40`"
+      ],
+      "ok": 3,
+      "exp": "6.80 × 1.8 = 12.24 y con el 15 % de descuento: 10.40.",
+      "id": "T2-pract-25"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "codi",
+      "q": "P02: ¿qué devuelve la tarifa de 30 kg a la península sin ser socio?",
+      "codi": "function tarifa(peso) {\n  if (peso > 30) return null;\n  if (peso <= 2) return 3.95;\n  if (peso <= 10) return 5.90;\n  return 5.90 + 0.45 * (peso - 10);\n}\nconsole.log(tarifa(30).toFixed(2));\nconsole.log(tarifa(31));",
+      "op": [
+        "`5.90`, `null`",
+        "`14.90`, `14.90`",
+        "`14.90`, `null`",
+        "`17.40`, `null`"
+      ],
+      "ok": 2,
+      "exp": "5,90 + 0,45 × 20 = 14,90; 31 kg no se admite.",
+      "id": "T2-pract-26"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P02: ¿por qué «hasta 2 kg» se implementa con peso <= 2?",
+      "codi": "",
+      "op": [
+        "No importa",
+        "Porque el banco de pruebas fija que los 2 kg entran en el primer tramo",
+        "Porque <= es más rápido",
+        "Porque < es incorrecto"
+      ],
+      "ok": 1,
+      "exp": "R7: ambigüedad resuelta con el caso de 2 kg.",
+      "id": "T2-pract-27"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P02: ¿qué hace que Baleares y Canarias compartan tarifa?",
+      "codi": "",
+      "op": [
+        "Un if",
+        "Un ternario",
+        "Un bucle",
+        "Un case sin break (caída intencionada)"
+      ],
+      "ok": 3,
+      "exp": "Cae al case de canarias.",
+      "id": "T2-pract-28"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P02: ¿por qué `peninsular` se declara fuera del switch?",
+      "codi": "",
+      "op": [
+        "Porque es const",
+        "Porque switch no admite let",
+        "Porque todo el switch es un solo bloque y un let dentro de un case solo se crea si la ejecución pasa por ahí",
+        "No importa"
+      ],
+      "ok": 2,
+      "exp": "Da «Cannot access before initialization».",
+      "id": "T2-pract-29"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P02: ¿qué cambia si pones llaves { } alrededor del cuerpo de un case?",
+      "codi": "",
+      "op": [
+        "Cada case pasa a ser un bloque propio y sus variables solo existen allí",
+        "El switch se convierte en if",
+        "Da error",
+        "Nada"
+      ],
+      "ok": 0,
+      "exp": "Ámbito de bloque.",
+      "id": "T2-pract-30"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P02: ¿cuándo devuelve null la función de tarifa?",
+      "codi": "",
+      "op": [
+        "Si pesa menos de 1 kg",
+        "Si es socio",
+        "Siempre",
+        "Si pesa más de 30 kg o el destino no es admitido"
+      ],
+      "ok": 3,
+      "exp": "Reglas de la función.",
+      "id": "T2-pract-31"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "teoria",
+      "q": "P02: ¿qué caso límite añadirías al banco de pruebas?",
+      "codi": "",
+      "op": [
+        "Uno sin destino",
+        "Ninguno",
+        "Uno de 100 kg",
+        "30 kg a la península sin ser socio (14,90 €), porque los casos existentes solo prueban 31 kg"
+      ],
+      "ok": 3,
+      "exp": "Los límites son donde fallan los bucles y las condiciones.",
+      "id": "T2-pract-32"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "error",
+      "q": "P02: ¿qué error da esto si mueves el let dentro del case 'peninsula' y pruebas con baleares?",
+      "codi": "switch (destino) {\n  case 'peninsula':\n    let pen = 3.95;\n    break;\n  case 'baleares':\n    console.log(pen);\n}\n// destino = 'baleares'",
+      "op": [
+        "Muestra 3.95",
+        "ReferenceError: no se puede acceder a la variable antes de inicializarla (zona muerta temporal)",
+        "SyntaxError",
+        "Muestra undefined"
+      ],
+      "ok": 1,
+      "exp": "El let del case no se ha ejecutado.",
+      "id": "T2-pract-33"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "oberta",
+      "q": "P01 R6: ¿qué parte de la tienda no se puede hacer solo con JavaScript en el navegador y por qué?",
+      "solucio": "Guardar datos para que otro usuario los vea: hace falta base de datos y servidor; JS en el navegador no comparte datos entre dispositivos y no es fiable para precios.",
+      "punts_clau": [
+        "Hace falta servidor/BD",
+        "JS en el cliente se puede modificar"
+      ],
+      "punts": 1.5,
+      "id": "T2-pract-34"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "oberta",
+      "q": "P02: explica por qué los case de un switch comparten la variable peninsular.",
+      "solucio": "Los case de un switch comparten un único bloque; una variable declarada fuera del switch está disponible en todos; si se declara dentro de un case solo existe si se pasa por él.",
+      "punts_clau": [
+        "Un solo bloque",
+        "Declarar fuera"
+      ],
+      "punts": 1.5,
+      "id": "T2-pract-35"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escriure",
+      "titol": "P02: función calcularTarifa",
+      "q": "Escribe una función calcularTarifa(peso, destino, esSocio) que devuelva null para peso > 30, tarifa de península por tramos (<=2: 3,95; <=10: 5,90; >10: 5,90 + 0,45/kg extra), 1,8 veces para baleares/canarias, null para otros destinos y 15 % de descuento a los socios.",
+      "codi": "",
+      "solucio": "function calcularTarifa(peso, destino, esSocio) {\n  if (peso > 30) return null;\n  let pen;\n  if (peso <= 2) pen = 3.95;\n  else if (peso <= 10) pen = 5.90;\n  else pen = 5.90 + 0.45 * (peso - 10);\n  let t;\n  switch (destino) {\n    case 'peninsula': t = pen; break;\n    case 'baleares':\n    case 'canarias': t = pen * 1.8; break;\n    default: return null;\n  }\n  if (esSocio) t = t * 0.85;\n  return t;\n}",
+      "rubrica": [
+        "Límite de peso (0,5)",
+        "Tres tramos (1)",
+        "switch con caída (1)",
+        "default null (0,5)",
+        "Descuento (1)"
+      ],
+      "punts": 4,
+      "id": "T2-pract-36"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escriure",
+      "titol": "P01: cálculo del presupuesto",
+      "q": "Escribe las constantes PRECIO_UNIDAD 18.75, IVA 0.21, UMBRAL_DESCUENTO 200, PORCENTAJE_DESCUENTO 0.10 y las variables base, descuento, baseConDescuento y total (sin envío) con el operador ternario.",
+      "codi": "",
+      "solucio": "const PRECIO_UNIDAD = 18.75;\nconst IVA = 0.21;\nconst UMBRAL_DESCUENTO = 200;\nconst PORCENTAJE_DESCUENTO = 0.10;\nlet unidades = 14;\nconst base = PRECIO_UNIDAD * unidades;\nconst descuento = base >= UMBRAL_DESCUENTO ? base * PORCENTAJE_DESCUENTO : 0;\nconst baseConDescuento = base - descuento;\nconst total = baseConDescuento * (1 + IVA);",
+      "rubrica": [
+        "const/let (0,5)",
+        "base (0,5)",
+        "ternario (1)",
+        "baseConDescuento (0,5)",
+        "total con IVA (0,5)"
+      ],
+      "punts": 3,
+      "id": "T2-pract-37"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escriure",
+      "titol": "D4: bucles",
+      "q": "Escribe un for de 1 a 5, un while equivalente y un do…while que se ejecute una vez con n = 100 y condición n < 10.",
+      "codi": "",
+      "solucio": "for (let i = 1; i <= 5; i++) { console.log(i); }\nlet j = 1;\nwhile (j <= 5) { console.log(j); j++; }\nlet n = 100;\ndo { console.log(n); } while (n < 10);",
+      "rubrica": [
+        "for (0,7)",
+        "while con j++ (0,7)",
+        "do…while (0,6)"
+      ],
+      "punts": 2,
+      "id": "T2-pract-38"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "escriure",
+      "titol": "D5: arregla el bucle",
+      "q": "Escribe la función sumaHasta(limite) corregida para que sumaHasta(10) dé 55 y explica el error original.",
+      "codi": "",
+      "solucio": "function sumaHasta(limite) {\n  let total = 0;\n  for (let i = 1; i <= limite; i++) {\n    total = total + i;\n  }\n  return total;\n}\nEl error: i < limite no hacía la vuelta del 10 (error de desplazamiento de uno).",
+      "rubrica": [
+        "for 1..limite incluido (1)",
+        "return (0,5)",
+        "Explicación (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-pract-39"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "interpretar",
+      "titol": "P01: conversiones",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "const unidades = '8';\nconst precio = 18.75;\nconsole.log(unidades * precio);\nconsole.log(unidades + precio);\nconsole.log(parseInt(unidades) + 1);\nconsole.log(Number('18,75'));",
+      "solucio": "Salida: 150 / 818.75 / 9 / NaN. * convierte el texto a número; + concatena; parseInt da 8; la coma produce NaN.",
+      "rubrica": [
+        "150 (0,5)",
+        "818.75 (0,5)",
+        "9 (0,5)",
+        "NaN (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-pract-40"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "interpretar",
+      "titol": "P02: tarifa y switch",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "function mult(destino) {\n  let m;\n  switch (destino) {\n    case 'baleares':\n    case 'canarias':\n      m = 1.8;\n      break;\n    case 'peninsula':\n      m = 1;\n      break;\n    default:\n      m = null;\n  }\n  return m;\n}\nconsole.log(mult('baleares'));\nconsole.log(mult('peninsula'));\nconsole.log(mult('andorra'));",
+      "solucio": "Salida: 1.8 / 1 / null. baleares cae en canarias (1.8); peninsula da 1; cualquier otro destino da null por el default.",
+      "rubrica": [
+        "1.8 (0,6)",
+        "1 (0,6)",
+        "null (0,4)",
+        "Explicación de la caída (0,4)"
+      ],
+      "punts": 2,
+      "id": "T2-pract-41"
+    },
+    {
+      "apartat": "pract",
+      "tipus": "interpretar",
+      "titol": "D3: truthy y falsy",
+      "q": "Escribe, línea por línea, lo que muestra la consola y explica la última línea.",
+      "codi": "const valores = [0, '', 'hola', null, 42, '0'];\nfor (const v of valores) {\n  console.log(v ? 'cierto' : 'falso');\n}",
+      "solucio": "Salida: falso / falso / cierto / falso / cierto / cierto. Falsos: 0, '' y null. Ciertos: 'hola', 42 y el texto '0'.",
+      "rubrica": [
+        "Los seis resultados (1,5)",
+        "Explicación de '0' (0,5)"
+      ],
+      "punts": 2,
+      "id": "T2-pract-42"
+    }
+  ],
+  "revision": "rev-1"
+}

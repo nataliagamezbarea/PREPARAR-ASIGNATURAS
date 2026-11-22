@@ -8,6 +8,7 @@ const rootDir = path.resolve(__dirname, "..");
 const files = [
   "assets/js/app/persistencia-archivos.js",
   "assets/js/app/estado.js",
+  "assets/js/app/supabase.js",
   "assets/js/app/sesion.js",
   "assets/js/app/depurador.js",
   "assets/js/app/preguntas.js",
@@ -30,6 +31,18 @@ for (const targetDir of targets) {
   const bundled = files.map(file => {
     const fullPath = path.join(rootDir, "public", file);
     const content = fs.readFileSync(fullPath, "utf8");
+
+    // Also sync modular source files across target directories if they exist
+    if (targetDir !== path.join(rootDir, "public")) {
+      const destSubPath = targetDir.endsWith("assets")
+        ? path.join(targetDir, file.replace(/^assets\//, ""))
+        : path.join(targetDir, file);
+      const destFolder = path.dirname(destSubPath);
+      if (fs.existsSync(destFolder)) {
+        fs.writeFileSync(destSubPath, content, "utf8");
+      }
+    }
+
     return `// === ${file} ===\n${content}\n`;
   }).join("\n");
 

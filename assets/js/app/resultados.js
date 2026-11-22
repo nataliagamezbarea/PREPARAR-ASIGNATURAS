@@ -173,7 +173,8 @@ function renderResults() {
   $("#open-wrong-book")?.addEventListener("click", renderWrongBook);
   $$("[data-repeat-sub]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const ids = (btn.dataset.repeatSub || "").split(",").map(Number).filter(Boolean);
+      const raw = (btn.dataset.repeatSub || "").split(",").map((s) => s.trim()).filter(Boolean);
+      const ids = raw.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
       if (ids.length) {
         const immediate = $("#immediate-toggle")?.checked !== false;
         startTest({ ids, immediate, shuffle: true });

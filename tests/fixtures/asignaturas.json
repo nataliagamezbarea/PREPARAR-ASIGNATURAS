@@ -3,22 +3,143 @@
     {
       "id": "wec",
       "nombre": "WEC",
-      "archivo": "./tests/fixtures/preguntas.json",
-      "descripcion": "Fixture de prueba · temas 1 y 2",
+      "archivo": "./data/asignaturas/wec/preguntas.json",
+      "descripcion": "Temas 1, 2, 3 y 4 · Banco de preguntas",
       "temas": [
         {
           "numero": 1,
-          "nombre": "Tema 1 · Arquitecturas y herramientas de programación web",
+          "nombre": "Tema 1 · Selección de arquitecturas y de herramientas de programación",
           "apartados": [
-            { "numero": 1, "nombre": "Origen y alcance de la web" },
-            { "numero": 2, "nombre": "Lenguajes de programación en entorno cliente" }
+            {
+              "numero": 1,
+              "nombre": "1.1 Modelos de ejecución de código e Introducción"
+            },
+            {
+              "numero": 2,
+              "nombre": "1.2 Lenguajes en entorno cliente"
+            },
+            {
+              "numero": 3,
+              "nombre": "1.3 Mecanismos de ejecución en un navegador"
+            },
+            {
+              "numero": 4,
+              "nombre": "1.4 Capacidades y limitaciones de ejecución"
+            },
+            {
+              "numero": 5,
+              "nombre": "1.5 Programación de scripts"
+            },
+            {
+              "numero": 6,
+              "nombre": "1.6 Integración del código con las etiquetas HTML"
+            },
+            {
+              "numero": 7,
+              "nombre": "1.7 Herramientas de programación sobre clientes web"
+            },
+            {
+              "numero": 8,
+              "nombre": "Demos D1-D5 y práctica P00"
+            }
           ]
         },
         {
           "numero": 2,
-          "nombre": "Tema 2 · Sintaxis, tipos de datos, operadores y estructuras de control",
+          "nombre": "Tema 2 · Aplicación y verificación de la sintaxis del lenguaje",
           "apartados": [
-            { "numero": 1, "nombre": "Selección del lenguaje de programación del cliente" }
+            {
+              "numero": 1,
+              "nombre": "2.1 Selección de lenguaje de programación de clientes web"
+            },
+            {
+              "numero": 2,
+              "nombre": "2.2 Tipos de datos"
+            },
+            {
+              "numero": 3,
+              "nombre": "2.3 Variables"
+            },
+            {
+              "numero": 4,
+              "nombre": "2.4 Asignaciones"
+            },
+            {
+              "numero": 5,
+              "nombre": "2.5 Operadores"
+            },
+            {
+              "numero": 6,
+              "nombre": "2.6 Sentencias"
+            },
+            {
+              "numero": 7,
+              "nombre": "2.7 Estructuras de control"
+            },
+            {
+              "numero": 8,
+              "nombre": "2.8 Comentarios en el código"
+            },
+            {
+              "numero": 9,
+              "nombre": "2.9 Herramientas para programar, probar y depurar el código"
+            },
+            {
+              "numero": 10,
+              "nombre": "Demos D1-D5 y prácticas P01 y P02"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Fundamentos de JavaScript",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "3.1 Variables y tipos de datos"
+            },
+            {
+              "numero": 2,
+              "nombre": "3.2 Conversiones y comparaciones"
+            },
+            {
+              "numero": 3,
+              "nombre": "3.3 Decisiones"
+            },
+            {
+              "numero": 4,
+              "nombre": "3.4 Bucles"
+            },
+            {
+              "numero": 5,
+              "nombre": "3.5 Depurar"
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Tema 4 · Programación con funciones, arrays y objetos",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "Tema 4.1 · Funciones: para qué sirven y cómo se definen"
+            },
+            {
+              "numero": 2,
+              "nombre": "Tema 4.2 · Arrays: crear y leer posiciones"
+            },
+            {
+              "numero": 3,
+              "nombre": "Tema 4.3 · Métodos de array (map, filter, reduce)"
+            },
+            {
+              "numero": 4,
+              "nombre": "Tema 4.4 · Objectes literals i JSON"
+            },
+            {
+              "numero": 5,
+              "nombre": "Part B · Ejercicios de desarrollo de examen"
+            }
           ]
         }
       ]

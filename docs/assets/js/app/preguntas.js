@@ -223,17 +223,64 @@ function attachAiExplain(container, q, selected) {
   btn.type = "button";
   btn.className = "btn tiny ai-btn";
   btn.innerHTML = '<i class="fa-solid fa-robot" aria-hidden="true"></i> Explícamelo mejor';
+
+  const btnDebug = document.createElement("button");
+  btnDebug.type = "button";
+  btnDebug.className = "btn tiny debug-btn";
+  btnDebug.innerHTML = '<i class="fa-solid fa-bug" aria-hidden="true"></i> Depurador';
+  btnDebug.title = "Abrir depurador interactivo para esta pregunta";
+
   const hint = document.createElement("span");
   hint.className = "ai-hint";
   hint.textContent = "Otra forma de explicarlo, paso a paso y con un ejemplo.";
-  actions.append(btn, hint);
+  actions.append(btn, btnDebug, hint);
 
   const slot = document.createElement("div");
   slot.className = "ai-answer hidden";
-  wrap.append(actions, slot);
+
+  const debugSlot = document.createElement("div");
+  debugSlot.className = "debug-slot hidden";
+
+  wrap.append(actions, slot, debugSlot);
 
   let loaded = false;
   let loading = false;
+  let debugLoaded = false;
+
+  btnDebug.addEventListener("click", () => {
+    const isHidden = debugSlot.classList.toggle("hidden");
+    btnDebug.innerHTML = isHidden
+      ? '<i class="fa-solid fa-bug" aria-hidden="true"></i> Depurador'
+      : '<i class="fa-solid fa-bug" aria-hidden="true"></i> Ocultar depurador';
+
+    if (window.cv) {
+      if (typeof window.cv.abrir === "function") {
+        window.cv.abrir();
+      } else {
+        document.getElementById("cv-toggle")?.click();
+      }
+      window.cv.log(`[Debug Pregunta #${q.id ?? "?"}] Tema ${q.tema ?? "?"} · ${q.tag || q.apartadoNombre || "Sin apartado"}`);
+      if (q.codigo) {
+        window.cv.log(`Código:\n${q.codigo}`);
+      }
+      if (typeof window.cv.setEstado === "function") {
+        window.cv.setEstado("preguntaActual", {
+          id: q.id,
+          tema: q.tema,
+          apartado: q.apartado,
+          seleccionada: selected,
+          correcta: q.correcta,
+          esCorrecta: selected === q.correcta
+        });
+      }
+    }
+
+    if (isHidden || debugLoaded) return;
+    debugLoaded = true;
+    if (typeof renderDebugView === "function") {
+      renderDebugView(debugSlot, q, selected);
+    }
+  });
 
   btn.addEventListener("click", async () => {
     if (loaded) {
@@ -313,31 +360,33 @@ function renderFeedback(q, selected) {
       ${correct ? "" : ` · Correcta: <b>${q.correcta})</b> ${formatText(correctText)}`}
     </div>
   `;
-  if (q.tipo === "codigo" && q.codigo && q.traza && q.traza.length) {
-    const wrap = document.createElement("div");
-    wrap.className = "trace-wrap";
-    if (correct) {
-      const details = document.createElement("details");
-      details.className = "trace-details";
-      const summary = document.createElement("summary");
-      summary.textContent = "Ver ejecución paso a paso";
-      const slot = document.createElement("div");
-      details.append(summary, slot);
-      let built = false;
-      details.addEventListener("toggle", () => {
-        if (details.open && !built) {
-          built = true;
-          createTracePlayer(slot, q.codigo, q.traza);
-        }
-      });
-      wrap.append(details);
-    } else {
-      createTracePlayer(wrap, q.codigo, q.traza);
-    }
-    box.append(wrap);
-  }
   attachAiExplain(box, q, selected);
   return box;
+}
+
+function esPreguntaAbierta(q) {
+  if (!q) return false;
+  const t = String(q.tipo || "").toLowerCase();
+  return (
+    t === "escribir_codigo" ||
+    t === "escribir" ||
+    t === "escriure" ||
+    t === "traza_linea" ||
+    t === "interpretar" ||
+    t === "desarrollo" ||
+    t === "abierta" ||
+    t === "oberta"
+  );
+}
+
+function obtenerPlaceholderAbierta(q) {
+  if (q.tipo === "escribir_codigo" && q.codigo) {
+    return "// Escribe aquí la función en JavaScript para sacar un 10:\nfunction miSolucion(...) {\n  // Tu código aquí\n}";
+  }
+  if (q.tipo === "traza_linea" || q.tipo === "interpretar") {
+    return "// Explica paso a paso cada línea y la salida final:\n// Línea 1: ...\n// Línea 2: ...\n// Salida final por consola: ...";
+  }
+  return "Escribe aquí tu desarrollo técnico, enumeración de fases o solución detallada...";
 }
 
 function renderTest() {
@@ -347,6 +396,7 @@ function renderTest() {
     renderResults();
     return;
   }
+  saveSession();
   setModeChip(state.immediate ? "Práctica" : "Examen", state.immediate ? "brand" : "warn");
   const selected = state.answers[q.id] || null;
   const isAnswered = selected != null;
@@ -361,7 +411,7 @@ function renderTest() {
           <span class="chip brand">Pregunta ${state.index + 1} / ${state.order.length}</span>
           <span class="chip">Tema ${q.tema}</span>
           ${q.apartado ? `<span class="chip">Apartado ${q.tema}.${q.apartado}${q.apartadoNombre ? ` · ${esc(q.apartadoNombre)}` : ""}</span>` : q.apartadoNombre ? `<span class="chip">Apartado: ${esc(q.apartadoNombre)}</span>` : ""}
-          <span class="chip ${q.tipo === "codigo" ? "brand" : ""}">${q.tipo === "codigo" ? "Código" : "Teoría"}</span>
+          <span class="chip ${esPreguntaAbierta(q) ? "ok" : q.tipo === "codigo" ? "brand" : ""}">${q.tipo === "escribir_codigo" ? (q.codigo ? "Escribir función" : "Desarrollo / Escrito") : (q.tipo === "traza_linea" || q.tipo === "interpretar") ? "Traza línea a línea" : esPreguntaAbierta(q) ? "Pregunta abierta / Desarrollo" : q.tipo === "codigo" ? "Código" : "Teoría"}</span>
           <span class="chip ${difTone}">${esc(q.dificultad || "media")}</span>
         </div>
         <div class="test-live" id="live-score">${liveScoreHTML()}</div>
@@ -371,9 +421,28 @@ function renderTest() {
         <div class="q-tag">${esc(limpiarPistasEnunciado(q.tag || "WEC"))}</div>
         <h2 class="q-text">${formatText(limpiarPistasEnunciado(q.enunciado))}</h2>
         ${q.codigo ? '<div class="code-slot" id="code-slot"></div>' : ""}
-        <div class="options" id="options" role="group" aria-label="Opciones de respuesta">
-          ${["A", "B", "C", "D"].map((letter) => optionHTML(q, letter, selected, practice, isAnswered)).join("")}
-        </div>
+        ${esPreguntaAbierta(q) ? `
+          <div class="open-area" id="open-area" style="margin: 16px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <label for="open-textarea" style="font-size:13px; font-weight:700; color:#38bdf8;">
+                ${(q.tipo === "escribir_codigo" && q.codigo) ? "💻 Tu solución en código JavaScript (escribe tu función):" : (q.tipo === "traza_linea" || q.tipo === "interpretar") ? "🔍 Traza línea a línea (explica qué hace cada línea y la salida final):" : "✍️ Tu explicación técnica y respuesta:"}
+              </label>
+              <span style="font-size:11px; color:#94a3b8; background:#0f172a; padding:3px 8px; border-radius:999px; border:1px solid #334155;"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Corrección IA (Nota 0-10)</span>
+            </div>
+            <textarea id="open-textarea" class="open-textarea" rows="10" style="width:100%; box-sizing:border-box; background:#020617; border:1px solid #334155; border-radius:10px; color:#e2e8f0; font-family:${q.tipo === 'desarrollo' || q.tipo === 'abierta' || q.tipo === 'oberta' || (!q.codigo && q.tipo === 'escribir_codigo') ? 'inherit' : 'ui-monospace, SFMono-Regular, Menlo, monospace'}; font-size:13px; padding:12px; line-height:1.5; resize:vertical;" placeholder="${esc(obtenerPlaceholderAbierta(q))}">${esc(selected || "")}</textarea>
+            <div style="display:flex; gap:10px; margin-top:10px; align-items:center; flex-wrap:wrap;">
+              ${(q.tipo === "escribir_codigo" && q.codigo) ? '<button type="button" class="btn tiny ghost" id="test-code-btn"><i class="fa-solid fa-play" aria-hidden="true"></i> Probar en consola</button>' : ''}
+              <button type="button" class="btn primary tiny" id="submit-open-btn"><i class="fa-solid fa-robot" aria-hidden="true"></i> Enviar a la IA para corrección (Nota 0-10)</button>
+              <span id="open-eval-status" style="font-size:12px; color:#94a3b8;"></span>
+            </div>
+            <div id="open-console-out" style="display:none; margin-top:10px; padding:10px; background:#020617; border:1px solid #334155; border-radius:8px; font-family:monospace; font-size:12px; color:#38bdf8; max-height:150px; overflow-y:auto; white-space:pre-wrap;"></div>
+            <div id="open-eval-result" style="margin-top:14px; display:${q.evaluacionIA ? 'block' : 'none'};"></div>
+          </div>
+        ` : `
+          <div class="options" id="options" role="group" aria-label="Opciones de respuesta">
+            ${["A", "B", "C", "D"].map((letter) => optionHTML(q, letter, selected, practice, isAnswered)).join("")}
+          </div>
+        `}
         <div id="feedback-slot"></div>
         <div class="test-actions">
           <div class="right">
@@ -389,12 +458,125 @@ function renderTest() {
   if (q.codigo) {
     renderCodeInto($("#code-slot"), q.codigo, null);
   }
-  if (practice && isAnswered) {
-    $("#feedback-slot")?.append(renderFeedback(q, selected));
+  if (esPreguntaAbierta(q)) {
+    if (q.evaluacionIA) {
+      const evalSlot = $("#open-eval-result");
+      if (evalSlot) {
+        renderAiConversation(evalSlot, q, selected || "", { answer: q.evaluacionIA, messages: q.evaluacionMensajes || [] }, true);
+      }
+    }
+    $("#test-code-btn")?.addEventListener("click", () => {
+      const textarea = $("#open-textarea");
+      const val = textarea?.value?.trim() || "";
+      const consoleBox = $("#open-console-out");
+      if (!consoleBox) return;
+      consoleBox.style.display = "block";
+      consoleBox.textContent = "▶ Probando código en consola…\n";
+      const logs = [];
+      const fakeConsole = {
+        log: (...args) => {
+          const msg = args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          logs.push(msg);
+          consoleBox.textContent = logs.join("\n");
+        },
+        error: (...args) => {
+          const msg = args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+          logs.push("❌ " + msg);
+          consoleBox.textContent = logs.join("\n");
+        },
+      };
+      try {
+        const fn = new Function("console", val);
+        fn(fakeConsole);
+        if (!logs.length) {
+          consoleBox.textContent = "✅ Código sintácticamente correcto (sin llamadas console.log directas).";
+        }
+      } catch (err) {
+        consoleBox.textContent = `❌ Error de sintaxis o ejecución: ${err.message}`;
+      }
+    });
+
+    const openTextarea = $("#open-textarea");
+    openTextarea?.addEventListener("input", () => {
+      state.answers[q.id] = openTextarea.value;
+      saveSession();
+    });
+
+    $("#submit-open-btn")?.addEventListener("click", async () => {
+      const textarea = $("#open-textarea");
+      const val = textarea?.value?.trim() || "";
+      if (!val) {
+        toast("Escribe tu respuesta antes de enviarla.");
+        textarea?.focus();
+        return;
+      }
+      state.answers[q.id] = val;
+      saveSession();
+      const btn = $("#submit-open-btn");
+      const status = $("#open-eval-status");
+      const evalSlot = $("#open-eval-result");
+      if (btn) btn.disabled = true;
+      if (status) status.innerHTML = '<span class="ai-dot"></span> Evaluando con la IA para nota del 0 al 10…';
+      try {
+        const data = await requestAi("/api/explain", {
+          pregunta: {
+            ...q,
+            tipo: q.tipo,
+            enunciado: q.enunciado,
+            codigo: q.codigo || "",
+            explicacion: q.explicacion || "",
+          },
+          selected: val,
+          esDesarrollo: true,
+          subject: state.subject?.nombre || "WEC",
+        });
+        const text = aiExplanationText(data);
+        if (!text) throw new Error("La IA no devolvió corrección.");
+        q.evaluacionIA = text;
+        const notaMatch = text.match(/Nota:\s*(\d+(?:\.\d+)?)\s*\/\s*10/i);
+        const nota = notaMatch ? parseFloat(notaMatch[1]) : null;
+        if (nota !== null) {
+          if (nota < 5) {
+            updateWrongForAnswer(q, val, null);
+          } else {
+            const set = new Set(getWrongIds());
+            set.delete(q.id);
+            setWrongIds([...set]);
+            const history = getHistory();
+            if (history[q.id]) {
+              history[q.id].passed = true;
+              history[q.id].selected = val;
+            }
+            setHistory(history);
+            writePersistenceFile();
+          }
+        }
+        if (evalSlot) {
+          evalSlot.style.display = "block";
+          renderAiConversation(evalSlot, q, val, { answer: text, messages: [] }, true);
+        }
+        if (status) status.textContent = "✅ Evaluado por la IA";
+        toast("Respuesta evaluada por la IA.");
+      } catch {
+        const feedbackLocal = `### Evaluación didáctica de referencia\n\n**Tu respuesta:**\n\`\`\`javascript\n${val}\n\`\`\`\n\n**Solución modelo y criterios para un 10:**\n${q.explicacion}\n\n*(Inicia el servidor local con Ollama para corrección automática interactiva).*`;
+        q.evaluacionIA = feedbackLocal;
+        if (evalSlot) {
+          evalSlot.style.display = "block";
+          renderAiConversation(evalSlot, q, val, { answer: feedbackLocal, messages: [] }, false);
+        }
+        if (status) status.textContent = "Respuesta guardada con solución de referencia.";
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+  } else {
+    if (practice && isAnswered) {
+      $("#feedback-slot")?.append(renderFeedback(q, selected));
+    }
+    $$(".option").forEach((btn) => {
+      btn.addEventListener("click", () => selectOption(btn.dataset.letter));
+    });
   }
-  $$(".option").forEach((btn) => {
-    btn.addEventListener("click", () => selectOption(btn.dataset.letter));
-  });
   $("#prev-btn")?.addEventListener("click", prevQuestion);
   $("#next-btn")?.addEventListener("click", nextQuestion);
   $("#exit-btn")?.addEventListener("click", () => {
@@ -409,21 +591,37 @@ function renderTest() {
 function updateWrongForAnswer(q, selected, previous = null) {
   const set = new Set(getWrongIds());
   const history = getHistory();
-  if (selected === q.correcta) {
+  const prev = history[q.id] || { fails: 0, correct: 0, attempts: 0 };
+  const isCorrect = (selected === q.correcta);
+
+  if (isCorrect) {
     set.delete(q.id);
-    delete history[q.id];
-  } else {
-    set.add(q.id);
-    const prev = history[q.id] || {};
     history[q.id] = {
       selected,
       at: new Date().toISOString(),
-      fails: previous == null ? (Number(prev.fails) || 0) + 1 : Math.max(1, Number(prev.fails) || 1)
+      fails: Number(prev.fails) || 0,
+      correct: (Number(prev.correct) || 0) + 1,
+      attempts: (Number(prev.attempts) || 0) + 1,
+      passed: true
+    };
+  } else {
+    set.add(q.id);
+    history[q.id] = {
+      selected,
+      at: new Date().toISOString(),
+      fails: (Number(prev.fails) || 0) + 1,
+      correct: Number(prev.correct) || 0,
+      attempts: (Number(prev.attempts) || 0) + 1,
+      passed: false
     };
   }
   setWrongIds([...set]);
   setHistory(history);
   writePersistenceFile();
+
+  if (window.SupabaseAuth && typeof window.SupabaseAuth.autoSyncProgressDebounced === "function") {
+    window.SupabaseAuth.autoSyncProgressDebounced();
+  }
 }
 
 function selectOption(letter) {

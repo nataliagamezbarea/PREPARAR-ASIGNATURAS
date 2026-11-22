@@ -1,0 +1,2008 @@
+{
+  "formato": "preparar-tests-banco-preguntas",
+  "version": 1,
+  "clave": "WEC-temas-1-2-3-4-apartado-0",
+  "meta": {
+    "asignatura": "WEC",
+    "titulo": "WEC · Temas 1, 2, 3, 4",
+    "tema": 0,
+    "temas": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "apartado": 0,
+    "total": 115,
+    "version": "1.0",
+    "revisionesPorTema": {}
+  },
+  "preguntas": [
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es el papel del servidor en la web?",
+      "opciones": {
+        "A": "El servidor es el lugar donde se almacenan y se envían las páginas web",
+        "B": "El servidor es el responsable de interpretar el código HTML",
+        "C": "El servidor es el que mantiene las páginas en un estado siempre encendido",
+        "D": "El servidor es el encargado de mostrar las páginas web en el navegador"
+      },
+      "correcta": "A",
+      "explicacion": "El servidor en la web es el lugar donde se almacenan y se envían las páginas web. Es el encargado de recibir las solicitudes de los navegadores y enviarles las páginas correspondientes.",
+      "explicacionClara": "Imagina que la web es como una librería. El servidor es como el estante donde se almacenan los libros. Cuando alguien pide un libro, el estante lo envía. Así, el servidor en la web envía las páginas web a los navegadores cuando se les solicitan.",
+      "id": 1
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es el hipertexto en la web?",
+      "opciones": {
+        "A": "Es un sistema de enlaces que conecta diferentes páginas",
+        "B": "Es el conjunto de estándares que definen la estructura de las páginas web",
+        "C": "Es un tipo de archivo de texto plano",
+        "D": "Es el lenguaje utilizado para escribir páginas web"
+      },
+      "correcta": "A",
+      "explicacion": "El hipertexto en la web es un sistema de enlaces que conecta diferentes páginas. Es como un mapa que te lleva de una página a otra, permitiendo navegar por la web de manera fluida.",
+      "explicacionClara": "El hipertexto es como un mapa que conecta diferentes páginas de la web. Si en una página hay un enlace a otra, el hipertexto te lleva directamente a esa otra página. Es como si cada página tuviera un mapa que te indicara dónde encontrar más información.",
+      "id": 2
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es el W3C y qué hace?",
+      "opciones": {
+        "A": "Es un software que permite crear páginas web",
+        "B": "Es un lenguaje de programación para la web",
+        "C": "Es un servidor que almacena las páginas web",
+        "D": "Es una organización que define y mantiene los estándares de la web"
+      },
+      "correcta": "D",
+      "explicacion": "El W3C es una organización que define y mantiene los estándares de la web. Es como un grupo de expertos que se encarga de establecer las reglas y normas que deben seguir los creadores de páginas web para que todo funcione correctamente.",
+      "explicacionClara": "El W3C es como un grupo de expertos que se encarga de establecer las reglas y normas para la web. Estos expertos definen cómo deben ser las páginas web para que todo funcione correctamente. Es como si el W3C fuera el juez que decide cómo deben jugar las páginas web.",
+      "id": 3
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es el propósito de una página web?",
+      "opciones": {
+        "A": "Ganar dinero",
+        "B": "Mostrar información",
+        "C": "Mostrar información y ganar dinero",
+        "D": "Atraer visitantes"
+      },
+      "correcta": "C",
+      "explicacion": "El propósito de una página web es mostrar información y ganar dinero. Es como si la página web fuera un negocio que vende productos o servicios. Además, también puede tener como objetivo atraer visitantes y mantenerlos en la página.",
+      "explicacionClara": "El propósito de una página web es mostrar información y ganar dinero. Es como si la página web fuera un negocio que vende productos o servicios. Además, también puede tener como objetivo atraer visitantes y mantenerlos en la página. Es como si la página web fuera un negocio que vende productos o servicios y también tiene como objetivo atraer visitantes y mantenerlos en la página.",
+      "id": 4
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es el diseño web y cuáles son sus cuatro campos?",
+      "opciones": {
+        "A": "Es un conjunto de estándares que definen cómo deben ser las páginas web",
+        "B": "Es el proceso de crear y mantener sitios web",
+        "C": "Es la programación para la web",
+        "D": "Es la mezcla de diseño, tecnología, comunicación y negocio"
+      },
+      "correcta": "D",
+      "explicacion": "El diseño web es la mezcla de diseño, tecnología, comunicación y negocio. Es como si la página web fuera un producto que combina diferentes elementos para crear una experiencia única para el usuario.",
+      "explicacionClara": "El diseño web es la mezcla de diseño, tecnología, comunicación y negocio. Es como si la página web fuera un producto que combina diferentes elementos para crear una experiencia única para el usuario. Es como si la página web fuera un producto que combina diferentes elementos para crear una experiencia única para el usuario.",
+      "id": 5
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "Lenguajes de programación en entorno cliente",
+      "tipo": "teoria",
+      "tag": "combinación de lenguajes",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es el papel del lenguaje de servidor en la validación de un formulario en una página web?",
+      "opciones": {
+        "A": "Valida el formulario en el servidor y luego envía los datos al cliente para mostrarlos",
+        "B": "Valida el formulario en el servidor y luego envía los datos al cliente para almacenarlos",
+        "C": "Valida el formulario en el cliente y luego envía los datos al servidor para guardarlos",
+        "D": "Valida el formulario en el cliente y luego envía los datos al servidor para almacenarlos"
+      },
+      "correcta": "C",
+      "explicacion": "El lenguaje de servidor se encarga de validar los datos recogidos en el formulario antes de almacenarlos en la base de datos. Esto se realiza en el cliente para mejorar la experiencia del usuario y luego se envían los datos al servidor para su almacenamiento.",
+      "explicacionClara": "El lenguaje de servidor es responsable de verificar la información del formulario. Primero, se realiza esta validación en el cliente para garantizar que los datos son correctos y para mejorar la experiencia del usuario. Luego, los datos validados se envían al servidor para su almacenamiento en la base de datos.",
+      "ejemploId": "ej-b54dd167c78c1415",
+      "id": 6
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "Mecanismos de ejecución de código en un navegador",
+      "tipo": "teoria",
+      "tag": "arquitectura del navegador",
+      "dificultad": "media",
+      "enunciado": "¿Qué componente del navegador es responsable de interpretar y ejecutar el código JavaScript?",
+      "opciones": {
+        "A": "Motor del buscador",
+        "B": "Motor de renderizado",
+        "C": "Intérprete de JavaScript",
+        "D": "Interfaz de usuario"
+      },
+      "correcta": "C",
+      "explicacion": "El componente del navegador responsable de interpretar y ejecutar el código JavaScript es el 'Intérprete de JavaScript'. Este componente analiza y ejecuta el código JavaScript, incluyendo eventos del ratón o teclado y otros códigos intercalados para ciertas funcionalidades.",
+      "explicacionClara": "El 'Intérprete de JavaScript' es el componente que analiza y ejecuta el código JavaScript en el navegador. Es el encargado de interpretar el código y ejecutarlo, por ejemplo, para manejar eventos del ratón o teclado o para ejecutar ciertas funcionalidades del sitio web.",
+      "ejemploId": "ej-15c1ac06b6a9b9b0",
+      "id": 7
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "Mecanismos de ejecución de código en un navegador",
+      "tipo": "teoria",
+      "tag": "motor de renderizado",
+      "dificultad": "media",
+      "enunciado": "¿Qué componente del navegador es responsable de presentar de forma visual el recurso obtenido?",
+      "opciones": {
+        "A": "Subsistema de comunicaciones",
+        "B": "Motor de renderizado",
+        "C": "Motor del buscador",
+        "D": "Interfaz de usuario"
+      },
+      "correcta": "B",
+      "explicacion": "El componente de motor de renderizado es el encargado de interpretar el código de la página y presentar de forma visual el recurso obtenido. Este componente es responsable de mostrar documentos HTML, XML, CSS, contenido embebido (audio/vídeo) e imágenes.",
+      "explicacionClara": "El motor de renderizado es el componente que interpreta el código de la página y lo convierte en una representación visual que el usuario puede ver. No es el motor del buscador, que carga las direcciones y las alertas de JavaScript, ni el interfaz de usuario, que gestiona la interacción del usuario, ni el subsistema de comunicaciones, que maneja la transferencia de datos.",
+      "ejemploId": "ej-93a322c7dfd1321a",
+      "id": 8
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "Capacidades y limitaciones de ejecución",
+      "tipo": "teoria",
+      "tag": "JavaScript y validación de formularios",
+      "dificultad": "media",
+      "enunciado": "¿Qué hace la instrucción `campo.type = 'text'` en el contexto de un formulario?",
+      "codigo": "campo.type = 'text'",
+      "opciones": {
+        "A": "Cambia el tipo del campo para que sea de texto, pero no aplica la validación correspondiente.",
+        "B": "Elimina el atributo `required` del campo.",
+        "C": "Cambia el tipo del campo para que sea de texto y aplica la validación correspondiente.",
+        "D": "Elimina el atributo `type` del campo."
+      },
+      "correcta": "A",
+      "explicacion": "La instrucción `campo.type = 'text'` cambia el tipo del campo para que sea de texto. Sin embargo, no aplica automáticamente la validación correspondiente. Por ejemplo, si el campo anteriormente era de tipo `email`, esta instrucción no eliminará el atributo `type` ni aplicará la validación de correo electrónico.",
+      "explicacionClara": "La instrucción `campo.type = 'text'` cambia el tipo del campo para que sea de texto. Sin embargo, no aplica automáticamente la validación correspondiente. Por ejemplo, si el campo anteriormente era de tipo `email`, esta instrucción no eliminará el atributo `type` ni aplicará la validación de correo electrónico.",
+      "ejemploId": "ej-efdf779bd4f2e25a",
+      "id": 9
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "Programación de scripts",
+      "tipo": "teoria",
+      "tag": "DOM y scripts",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es el efecto de la instrucción `elemento.style.color = color` en el contexto de un elemento HTML?",
+      "opciones": {
+        "A": "No tiene efecto, ya que `style` no es una propiedad válida",
+        "B": "Cambia el color de texto del elemento",
+        "C": "Cambia el color de borde del elemento",
+        "D": "Cambia el color de fondo del elemento"
+      },
+      "correcta": "B",
+      "explicacion": "La instrucción `elemento.style.color = color` cambia el color del texto del elemento HTML. Esto se debe a que `style` es una propiedad del elemento que permite modificar sus estilos, y `color` es una propiedad específica para cambiar el color del texto.",
+      "explicacionClara": "Cuando se utiliza `elemento.style.color = color`, se está modificando la propiedad `color` del elemento. Esta propiedad se utiliza para cambiar el color del texto del elemento. Por lo tanto, la respuesta correcta es que cambia el color de texto del elemento.",
+      "ejemploId": "ej-bdbd750ec41f5a3c",
+      "id": 10
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "Programación de scripts",
+      "tipo": "teoria",
+      "tag": "setTimeout y document.write",
+      "dificultad": "media",
+      "enunciado": "¿Qué ocurre si se ejecuta `document.write` dentro de un `setTimeout` con el documento ya cerrado?",
+      "opciones": {
+        "A": "No se produce ningún efecto, ya que `document.write` no funciona",
+        "B": "Se muestra el mensaje en la consola",
+        "C": "Se abre un nuevo documento y se lleva toda la página",
+        "D": "Se produce un error de sintaxis"
+      },
+      "correcta": "C",
+      "explicacion": "Si se ejecuta `document.write` dentro de un `setTimeout` con el documento ya cerrado, se abrirá un nuevo documento y se llevará toda la página. Esto ocurre porque `document.write` ha caído en desuso y se utiliza para abrir un nuevo documento y llevar toda la página cuando se ejecuta en un documento cerrado.",
+      "explicacionClara": "La instrucción `document.write` se utiliza para escribir en la página web. Sin embargo, si se ejecuta dentro de un `setTimeout` con el documento ya cerrado, se abrirá un nuevo documento y se llevará toda la página. Esto es debido a que `document.write` ha caído en desuso y se utiliza para este propósito. Por lo tanto, la respuesta correcta es que se abrirá un nuevo documento y se llevará toda la página.",
+      "ejemploId": "ej-e672875886715e99",
+      "id": 11
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "Integración del código con las etiquetas HTML",
+      "tipo": "teoria",
+      "tag": "integración",
+      "dificultad": "media",
+      "enunciado": "¿Cuál de las siguientes etiquetas permite integrar JavaScript en un documento HTML?",
+      "opciones": {
+        "A": "<head>",
+        "B": "<script>",
+        "C": "<html>",
+        "D": "<noscript>"
+      },
+      "correcta": "B",
+      "explicacion": "La etiqueta `<script>` es la que permite integrar JavaScript en un documento HTML. Es utilizada para incluir código JavaScript en el documento, ya sea en línea o en un archivo externo. Las otras opciones no son correctas para incluir código JavaScript en un documento HTML.",
+      "explicacionClara": "La etiqueta `<script>` es la única que permite incluir código JavaScript en un documento HTML. Es utilizada para insertar código JavaScript directamente en el documento o para referirse a un archivo externo. Las otras opciones no son apropiadas para este propósito.",
+      "ejemploId": "ej-b022b751e305dcc0",
+      "id": 12
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "Integración del código con las etiquetas HTML",
+      "tipo": "teoria",
+      "tag": "integración",
+      "dificultad": "media",
+      "enunciado": "¿Qué ruta relativa se utiliza para cargar un archivo JavaScript en el directorio anterior al actual?",
+      "opciones": {
+        "A": "../js/ejemplo.js",
+        "B": "../js/ejemplo.html",
+        "C": "js/ejemplo.js",
+        "D": "js/ejemplo.html"
+      },
+      "correcta": "A",
+      "explicacion": "La ruta relativa `../` se utiliza para dirigirse al directorio anterior al actual. En este caso, `../js/ejemplo.js` indica que el archivo `ejemplo.js` se encuentra en el directorio anterior al actual, dentro de la carpeta `js/`. Las otras opciones no son correctas para esta ruta relativa.",
+      "explicacionClara": "La ruta relativa `../` se utiliza para dirigirse al directorio anterior al actual. En este caso, `../js/ejemplo.js` indica que el archivo `ejemplo.js` se encuentra en el directorio anterior al actual, dentro de la carpeta `js/`. Las otras opciones no son correctas para esta ruta relativa.",
+      "ejemploId": "ej-74a94f8e995be893",
+      "id": 13
+    },
+    {
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "El modelo cliente-servidor",
+      "tipo": "teoria",
+      "tag": "servidor",
+      "dificultad": "media",
+      "enunciado": "¿Qué hace el servidor en el modelo cliente-servidor?",
+      "opciones": {
+        "A": "El servidor es responsable de presentar de forma visual el recurso obtenido.",
+        "B": "El servidor aloja los archivos HTML/CSS/JS, responde al cliente (bajo petición), ejecuta scripts como PHP o Python según sea necesario.",
+        "C": "El servidor solo actúa como base de datos.",
+        "D": "El servidor no realiza ninguna acción más allá de responder a peticiones estáticas."
+      },
+      "correcta": "B",
+      "explicacion": "El servidor en el modelo cliente-servidor es responsable de alojar y responder a las solicitudes de los clientes. Además, puede ejecutar scripts como PHP o Python según sea necesario para procesar las peticiones dinámicas. Esto es lo que se describe en la opción A.",
+      "explicacionClara": "En el modelo cliente-servidor, el servidor es el responsable de alojar y responder a las solicitudes de los clientes. Esto incluye la ejecución de scripts como PHP o Python para procesar peticiones dinámicas. La opción A describe correctamente este papel del servidor.",
+      "ejemploId": "ej-9896b56286a7a516",
+      "id": 14
+    },
+    {
+      "tema": 1,
+      "apartado": 2,
+      "apartadoNombre": "Lenguajes de programación en entorno cliente",
+      "tipo": "teoria",
+      "tag": "lenguajes de cliente",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es el papel del lenguaje de cliente en la interactividad de una página web?",
+      "opciones": {
+        "A": "Proporcionar interactividad y dinamismo al sitio web.",
+        "B": "Procesar peticiones y gestionar la persistencia en bases de datos.",
+        "C": "Acceder directamente a bases de datos corporativas.",
+        "D": "Procesar información confidencial de forma segura."
+      },
+      "correcta": "A",
+      "explicacion": "El lenguaje de cliente, como JavaScript, se ejecuta en el navegador del usuario para proporcionar interactividad y dinamismo a la página web. No se encarga de procesar peticiones ni de acceder a bases de datos corporativas.",
+      "explicacionClara": "El lenguaje de cliente, como JavaScript, se encarga de hacer que una página web sea interactiva y dinámica. No realiza tareas como procesar peticiones o acceder a bases de datos corporativas.",
+      "ejemploId": "ej-c243575e240618b9",
+      "id": 15
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué lenguaje bastaba inicialmente para construir documentos web sencillos?",
+      "opciones": {
+        "A": "HTML",
+        "B": "JavaScript",
+        "C": "CSS",
+        "D": "PHP"
+      },
+      "correcta": "A",
+      "explicacion": "El temario describe las primeras páginas como documentos de marcas HTML visualizables por un navegador.",
+      "explicacionClara": "El temario describe las primeras páginas como documentos de marcas HTML visualizables por un navegador.",
+      "id": 16
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué característica explica la función de un servidor web en los orígenes descritos?",
+      "opciones": {
+        "A": "Definir la presentación CSS de todas las páginas solicitadas",
+        "B": "Interpretar directamente el HTML en la máquina cliente",
+        "C": "Comprobar los formularios antes de enviarlos",
+        "D": "Alojar páginas y transmitirlas a los equipos que las solicitan"
+      },
+      "correcta": "D",
+      "explicacion": "El servidor alojaba los documentos y los enviaba cuando un equipo los pedía.",
+      "explicacionClara": "El servidor alojaba los documentos y los enviaba cuando un equipo los pedía.",
+      "id": 17
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué es el hipertexto en el contexto del tema?",
+      "opciones": {
+        "A": "Un mecanismo de transferencia de documentos entre servidores",
+        "B": "Una estructura de texto utilizada solamente para almacenar datos",
+        "C": "Un texto o fragmento que conduce a información relacionada",
+        "D": "Un texto que se presenta exclusivamente sin enlaces"
+      },
+      "correcta": "C",
+      "explicacion": "El hipertexto conecta palabras o frases con otros recursos relacionados.",
+      "explicacionClara": "El hipertexto conecta palabras o frases con otros recursos relacionados.",
+      "id": 18
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es la organización citada como responsable de desarrollar y mantener los estándares web?",
+      "opciones": {
+        "A": "IETF",
+        "B": "Ecma International",
+        "C": "WHATWG",
+        "D": "W3C"
+      },
+      "correcta": "D",
+      "explicacion": "El World Wide Web Consortium desarrolla y mantiene estándares para la Web. Matiz actual: no todos los estándares web son mantenidos exclusivamente por W3C; WHATWG mantiene, por ejemplo, el HTML Living Standard.",
+      "explicacionClara": "El World Wide Web Consortium desarrolla y mantiene estándares para la Web. Matiz actual: no todos los estándares web son mantenidos exclusivamente por W3C; WHATWG mantiene, por ejemplo, el HTML Living Standard.",
+      "id": 19
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Por qué se considera multidisciplinario el desarrollo web?",
+      "opciones": {
+        "A": "Porque solo requiere aprender sintaxis JavaScript",
+        "B": "Porque se limita a instalar servidores",
+        "C": "Porque todos los proyectos tienen idéntico propósito",
+        "D": "Porque combina necesidades, objetivos, interfaz, prototipado y presentación"
+      },
+      "correcta": "D",
+      "explicacion": "El material reúne distintas fases y competencias en un mismo proyecto web.",
+      "explicacionClara": "El material reúne distintas fases y competencias en un mismo proyecto web.",
+      "id": 20
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué actividad aparece al principio del proceso de un proyecto web?",
+      "opciones": {
+        "A": "Diseñar la interfaz gráfica del sitio",
+        "B": "Captar las necesidades del cliente",
+        "C": "Definir los objetivos y la estrategia del proyecto",
+        "D": "Preparar el prototipo que se presentará al cliente"
+      },
+      "correcta": "B",
+      "explicacion": "Antes de definir soluciones se identifican las necesidades del cliente.",
+      "explicacionClara": "Antes de definir soluciones se identifican las necesidades del cliente.",
+      "id": 21
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué fase sigue a la detección de necesidades en la secuencia presentada?",
+      "opciones": {
+        "A": "Desarrollar la interfaz gráfica",
+        "B": "Definir objetivos y estrategia",
+        "C": "Elaborar prototipos de presentación",
+        "D": "Preparar la presentación final del portal"
+      },
+      "correcta": "B",
+      "explicacion": "El temario sitúa objetivos y estrategia tras conocer las necesidades.",
+      "explicacionClara": "El temario sitúa objetivos y estrategia tras conocer las necesidades.",
+      "id": 22
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es una tarea de desarrollo posterior a definir objetivos y estrategia?",
+      "opciones": {
+        "A": "Desarrollar la interfaz gráfica",
+        "B": "Detectar las necesidades del cliente",
+        "C": "Establecer los objetivos y la estrategia",
+        "D": "Presentar el resultado final antes de diseñar la interfaz"
+      },
+      "correcta": "A",
+      "explicacion": "La interfaz se diseña después de determinar los objetivos y la estrategia.",
+      "explicacionClara": "La interfaz se diseña después de determinar los objetivos y la estrategia.",
+      "id": 23
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué productos de trabajo se mencionan antes de la presentación final?",
+      "opciones": {
+        "A": "Prototipos",
+        "B": "Cookies de sesión",
+        "C": "Motores JIT",
+        "D": "Cabeceras CORS"
+      },
+      "correcta": "A",
+      "explicacion": "La elaboración de prototipos forma parte de las fases del proyecto.",
+      "explicacionClara": "La elaboración de prototipos forma parte de las fases del proyecto.",
+      "id": 24
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué propiedad de la web facilita el acceso a información vinculada?",
+      "opciones": {
+        "A": "Exigir que todas las páginas sean estáticas",
+        "B": "Basarse en hipertexto",
+        "C": "Prohibir documentos con enlaces",
+        "D": "Ejecutar el código en el mismo equipo servidor"
+      },
+      "correcta": "B",
+      "explicacion": "Los enlaces de hipertexto permiten pasar a información relacionada.",
+      "explicacionClara": "Los enlaces de hipertexto permiten pasar a información relacionada.",
+      "id": 25
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Un documento web antiguo contiene solo marcas de texto y enlaces, sin scripts. ¿Qué explicación encaja mejor con el origen de la web descrito?",
+      "opciones": {
+        "A": "Que JavaScript era obligatorio incluso en sitios sin interactividad",
+        "B": "Que el servidor ejecutaba el HTML como un lenguaje de programación",
+        "C": "Que CSS era imprescindible para crear documentos navegables",
+        "D": "Que HTML podía bastar para crear una página sencilla"
+      },
+      "correcta": "D",
+      "explicacion": "Las primeras páginas podían construirse únicamente con HTML.",
+      "explicacionClara": "Las primeras páginas podían construirse únicamente con HTML.",
+      "id": 26
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Un equipo solicita un documento que permanece disponible día y noche en otra máquina. ¿Qué papel cumple esa máquina?",
+      "opciones": {
+        "A": "Servidor que aloja y entrega la página",
+        "B": "Motor de JavaScript del cliente",
+        "C": "Interfaz de usuario del navegador",
+        "D": "Editor local de estilos CSS"
+      },
+      "correcta": "A",
+      "explicacion": "Alojar y entregar recursos a petición del cliente es la función del servidor.",
+      "explicacionClara": "Alojar y entregar recursos a petición del cliente es la función del servidor.",
+      "id": 27
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué secuencia reproduce mejor las fases destacadas para un proyecto web?",
+      "opciones": {
+        "A": "Prototipos → presentación final → necesidades → objetivos → interfaz",
+        "B": "Presentación final → prototipos → interfaz → objetivos → necesidades",
+        "C": "Interfaz → presentación final → estrategia → necesidades → prototipos",
+        "D": "Necesidades → objetivos y estrategia → interfaz → prototipos → presentación final"
+      },
+      "correcta": "D",
+      "explicacion": "El orden de las fases se señala como un conocimiento imprescindible.",
+      "explicacionClara": "El orden de las fases se señala como un conocimiento imprescindible.",
+      "id": 28
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "El cliente no ha definido qué quiere comunicar. ¿Qué sería prematuro según la secuencia del tema?",
+      "opciones": {
+        "A": "Identificar las necesidades de negocio",
+        "B": "Preguntar por los usuarios destinatarios",
+        "C": "Diseñar la interfaz definitiva antes de captar necesidades y fijar objetivos",
+        "D": "Concretar los objetivos del sitio"
+      },
+      "correcta": "C",
+      "explicacion": "La interfaz debe responder a necesidades y objetivos previamente establecidos.",
+      "explicacionClara": "La interfaz debe responder a necesidades y objetivos previamente establecidos.",
+      "id": 29
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una palabra de un artículo permite abrir otro documento relacionado. ¿Qué concepto ilustra?",
+      "opciones": {
+        "A": "Renderizado CSS",
+        "B": "Persistencia local",
+        "C": "Hipertexto",
+        "D": "Compilación JIT"
+      },
+      "correcta": "C",
+      "explicacion": "El hipertexto es la relación navegable entre fragmentos de información.",
+      "explicacionClara": "El hipertexto es la relación navegable entre fragmentos de información.",
+      "id": 30
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué afirmación distingue correctamente W3C de un editor y de un navegador?",
+      "opciones": {
+        "A": "W3C aloja cada web y el editor recibe todas las peticiones",
+        "B": "W3C establece estándares; un editor ayuda a escribir código; un navegador lo presenta",
+        "C": "W3C ejecuta JavaScript; el editor establece CORS; el navegador almacena el proyecto",
+        "D": "W3C es un navegador y Chrome es un consorcio"
+      },
+      "correcta": "B",
+      "explicacion": "El consorcio y las herramientas de desarrollo cumplen funciones diferentes.",
+      "explicacionClara": "El consorcio y las herramientas de desarrollo cumplen funciones diferentes.",
+      "id": 31
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una web con estética atractiva incumple necesidades del cliente y no tiene estrategia. ¿Qué conclusión respalda el temario?",
+      "opciones": {
+        "A": "El hipertexto sustituye la fase de objetivos",
+        "B": "El proyecto está completo por tener colores atractivos",
+        "C": "El aspecto visual por sí solo no completa el trabajo multidisciplinario",
+        "D": "Las necesidades se definen únicamente tras la presentación final"
+      },
+      "correcta": "C",
+      "explicacion": "El proyecto comprende fases distintas de la construcción visual.",
+      "explicacionClara": "El proyecto comprende fases distintas de la construcción visual.",
+      "id": 32
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una empresa quiere definir primero el objetivo de una web y después construir su prototipo. ¿Qué relación con el tema es correcta?",
+      "opciones": {
+        "A": "Elimina la fase de estrategia por completo",
+        "B": "Respeta el orden general de planificación y prototipado",
+        "C": "Invierte el orden al no presentar antes el prototipo",
+        "D": "Contradice la necesidad de identificar metas"
+      },
+      "correcta": "B",
+      "explicacion": "El material sitúa la definición de objetivos antes de los prototipos.",
+      "explicacionClara": "El material sitúa la definición de objetivos antes de los prototipos.",
+      "id": 33
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Un proyecto ya tiene definidas necesidades y objetivos, pero no puede evaluarse cómo funcionará la interfaz antes de la entrega. ¿Qué fase ayudaría a cubrir esa carencia?",
+      "opciones": {
+        "A": "Elaborar un prototipo",
+        "B": "Volver directamente a la presentación final",
+        "C": "Cambiar el consorcio de estándares",
+        "D": "Sustituir la definición de objetivos por el diseño visual"
+      },
+      "correcta": "A",
+      "explicacion": "El prototipo permite representar y revisar la solución antes de la presentación final.",
+      "explicacionClara": "El prototipo permite representar y revisar la solución antes de la presentación final.",
+      "id": 34
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una web informativa ha sido desarrollada correctamente, pero el cliente esperaba captar ventas. ¿Qué decisión inicial ha quedado mal resuelta?",
+      "opciones": {
+        "A": "La velocidad de distribución de los contenidos",
+        "B": "La selección de tecnología utilizada en la página",
+        "C": "La calidad visual y el atractivo estético",
+        "D": "La definición del propósito y los objetivos del sitio"
+      },
+      "correcta": "D",
+      "explicacion": "El proyecto debe partir de las necesidades y la finalidad concreta que se persigue.",
+      "explicacionClara": "El proyecto debe partir de las necesidades y la finalidad concreta que se persigue.",
+      "id": 35
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuáles son los cuatro campos del diseño web citados en el apartado 1.1?",
+      "opciones": {
+        "A": "Visual, distribución, usabilidad y accesibilidad",
+        "B": "Propósito, tecnología, contenido y persistencia",
+        "C": "Visual, tecnología, estructura y comportamiento",
+        "D": "Visual, tecnología, distribución y propósito"
+      },
+      "correcta": "D",
+      "explicacion": "Son las cuatro dimensiones que el documento distingue al planificar un sitio.",
+      "explicacionClara": "Son las cuatro dimensiones que el documento distingue al planificar un sitio.",
+      "id": 36
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué campo aborda la capacidad de atraer visitantes mediante el aspecto de una página?",
+      "opciones": {
+        "A": "Visual",
+        "B": "Persistencia",
+        "C": "Tecnología",
+        "D": "Distribución"
+      },
+      "correcta": "A",
+      "explicacion": "El apartado visual se refiere a comunicación, impresión y atractivo.",
+      "explicacionClara": "El apartado visual se refiere a comunicación, impresión y atractivo.",
+      "id": 37
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué campo determina si el sitio será estático o dinámico y qué base de datos utilizará?",
+      "opciones": {
+        "A": "Tecnología",
+        "B": "Distribución",
+        "C": "Visual",
+        "D": "Propósito"
+      },
+      "correcta": "A",
+      "explicacion": "Las tecnologías escogidas condicionan las funcionalidades del sitio.",
+      "explicacionClara": "Las tecnologías escogidas condicionan las funcionalidades del sitio.",
+      "id": 38
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué campo se relaciona especialmente con velocidad y fiabilidad de transmisión de datos?",
+      "opciones": {
+        "A": "Prototipado",
+        "B": "Visual",
+        "C": "Distribución",
+        "D": "Propósito"
+      },
+      "correcta": "C",
+      "explicacion": "La distribución trata de cómo llegan los datos con rapidez y fiabilidad.",
+      "explicacionClara": "La distribución trata de cómo llegan los datos con rapidez y fiabilidad.",
+      "id": 39
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué campo debe responder a la pregunta «para qué existe este sitio»?",
+      "opciones": {
+        "A": "Visual",
+        "B": "Propósito",
+        "C": "Distribución",
+        "D": "Motor de renderizado"
+      },
+      "correcta": "B",
+      "explicacion": "Todo sitio debe tener una finalidad definida, económica o informativa, entre otras.",
+      "explicacionClara": "Todo sitio debe tener una finalidad definida, económica o informativa, entre otras.",
+      "id": 40
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué dos clases de finalidad aparecen como ejemplos de propósito web?",
+      "opciones": {
+        "A": "JIT e interpretada",
+        "B": "Local y remota",
+        "C": "Sintáctica y semántica",
+        "D": "Económica e informativa"
+      },
+      "correcta": "D",
+      "explicacion": "El tema ejemplifica fines comerciales y difusión de información.",
+      "explicacionClara": "El tema ejemplifica fines comerciales y difusión de información.",
+      "id": 41
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuáles son los tres elementos del modelo cliente-servidor del temario?",
+      "opciones": {
+        "A": "HTML, CSS y JavaScript",
+        "B": "DOM, XML y XHTML",
+        "C": "Navegador, teclado y ratón",
+        "D": "Servidor, máquina cliente y conectividad de red"
+      },
+      "correcta": "D",
+      "explicacion": "La arquitectura se organiza en servidor, cliente y conexión.",
+      "explicacionClara": "La arquitectura se organiza en servidor, cliente y conexión.",
+      "id": 42
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿En qué elemento del modelo se aloja habitualmente el recurso web solicitado?",
+      "opciones": {
+        "A": "Barra de direcciones del navegador",
+        "B": "Servidor",
+        "C": "Componente de visualización",
+        "D": "Máquina cliente solicitante"
+      },
+      "correcta": "B",
+      "explicacion": "El servidor mantiene los recursos que envía a las solicitudes.",
+      "explicacionClara": "El servidor mantiene los recursos que envía a las solicitudes.",
+      "id": 43
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿En qué elemento suelen ejecutarse los programas que hacen peticiones al servidor mediante un navegador?",
+      "opciones": {
+        "A": "Máquina servidor",
+        "B": "Motor JIT remoto",
+        "C": "Máquina cliente",
+        "D": "Red de conectividad"
+      },
+      "correcta": "C",
+      "explicacion": "El cliente realiza las solicitudes utilizando el navegador.",
+      "explicacionClara": "El cliente realiza las solicitudes utilizando el navegador.",
+      "id": 44
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué función principal atribuye el temario al navegador?",
+      "opciones": {
+        "A": "Gestionar los objetivos económicos del sitio",
+        "B": "Sustituir el hardware del servidor",
+        "C": "Alojar todas las páginas para responder peticiones externas",
+        "D": "Presentar al usuario la información web recibida"
+      },
+      "correcta": "D",
+      "explicacion": "El navegador muestra la información, frecuentemente HTML, alojada en el servidor.",
+      "explicacionClara": "El navegador muestra la información, frecuentemente HTML, alojada en el servidor.",
+      "id": 45
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué condición técnica recomienda el material para el lenguaje usado en el servidor?",
+      "opciones": {
+        "A": "Que solo ejecute scripts del lado cliente",
+        "B": "Que soporte múltiples hilos",
+        "C": "Que sustituya al navegador al presentar el documento",
+        "D": "Que permita ejecución paralela sin especificar soporte de hilos"
+      },
+      "correcta": "B",
+      "explicacion": "El documento menciona expresamente el soporte multihilo para implementar tecnologías web. Esta es una recomendación pedagógica del temario, no una condición obligatoria para todos los lenguajes o servidores web.",
+      "explicacionClara": "El documento menciona expresamente el soporte multihilo para implementar tecnologías web. Esta es una recomendación pedagógica del temario, no una condición obligatoria para todos los lenguajes o servidores web.",
+      "id": 46
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "On tindrem implementats els diferents programes per a realitzar peticions de sol·licitud al servidor?",
+      "opciones": {
+        "A": "Màquina de connectivitat",
+        "B": "Màquina servidor",
+        "C": "Màquina client",
+        "D": "Exclusivament al consorci W3C"
+      },
+      "correcta": "C",
+      "explicacion": "El temario sitúa los programas solicitantes en la máquina cliente, no en el servidor.",
+      "explicacionClara": "El temario sitúa los programas solicitantes en la máquina cliente, no en el servidor.",
+      "id": 47
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "El funcionament d'un navegador s'encarrega d'allotjar una pàgina web per a respondre a les diferents sol·licituds rebudes.",
+      "opciones": {
+        "A": "És una funció exclusiva de CSS",
+        "B": "Només passa amb documents XML",
+        "C": "Fals",
+        "D": "Cert"
+      },
+      "correcta": "C",
+      "explicacion": "Alojar y responder a las peticiones es una tarea del servidor; el navegador presenta la página.",
+      "explicacionClara": "Alojar y responder a las peticiones es una tarea del servidor; el navegador presenta la página.",
+      "id": 48
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Un portal transmite datos lentamente aunque sus colores sean excelentes. ¿Qué campo del diseño requiere atención directa?",
+      "opciones": {
+        "A": "Definición de prototipos",
+        "B": "Distribución",
+        "C": "Visual",
+        "D": "Propósito"
+      },
+      "correcta": "B",
+      "explicacion": "La velocidad y fiabilidad de transmisión pertenecen al campo de distribución.",
+      "explicacionClara": "La velocidad y fiabilidad de transmisión pertenecen al campo de distribución.",
+      "id": 49
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una ONG construye una web para anunciar una actividad pública sin vender productos. ¿Qué finalidad del material ejemplifica?",
+      "opciones": {
+        "A": "Puramente tecnológica",
+        "B": "De persistencia de cookies",
+        "C": "Informativa",
+        "D": "Exclusivamente económica"
+      },
+      "correcta": "C",
+      "explicacion": "La difusión de actos o acontecimientos se menciona como propósito informativo.",
+      "explicacionClara": "La difusión de actos o acontecimientos se menciona como propósito informativo.",
+      "id": 50
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una tienda consigue más visitas recurrentes tras mejorar la primera impresión de su sitio. ¿Con qué campo se relaciona principalmente?",
+      "opciones": {
+        "A": "Parser XML",
+        "B": "Compilación de JavaScript",
+        "C": "Conectividad de red",
+        "D": "Visual"
+      },
+      "correcta": "D",
+      "explicacion": "El material relaciona una impresión visual positiva con el retorno de visitantes.",
+      "explicacionClara": "El material relaciona una impresión visual positiva con el retorno de visitantes.",
+      "id": 51
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "El equipo discute entre sitio estático o dinámico y el tipo de base de datos. ¿A qué decisión se enfrenta?",
+      "opciones": {
+        "A": "Elección puramente visual",
+        "B": "Elección tecnológica",
+        "C": "Orden de las fases de un prototipo",
+        "D": "Identificación del propósito informativo"
+      },
+      "correcta": "B",
+      "explicacion": "La tecnología condiciona estructura funcional y almacenamiento.",
+      "explicacionClara": "La tecnología condiciona estructura funcional y almacenamiento.",
+      "id": 52
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una web debe vender un producto y funcionar con fiabilidad. ¿Qué distinción es correcta?",
+      "opciones": {
+        "A": "Vender define el propósito y transmitir con fiabilidad pertenece a distribución",
+        "B": "Vender pertenece a distribución y la fiabilidad al aspecto visual",
+        "C": "Ambos son exclusivos del lenguaje JavaScript",
+        "D": "Propósito y distribución significan lo mismo"
+      },
+      "correcta": "A",
+      "explicacion": "El tema separa la finalidad del sitio del rendimiento de la transmisión.",
+      "explicacionClara": "El tema separa la finalidad del sitio del rendimiento de la transmisión.",
+      "id": 53
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Si un navegador recibe HTML desde una máquina remota, ¿qué elemento está presentando el recurso?",
+      "opciones": {
+        "A": "La máquina cliente mediante el navegador",
+        "B": "La red como interfaz de usuario independiente",
+        "C": "El consorcio W3C directamente",
+        "D": "El servidor en la pantalla del administrador"
+      },
+      "correcta": "A",
+      "explicacion": "El servidor aloja el recurso y el cliente lo visualiza.",
+      "explicacionClara": "El servidor aloja el recurso y el cliente lo visualiza.",
+      "id": 54
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una aplicación efectúa una solicitud HTTP desde el navegador. ¿A qué parte del modelo pertenece principalmente la aplicación solicitante?",
+      "opciones": {
+        "A": "Servidor de alojamiento",
+        "B": "Sistema de persistencia de certificados",
+        "C": "Cable de red",
+        "D": "Máquina cliente"
+      },
+      "correcta": "D",
+      "explicacion": "Las peticiones web parten de programas ejecutados en el cliente.",
+      "explicacionClara": "Las peticiones web parten de programas ejecutados en el cliente.",
+      "id": 55
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué componente no es uno de los tres elementos comunes enumerados como tales en el modelo cliente-servidor?",
+      "opciones": {
+        "A": "La máquina cliente",
+        "B": "El editor de código fuente",
+        "C": "El servidor",
+        "D": "La conectividad de red"
+      },
+      "correcta": "B",
+      "explicacion": "Los tres elementos enumerados son servidor, máquina cliente y conectividad de red. El editor de código es una herramienta de desarrollo, no uno de esos tres elementos.",
+      "explicacionClara": "Los tres elementos enumerados son servidor, máquina cliente y conectividad de red. El editor de código es una herramienta de desarrollo, no uno de esos tres elementos.",
+      "id": 56
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "El servidor mantiene instalados hardware y software web, pero nadie puede acceder porque falla la conexión. ¿Qué tercer elemento del modelo es el problema?",
+      "opciones": {
+        "A": "El diseño de la interfaz",
+        "B": "El propósito comercial",
+        "C": "El formato de los textos",
+        "D": "La conectividad de red"
+      },
+      "correcta": "D",
+      "explicacion": "El modelo necesita una conectividad funcional entre cliente y servidor.",
+      "explicacionClara": "El modelo necesita una conectividad funcional entre cliente y servidor.",
+      "id": 57
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué opción intercambia incorrectamente las responsabilidades del cliente y el servidor?",
+      "opciones": {
+        "A": "El navegador del cliente realiza solicitudes",
+        "B": "La red conecta a los dos extremos",
+        "C": "El cliente aloja normalmente las páginas solicitadas y el servidor las visualiza para el usuario",
+        "D": "El servidor aloja recursos web"
+      },
+      "correcta": "C",
+      "explicacion": "La opción errónea atribuye alojamiento al cliente y visualización al servidor.",
+      "explicacionClara": "La opción errónea atribuye alojamiento al cliente y visualización al servidor.",
+      "id": 58
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué afirmación refleja la referencia histórica a ActiveX del apartado 1.1?",
+      "opciones": {
+        "A": "ActiveX se considera en el tema una capa de presentación como CSS",
+        "B": "ActiveX sustituye al protocolo de transferencia del navegador",
+        "C": "Se enumera entre las tecnologías que podía necesitar soportar un navegador cliente",
+        "D": "ActiveX es el motor que ejecuta JavaScript en Firefox"
+      },
+      "correcta": "C",
+      "explicacion": "ActiveX se cita entre tecnologías que el cliente puede tener que soportar; es una referencia histórica del material. ActiveX es una tecnología histórica obsoleta y no está soportada por los navegadores web modernos de forma general.",
+      "explicacionClara": "ActiveX se cita entre tecnologías que el cliente puede tener que soportar; es una referencia histórica del material. ActiveX es una tecnología histórica obsoleta y no está soportada por los navegadores web modernos de forma general.",
+      "id": 59
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué se deduce si cambia el propósito de un portal de difusión informativa a venta de productos?",
+      "opciones": {
+        "A": "Se elimina la necesidad de interfaz visual",
+        "B": "Automáticamente deja de existir la conectividad de red",
+        "C": "El navegador pasa a ser el servidor",
+        "D": "Cambia una decisión de propósito y pueden cambiar las soluciones tecnológicas"
+      },
+      "correcta": "D",
+      "explicacion": "El propósito orienta las características y decisiones del sitio, sin anular los demás campos.",
+      "explicacionClara": "El propósito orienta las características y decisiones del sitio, sin anular los demás campos.",
+      "id": 60
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Dos páginas usan el mismo servidor: una tiene un diseño agradable pero las transferencias fallan; la otra carga bien pero no atrae visitantes. ¿Qué campos están principalmente comprometidos?",
+      "opciones": {
+        "A": "Distribución en la primera y visual en la segunda",
+        "B": "Visual en la primera y tecnología en la segunda",
+        "C": "Propósito en ambas por definición",
+        "D": "Tecnología en la primera y distribución en la segunda, necesariamente"
+      },
+      "correcta": "A",
+      "explicacion": "El material separa fiabilidad de transmisión de atractivo visual y experiencia inicial.",
+      "explicacionClara": "El material separa fiabilidad de transmisión de atractivo visual y experiencia inicial.",
+      "id": 61
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "El navegador recibe el documento HTML y presenta información, pero la programación que procesa y almacena peticiones sigue ejecutándose en otra máquina. ¿Qué distribución de funciones describe?",
+      "opciones": {
+        "A": "Red de conectividad sustituye por completo las funciones de los extremos",
+        "B": "Cliente aloja todos los datos; servidor solo dibuja la pestaña",
+        "C": "El navegador controla directamente los archivos privados del servidor",
+        "D": "Cliente muestra y solicita; servidor procesa y puede alojar o almacenar"
+      },
+      "correcta": "D",
+      "explicacion": "El modelo separa las responsabilidades entre el equipo cliente y el servidor.",
+      "explicacionClara": "El modelo separa las responsabilidades entre el equipo cliente y el servidor.",
+      "id": 62
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es el lugar habitual de ejecución de un lenguaje de entorno cliente?",
+      "opciones": {
+        "A": "El servidor de base de datos sin navegador",
+        "B": "El consorcio W3C",
+        "C": "El equipo del usuario, normalmente dentro del navegador",
+        "D": "Exclusivamente el servidor de alojamiento"
+      },
+      "correcta": "C",
+      "explicacion": "Un lenguaje de cliente se ejecuta en el entorno del usuario.",
+      "explicacionClara": "Un lenguaje de cliente se ejecuta en el entorno del usuario.",
+      "id": 63
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Dónde se ejecutan los lenguajes de entorno servidor?",
+      "opciones": {
+        "A": "Solo en el motor de renderizado",
+        "B": "En la barra de herramientas del cliente",
+        "C": "En el servidor",
+        "D": "En la carpeta de descarga del navegador"
+      },
+      "correcta": "C",
+      "explicacion": "La distinción entre entornos depende del lugar donde se ejecuta el código.",
+      "explicacionClara": "La distinción entre entornos depende del lugar donde se ejecuta el código.",
+      "id": 64
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué relación establece el tema entre lenguajes de cliente y de servidor en sitios dinámicos?",
+      "opciones": {
+        "A": "Ninguno puede intercambiar datos con el otro",
+        "B": "Se complementan",
+        "C": "Ejecutan siempre idénticas funciones",
+        "D": "Son mutuamente excluyentes"
+      },
+      "correcta": "B",
+      "explicacion": "Los dos entornos colaboran para ofrecer una web dinámica.",
+      "explicacionClara": "Los dos entornos colaboran para ofrecer una web dinámica.",
+      "id": 65
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Según el ejemplo del temario, ¿qué se hace en el cliente antes de enviar un formulario?",
+      "opciones": {
+        "A": "Comprobar o validar la información introducida",
+        "B": "Guardar directamente en la base de datos del servidor",
+        "C": "Modificar físicamente el disco del servidor",
+        "D": "Ejecutar la consulta SQL desde el W3C"
+      },
+      "correcta": "A",
+      "explicacion": "La validación previa del formulario se asigna al lenguaje de cliente.",
+      "explicacionClara": "La validación previa del formulario se asigna al lenguaje de cliente.",
+      "id": 66
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Según el ejemplo del temario, ¿qué se encarga de almacenar los datos del formulario en una base de datos del servidor?",
+      "opciones": {
+        "A": "El código del lado servidor",
+        "B": "La validación previa que realiza JavaScript del cliente",
+        "C": "El motor de renderizado que presenta la confirmación",
+        "D": "El código CSS vinculado al formulario"
+      },
+      "correcta": "A",
+      "explicacion": "La persistencia en la base de datos remota corresponde al servidor.",
+      "explicacionClara": "La persistencia en la base de datos remota corresponde al servidor.",
+      "id": 67
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué lenguaje se asocia principalmente al estilo y la presentación de una web?",
+      "opciones": {
+        "A": "CSS",
+        "B": "XML Parser",
+        "C": "SQL",
+        "D": "FTP"
+      },
+      "correcta": "A",
+      "explicacion": "El esquema de capas atribuye la presentación a CSS.",
+      "explicacionClara": "El esquema de capas atribuye la presentación a CSS.",
+      "id": 68
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué lenguaje se asocia al comportamiento dinámico de la página en el cliente?",
+      "opciones": {
+        "A": "Un lenguaje de servidor dedicado a almacenar registros",
+        "B": "CSS",
+        "C": "HTML",
+        "D": "JavaScript"
+      },
+      "correcta": "D",
+      "explicacion": "JavaScript gestiona el comportamiento e interacciones de la página.",
+      "explicacionClara": "JavaScript gestiona el comportamiento e interacciones de la página.",
+      "id": 69
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué papel se relaciona más directamente con HTML en el esquema de capas?",
+      "opciones": {
+        "A": "Cifrar todas las comunicaciones",
+        "B": "Ejecutar la lógica del servidor",
+        "C": "Guardar las sesiones en un disco remoto",
+        "D": "Estructurar el contenido"
+      },
+      "correcta": "D",
+      "explicacion": "La estructura HTML se corresponde con la capa de estructura.",
+      "explicacionClara": "La estructura HTML se corresponde con la capa de estructura.",
+      "id": 70
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuántas capas de desarrollo en entorno cliente presenta el temario?",
+      "opciones": {
+        "A": "Cuatro",
+        "B": "Ocho",
+        "C": "Tres",
+        "D": "Dos"
+      },
+      "correcta": "A",
+      "explicacion": "Se distinguen contenido, estructura, presentación y comportamiento.",
+      "explicacionClara": "Se distinguen contenido, estructura, presentación y comportamiento.",
+      "id": 71
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué capa se sitúa por debajo de todas las demás en el esquema?",
+      "opciones": {
+        "A": "Contenido",
+        "B": "Presentación",
+        "C": "Comportamiento",
+        "D": "Estructura"
+      },
+      "correcta": "A",
+      "explicacion": "Texto, imágenes y otros recursos constituyen el contenido básico.",
+      "explicacionClara": "Texto, imágenes y otros recursos constituyen el contenido básico.",
+      "id": 72
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué capa está inmediatamente por encima de la de estructura?",
+      "opciones": {
+        "A": "Comportamiento",
+        "B": "Estructura",
+        "C": "Presentación",
+        "D": "Contenido"
+      },
+      "correcta": "C",
+      "explicacion": "El orden ascendente es contenido, estructura, presentación y comportamiento.",
+      "explicacionClara": "El orden ascendente es contenido, estructura, presentación y comportamiento.",
+      "id": 73
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué capa ocupa la posición superior en el esquema de cuatro capas?",
+      "opciones": {
+        "A": "Contenido",
+        "B": "Comportamiento",
+        "C": "Estructura",
+        "D": "Presentación"
+      },
+      "correcta": "B",
+      "explicacion": "JavaScript representa la capa superior de comportamiento.",
+      "explicacionClara": "JavaScript representa la capa superior de comportamiento.",
+      "id": 74
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué elemento menciona el material como estructura documental para acceder al HTML?",
+      "opciones": {
+        "A": "CORS",
+        "B": "V8",
+        "C": "FTP",
+        "D": "DOM"
+      },
+      "correcta": "D",
+      "explicacion": "El DOM se muestra junto a la estructura HTML como capa de estructura.",
+      "explicacionClara": "El DOM se muestra junto a la estructura HTML como capa de estructura.",
+      "id": 75
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué criterio de elección de lenguaje destaca el apartado 1.2?",
+      "opciones": {
+        "A": "Evitar combinar tecnologías",
+        "B": "Considerar ventajas, inconvenientes y experiencia del desarrollador",
+        "C": "Utilizar solo los lenguajes del servidor",
+        "D": "Elegir siempre el lenguaje con el nombre más corto"
+      },
+      "correcta": "B",
+      "explicacion": "El material reconoce diferencias entre lenguajes y el peso de la experiencia del desarrollador.",
+      "explicacionClara": "El material reconoce diferencias entre lenguajes y el peso de la experiencia del desarrollador.",
+      "id": 76
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Un formulario muestra inmediatamente «campo obligatorio» antes de enviar los datos. ¿Qué entorno realiza esa comprobación en el ejemplo del temario?",
+      "opciones": {
+        "A": "Consorcio W3C",
+        "B": "Cliente",
+        "C": "Servidor de base de datos como único entorno posible",
+        "D": "Subsistema de red"
+      },
+      "correcta": "B",
+      "explicacion": "Es la validación anticipada que se atribuye al cliente.",
+      "explicacionClara": "Es la validación anticipada que se atribuye al cliente.",
+      "id": 77
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una vez enviado un formulario validado, los datos deben guardarse en una base de datos remota. ¿Qué entorno debe encargarse?",
+      "opciones": {
+        "A": "Servidor",
+        "B": "Barra de navegación del usuario",
+        "C": "CSS de presentación",
+        "D": "Motor gráfico local únicamente"
+      },
+      "correcta": "A",
+      "explicacion": "El almacenamiento remoto se realiza mediante código del lado servidor.",
+      "explicacionClara": "El almacenamiento remoto se realiza mediante código del lado servidor.",
+      "id": 78
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué orden de capas, de abajo arriba, es exactamente el presentado?",
+      "opciones": {
+        "A": "Contenido → estructura → presentación → comportamiento",
+        "B": "Contenido → presentación → comportamiento → estructura",
+        "C": "Estructura → contenido → comportamiento → presentación",
+        "D": "Comportamiento → contenido → presentación → estructura"
+      },
+      "correcta": "A",
+      "explicacion": "Es la jerarquía de cuatro capas del esquema de la página 8.",
+      "explicacionClara": "Es la jerarquía de cuatro capas del esquema de la página 8.",
+      "id": 79
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Si se cambia únicamente el color de varios botones, ¿qué capa se modifica de forma más directa?",
+      "opciones": {
+        "A": "Contenido",
+        "B": "Comportamiento",
+        "C": "Presentación",
+        "D": "Conectividad"
+      },
+      "correcta": "C",
+      "explicacion": "Los estilos visuales pertenecen a CSS y a la capa de presentación.",
+      "explicacionClara": "Los estilos visuales pertenecen a CSS y a la capa de presentación.",
+      "id": 80
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Si se programa que un botón actualice una sección sin recargar toda la web, ¿qué capa se ocupa del comportamiento?",
+      "opciones": {
+        "A": "Comportamiento con JavaScript",
+        "B": "La capa de contenido, porque almacena el texto y las imágenes",
+        "C": "La capa de estructura, porque describe el árbol HTML",
+        "D": "La capa de presentación, porque solo aplica reglas CSS"
+      },
+      "correcta": "A",
+      "explicacion": "La modificación dinámica de secciones se atribuye a JavaScript.",
+      "explicacionClara": "La modificación dinámica de secciones se atribuye a JavaScript.",
+      "id": 81
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Al añadir un nuevo párrafo y una imagen al contenido informativo, ¿qué capa se está ampliando principalmente?",
+      "opciones": {
+        "A": "Contenido",
+        "B": "Comportamiento",
+        "C": "Persistencia",
+        "D": "Cifrado de comunicaciones"
+      },
+      "correcta": "A",
+      "explicacion": "El texto y las imágenes son elementos de la capa de contenido.",
+      "explicacionClara": "El texto y las imágenes son elementos de la capa de contenido.",
+      "id": 82
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué combinación permite describir correctamente los tres papeles fundamentales del lado cliente?",
+      "opciones": {
+        "A": "HTML y CSS son exclusivamente lenguajes de servidor",
+        "B": "CSS estructura, JavaScript guarda la base de datos y HTML ejecuta eventos",
+        "C": "JavaScript estructura todo sin HTML y CSS instala el servidor",
+        "D": "HTML estructura, CSS presenta, JavaScript proporciona comportamiento"
+      },
+      "correcta": "D",
+      "explicacion": "Las tres tecnologías se complementan con funciones diferenciadas.",
+      "explicacionClara": "Las tres tecnologías se complementan con funciones diferenciadas.",
+      "id": 83
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una web tiene un diseño estático correcto pero sus formularios deben responder al usuario. ¿Qué justifica introducir JavaScript según el tema?",
+      "opciones": {
+        "A": "Sustituir la red física",
+        "B": "Convertir el navegador en servidor de base de datos",
+        "C": "Evitar cualquier uso de HTML",
+        "D": "Añadir interacción y comportamiento"
+      },
+      "correcta": "D",
+      "explicacion": "El lenguaje de script permite una experiencia más interactiva.",
+      "explicacionClara": "El lenguaje de script permite una experiencia más interactiva.",
+      "id": 84
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál de estas frases distingue correctamente estructura y contenido?",
+      "opciones": {
+        "A": "La estructura equivale al color; el contenido es el motor JS",
+        "B": "La estructura es el puerto de red; el contenido son las cookies",
+        "C": "La estructura organiza el documento HTML; el contenido son textos e imágenes",
+        "D": "Estructura y contenido se refieren ambos solo a CSS"
+      },
+      "correcta": "C",
+      "explicacion": "El modelo de cuatro capas separa los recursos de su organización.",
+      "explicacionClara": "El modelo de cuatro capas separa los recursos de su organización.",
+      "id": 85
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Un alumno asegura que HTML pertenece a la misma capa que JavaScript. ¿Qué corrección procede?",
+      "opciones": {
+        "A": "HTML solo puede ejecutarse en el servidor",
+        "B": "HTML se vincula a estructura y JavaScript a comportamiento",
+        "C": "HTML es la capa superior y JavaScript la inferior",
+        "D": "Ambos son subsistemas de persistencia"
+      },
+      "correcta": "B",
+      "explicacion": "El esquema establece niveles distintos para la estructura y la conducta dinámica.",
+      "explicacionClara": "El esquema establece niveles distintos para la estructura y la conducta dinámica.",
+      "id": 86
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una aplicación necesita cambiar en pantalla unos datos recibidos del servidor. ¿Qué combinación es coherente?",
+      "opciones": {
+        "A": "El servidor entrega datos y JavaScript actualiza partes de la página",
+        "B": "HTML inicia por sí solo una transacción SQL remota",
+        "C": "El servidor cambia directamente las ventanas del navegador sin que este intervenga",
+        "D": "CSS almacena los datos en la base de datos"
+      },
+      "correcta": "A",
+      "explicacion": "Los dos entornos colaboran y JavaScript actualiza la interfaz.",
+      "explicacionClara": "Los dos entornos colaboran y JavaScript actualiza la interfaz.",
+      "id": 87
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Por qué no es correcto afirmar que una web dinámica debe escoger entre cliente y servidor?",
+      "opciones": {
+        "A": "Porque el servidor no puede recibir peticiones",
+        "B": "Porque JavaScript solo existe en el servidor",
+        "C": "Porque ambos entornos pueden trabajar juntos",
+        "D": "Porque HTML elimina las necesidades de programación"
+      },
+      "correcta": "C",
+      "explicacion": "La complementariedad es una idea central del apartado.",
+      "explicacionClara": "La complementariedad es una idea central del apartado.",
+      "id": 88
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Si dos lenguajes ofrecen distintas ventajas y dificultades, ¿qué criterio adicional indica el tema para escoger?",
+      "opciones": {
+        "A": "La cantidad de letras de su nombre",
+        "B": "El orden alfabético de sus extensiones",
+        "C": "La soltura del desarrollador con el lenguaje",
+        "D": "Que sea necesariamente el más antiguo"
+      },
+      "correcta": "C",
+      "explicacion": "El documento dice que la experiencia del desarrollador suele influir en la elección.",
+      "explicacionClara": "El documento dice que la experiencia del desarrollador suele influir en la elección.",
+      "id": 89
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué tarea corresponde de modo menos directo a la capa de comportamiento?",
+      "opciones": {
+        "A": "Modificar dinámicamente una sección",
+        "B": "Definir la estructura de un título en HTML",
+        "C": "Gestionar una interacción con un formulario",
+        "D": "Responder a un clic"
+      },
+      "correcta": "B",
+      "explicacion": "La estructura del título es HTML; los otros ejemplos son conductas dinámicas.",
+      "explicacionClara": "La estructura del título es HTML; los otros ejemplos son conductas dinámicas.",
+      "id": 90
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Si un sitio utiliza CSS sin JavaScript, ¿qué puede mejorar CSS sin asumir la función principal de JavaScript?",
+      "opciones": {
+        "A": "El control de eventos del teclado mediante scripts",
+        "B": "La actualización programada de datos del servidor",
+        "C": "La ejecución de funciones de un botón",
+        "D": "La apariencia y presentación visual"
+      },
+      "correcta": "D",
+      "explicacion": "CSS se dedica a la presentación; el comportamiento se atribuye a JavaScript. CSS también puede expresar estados visuales, transiciones y animaciones; aquí se distingue la función principal que atribuye el temario a cada capa.",
+      "explicacionClara": "CSS se dedica a la presentación; el comportamiento se atribuye a JavaScript. CSS también puede expresar estados visuales, transiciones y animaciones; aquí se distingue la función principal que atribuye el temario a cada capa.",
+      "id": 91
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Un desarrollador añade validación inmediata en el navegador y persistencia de datos en una base de datos. ¿Qué combinación respeta la complementariedad explicada?",
+      "opciones": {
+        "A": "Validación exclusivamente con el servidor y almacenamiento únicamente en la capa de presentación",
+        "B": "Validación exclusiva de CSS y almacenamiento con HTML estático",
+        "C": "Validación por el consorcio W3C y almacenamiento en el motor de renderizado",
+        "D": "Validación en el cliente y almacenamiento desde el servidor"
+      },
+      "correcta": "D",
+      "explicacion": "Es la separación funcional del ejemplo de formularios del apartado 1.2.",
+      "explicacionClara": "Es la separación funcional del ejemplo de formularios del apartado 1.2.",
+      "id": 92
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Una página tiene el texto y la estructura correctos, pero falta apariencia y reacción a los clics. ¿Qué capas superiores deberían completarse?",
+      "opciones": {
+        "A": "Contenido y estructura",
+        "B": "Solo estructura",
+        "C": "Presentación y comportamiento",
+        "D": "Solo contenido"
+      },
+      "correcta": "C",
+      "explicacion": "CSS aporta presentación y JavaScript comportamiento por encima del HTML estructurado.",
+      "explicacionClara": "CSS aporta presentación y JavaScript comportamiento por encima del HTML estructurado.",
+      "id": 93
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "Un alumno modifica la posición semántica de encabezados y su estilo de letra. ¿Qué dos capas intervienen principalmente?",
+      "opciones": {
+        "A": "Propósito económico y visualización del navegador",
+        "B": "Comunicaciones y compilación JIT",
+        "C": "Estructura y presentación",
+        "D": "Contenido y persistencia"
+      },
+      "correcta": "C",
+      "explicacion": "La jerarquía HTML es estructura, mientras las reglas de aspecto pertenecen a CSS.",
+      "explicacionClara": "La jerarquía HTML es estructura, mientras las reglas de aspecto pertenecen a CSS.",
+      "id": 94
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Con qué acción del usuario se inicia la interacción descrita en la arquitectura del navegador?",
+      "opciones": {
+        "A": "Editar físicamente el servidor remoto",
+        "B": "Compilar CSS en código máquina",
+        "C": "Borrar automáticamente todas las cookies",
+        "D": "Indicar la dirección del recurso que quiere consultar"
+      },
+      "correcta": "D",
+      "explicacion": "La interacción arranca con la dirección del recurso y termina en su visualización.",
+      "explicacionClara": "La interacción arranca con la dirección del recurso y termina en su visualización.",
+      "id": 95
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuál es el último resultado del proceso de interacción descrito?",
+      "opciones": {
+        "A": "Visualizar el recurso solicitado",
+        "B": "Convertir el DOM en una base de datos",
+        "C": "Elegir la contraseña del servidor",
+        "D": "Modificar el protocolo de red físico"
+      },
+      "correcta": "A",
+      "explicacion": "El proceso culmina al presentar el recurso al usuario.",
+      "explicacionClara": "El proceso culmina al presentar el recurso al usuario.",
+      "id": 96
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué factores pueden influir en la manera en que un navegador procesa un recurso?",
+      "opciones": {
+        "A": "Su propósito y configuración",
+        "B": "Exclusivamente la versión del editor de código",
+        "C": "Únicamente el color del icono del navegador",
+        "D": "Solo el tamaño del teclado"
+      },
+      "correcta": "A",
+      "explicacion": "Pueden priorizarse rapidez, fidelidad o seguridad según el navegador.",
+      "explicacionClara": "Pueden priorizarse rapidez, fidelidad o seguridad según el navegador.",
+      "id": 97
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cómo denomina el tema al conjunto de componentes básicos compartidos por muchos navegadores?",
+      "opciones": {
+        "A": "Política de mismo origen",
+        "B": "Script inline",
+        "C": "Ruta absoluta",
+        "D": "Arquitectura de referencia"
+      },
+      "correcta": "D",
+      "explicacion": "El diagrama y las definiciones describen la arquitectura de referencia.",
+      "explicacionClara": "El diagrama y las definiciones describen la arquitectura de referencia.",
+      "id": 98
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Cuántos componentes enumera el resumen del tema para la arquitectura de referencia?",
+      "opciones": {
+        "A": "Doce",
+        "B": "Ocho",
+        "C": "Cinco",
+        "D": "Cuatro"
+      },
+      "correcta": "B",
+      "explicacion": "La página 26 recuerda los ocho componentes descritos en 1.3.",
+      "explicacionClara": "La página 26 recuerda los ocho componentes descritos en 1.3.",
+      "id": 99
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué componente muestra barras de herramientas, progreso de carga y preferencias?",
+      "opciones": {
+        "A": "Interfaz de usuario",
+        "B": "Persistencia de datos, que conserva preferencias e historiales",
+        "C": "Motor de renderizado, encargado de interpretar recursos",
+        "D": "Motor del navegador, encargado de la navegación"
+      },
+      "correcta": "A",
+      "explicacion": "Son funciones de la interfaz entre el usuario y el motor del navegador.",
+      "explicacionClara": "Son funciones de la interfaz entre el usuario y el motor del navegador.",
+      "id": 100
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué componente carga una URL y permite retroceder, avanzar o recargar?",
+      "opciones": {
+        "A": "Subsistema de persistencia de datos",
+        "B": "Parser XML",
+        "C": "Motor de JavaScript V8",
+        "D": "Motor del navegador o motor del buscador"
+      },
+      "correcta": "D",
+      "explicacion": "El motor del navegador coordina navegación y ofrece la interfaz al motor de renderizado. El documento usa la denominación «motor del cercador»; en la descripción de esta arquitectura se refiere al motor de navegación, no a un buscador web como Google Search.",
+      "explicacionClara": "El motor del navegador coordina navegación y ofrece la interfaz al motor de renderizado. El documento usa la denominación «motor del cercador»; en la descripción de esta arquitectura se refiere al motor de navegación, no a un buscador web como Google Search.",
+      "id": 101
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué componente se encarga de presentar visualmente el recurso e interpretar su código?",
+      "opciones": {
+        "A": "Componente de visualización, definido para ofrecer funciones sobre contenido HTML",
+        "B": "Intérprete de JavaScript, que responde a eventos y ejecuta scripts",
+        "C": "Motor de renderizado",
+        "D": "Motor del navegador, que coordina la navegación entre páginas"
+      },
+      "correcta": "C",
+      "explicacion": "El renderizado interpreta HTML, CSS, XML y otros contenidos para mostrarlos.",
+      "explicacionClara": "El renderizado interpreta HTML, CSS, XML y otros contenidos para mostrarlos.",
+      "id": 102
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué subsistema implementa protocolos de transferencia de documentos y archivos de Internet?",
+      "opciones": {
+        "A": "Parser XML",
+        "B": "Interfaz visual",
+        "C": "Comunicaciones",
+        "D": "Persistencia"
+      },
+      "correcta": "C",
+      "explicacion": "La transferencia de recursos web corresponde a comunicaciones.",
+      "explicacionClara": "La transferencia de recursos web corresponde a comunicaciones.",
+      "id": 103
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué componente analiza y ejecuta código JavaScript, incluidos eventos de ratón o teclado?",
+      "opciones": {
+        "A": "Motor de renderizado como sustituto de JavaScript",
+        "B": "Subsistema de persistencia",
+        "C": "Intérprete de JavaScript",
+        "D": "Editor FTP"
+      },
+      "correcta": "C",
+      "explicacion": "El intérprete o motor JavaScript ejecuta scripts y su lógica de eventos.",
+      "explicacionClara": "El intérprete o motor JavaScript ejecuta scripts y su lógica de eventos.",
+      "id": 104
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué nombre da el esquema simplificado del profesor al componente relacionado con la representación DOM, aunque el HTML real tenga su propio analizador?",
+      "opciones": {
+        "A": "Intérprete de JavaScript",
+        "B": "Parser XML",
+        "C": "Interfaz de usuario",
+        "D": "Subsistema de comunicaciones"
+      },
+      "correcta": "B",
+      "explicacion": "«Parser XML» es el rótulo que aparece en el esquema del temario. Matiz técnico imprescindible: para documentos servidos como text/html, el estándar exige un analizador HTML que construye el DOM; los documentos XML/XHTML servidos como XML usan análisis XML.",
+      "explicacionClara": "«Parser XML» es el rótulo que aparece en el esquema del temario. Matiz técnico imprescindible: para documentos servidos como text/html, el estándar exige un analizador HTML que construye el DOM; los documentos XML/XHTML servidos como XML usan análisis XML.",
+      "id": 105
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué componente ofrece funciones para visualizar el contenido de un documento HTML?",
+      "opciones": {
+        "A": "Lenguaje CSS en el servidor",
+        "B": "Sistema de bases de datos remoto",
+        "C": "Componente de visualización",
+        "D": "Editor de código"
+      },
+      "correcta": "C",
+      "explicacion": "La arquitectura incluye expresamente un componente de visualización.",
+      "explicacionClara": "La arquitectura incluye expresamente un componente de visualización.",
+      "id": 106
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué subsistema guarda historial de navegación y preferencias de configuración?",
+      "opciones": {
+        "A": "Renderizado",
+        "B": "Motor JavaScript",
+        "C": "Comunicaciones",
+        "D": "Persistencia de datos"
+      },
+      "correcta": "D",
+      "explicacion": "El historial y la configuración forman parte de los datos persistentes del navegador.",
+      "explicacionClara": "El historial y la configuración forman parte de los datos persistentes del navegador.",
+      "id": 107
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué otros datos de bajo nivel menciona el material en persistencia?",
+      "opciones": {
+        "A": "Únicamente hojas CSS externas",
+        "B": "Exclusivamente documentos PDF descargados",
+        "C": "Nombres de variables temporales en el servidor",
+        "D": "Certificados de seguridad y cookies"
+      },
+      "correcta": "D",
+      "explicacion": "El subsistema de persistencia almacena también certificados y cookies.",
+      "explicacionClara": "El subsistema de persistencia almacena también certificados y cookies.",
+      "id": 108
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué motor JavaScript se asocia con Chrome y Edge en el material?",
+      "opciones": {
+        "A": "JavaScriptCore",
+        "B": "Chakra en Edge actual",
+        "C": "V8",
+        "D": "SpiderMonkey"
+      },
+      "correcta": "C",
+      "explicacion": "V8 es el motor señalado para los navegadores basados en Chromium del ejemplo.",
+      "explicacionClara": "V8 es el motor señalado para los navegadores basados en Chromium del ejemplo.",
+      "id": 109
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué motor se asocia con Firefox?",
+      "opciones": {
+        "A": "Chakra",
+        "B": "JavaScriptCore",
+        "C": "V8",
+        "D": "SpiderMonkey"
+      },
+      "correcta": "D",
+      "explicacion": "SpiderMonkey es el motor JavaScript de Firefox.",
+      "explicacionClara": "SpiderMonkey es el motor JavaScript de Firefox.",
+      "id": 110
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué motor se asocia con Safari?",
+      "opciones": {
+        "A": "SpiderMonkey",
+        "B": "JavaScriptCore",
+        "C": "V8",
+        "D": "Chakra"
+      },
+      "correcta": "B",
+      "explicacion": "El temario identifica JavaScriptCore como el motor de Safari.",
+      "explicacionClara": "El temario identifica JavaScriptCore como el motor de Safari.",
+      "id": 111
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué entorno de ejecución de servidor menciona el tema como usuario del motor V8?",
+      "opciones": {
+        "A": "Node.js",
+        "B": "CSS",
+        "C": "XML Parser",
+        "D": "XHTML"
+      },
+      "correcta": "A",
+      "explicacion": "Node.js integra V8, permitiendo ejecutar JavaScript fuera del navegador.",
+      "explicacionClara": "Node.js integra V8, permitiendo ejecutar JavaScript fuera del navegador.",
+      "id": 112
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué técnica de optimización de ejecución comparten V8, SpiderMonkey y JavaScriptCore, según el material?",
+      "opciones": {
+        "A": "JIT, justo antes de ejecutar",
+        "B": "Conversión obligatoria a PHP",
+        "C": "Compilación de CSS a HTML",
+        "D": "Interpretación sin posibilidad de compilación"
+      },
+      "correcta": "A",
+      "explicacion": "Los tres motores incorporan compilación just-in-time (JIT), que genera código máquina durante la ejecución. Esto no implica que absolutamente todo JavaScript se compile por JIT ni que se haya eliminado la interpretación: los motores modernos tienen varias fases de ejecución.",
+      "explicacionClara": "Los tres motores incorporan compilación just-in-time (JIT), que genera código máquina durante la ejecución. Esto no implica que absolutamente todo JavaScript se compile por JIT ni que se haya eliminado la interpretación: los motores modernos tienen varias fases de ejecución.",
+      "id": 113
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Quién escribió SpiderMonkey al crear JavaScript en 1995, según el material?",
+      "opciones": {
+        "A": "Linus Torvalds",
+        "B": "Brendan Eich",
+        "C": "Tim Berners-Lee",
+        "D": "James Gosling"
+      },
+      "correcta": "B",
+      "explicacion": "El temario atribuye a Brendan Eich la primera implementación de JavaScript.",
+      "explicacionClara": "El temario atribuye a Brendan Eich la primera implementación de JavaScript.",
+      "id": 114
+    },
+    {
+      "tema": 1,
+      "tipo": "teoria",
+      "tag": "concepto",
+      "dificultad": "media",
+      "enunciado": "¿Qué motor abandonó Microsoft al cambiar Edge de tecnología en 2020, según el temario?",
+      "opciones": {
+        "A": "JavaScriptCore",
+        "B": "Chakra",
+        "C": "SpiderMonkey",
+        "D": "V8"
+      },
+      "correcta": "B",
+      "explicacion": "El material destaca el paso de Chakra a V8 en Edge desde 2020.",
+      "explicacionClara": "El material destaca el paso de Chakra a V8 en Edge desde 2020.",
+      "id": 115
+    }
+  ]
+}

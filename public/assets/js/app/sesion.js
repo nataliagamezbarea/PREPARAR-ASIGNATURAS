@@ -9,6 +9,48 @@ function countCorrect() {
 }
 
 function filterPool(filter) {
+  if (typeof filter === "object" && filter !== null) {
+    let pool = state.questions;
+    if (filter.tema && filter.tema !== "all") {
+      pool = pool.filter((q) => Number(q.tema) === Number(filter.tema));
+    }
+    if (filter.subapartado && filter.subapartado !== "all") {
+      pool = pool.filter((q) => {
+        const ap = String(q.apartado || "");
+        const tag = String(q.tag || "");
+        const num = String(filter.subapartado);
+        return ap === num || tag.includes(`.${num}`) || tag.includes(` ${num}`);
+      });
+    }
+    if (filter.examen && filter.examen !== "all") {
+      pool = pool.filter((q) => (q.examen || "Examen 1") === filter.examen);
+    }
+    if (filter.categoria && filter.categoria !== "all") {
+      const catBusq = filter.categoria.toLowerCase();
+      pool = pool.filter((q) => {
+        const cat = String(q.categoria || q.tag || "").toLowerCase();
+        return cat.includes(catBusq);
+      });
+    }
+    const history = getHistory();
+    const wrongSet = new Set(getWrongIds());
+    if (filter.repaso === "faltan") {
+      // Las que faltan: o no se han respondido nunca, o no están superadas (passed !== true), o tienen fallos pendientes
+      pool = pool.filter((q) => {
+        const h = history[q.id];
+        if (!h) return true;
+        if (wrongSet.has(q.id)) return true;
+        return !h.passed && (h.correct || 0) === 0;
+      });
+    } else if (filter.repaso === "nuevas") {
+      pool = pool.filter((q) => !q.practicada && !history[q.id]);
+    } else if (filter.repaso === "practicadas") {
+      pool = pool.filter((q) => q.practicada || history[q.id] != null);
+    } else if (filter.repaso === "con_errores") {
+      pool = pool.filter((q) => wrongSet.has(q.id) || (history[q.id] && history[q.id].fails > 0));
+    }
+    return pool;
+  }
   if (typeof filter === "string" && filter.startsWith("tema:")) {
     const parts = filter.split(":");
     const tema = Number(parts[1]);
@@ -36,10 +78,32 @@ function filterPool(filter) {
   }
   if (filter === "tema1") return state.questions.filter((q) => Number(q.tema) === 1);
   if (filter === "tema2") return state.questions.filter((q) => Number(q.tema) === 2);
+  if (filter === "tema3") return state.questions.filter((q) => Number(q.tema) === 3);
+  if (filter === "tema4") return state.questions.filter((q) => Number(q.tema) === 4);
+  if (filter === "practicadas") {
+    const history = getHistory();
+    return state.questions.filter((q) => q.practicada || history[q.id] != null);
+  }
+  if (filter === "nuevas") {
+    const history = getHistory();
+    return state.questions.filter((q) => !q.practicada && !history[q.id]);
+  }
+  if (filter === "oficial" || filter === "oficiales") {
+    return state.questions.filter((q) => String(q.categoria || q.tag || "").toLowerCase().includes("oficial"));
+  }
   if (filter === "codigo") return state.questions.filter((q) => q.tipo === "codigo");
   if (filter === "teoria") return state.questions.filter((q) => q.tipo === "teoria");
+  if (filter === "desarrollo") {
+    return state.questions.filter((q) => q.tipo === "escribir_codigo" || q.tipo === "traza_linea" || q.tipo === "desarrollo");
+  }
+  if (filter === "escribir_codigo") {
+    return state.questions.filter((q) => q.tipo === "escribir_codigo");
+  }
+  if (filter === "traza_linea") {
+    return state.questions.filter((q) => q.tipo === "traza_linea");
+  }
   if (filter === "fallos") {
-    const wrong = new Set(getWrongIds());
+    const wrong = new Set(getWrongIds().map((id) => getQuestion(id)?.id || id));
     return state.questions.filter((q) => wrong.has(q.id));
   }
   return state.questions;
@@ -54,7 +118,7 @@ function startTest({
   mastery = false,
   continueMastery = false,
 } = {}) {
-  let pool = ids ? ids.map((id) => state.byId.get(id)).filter(Boolean) : filterPool(filter);
+  let pool = ids ? ids.map((id) => getQuestion(id)).filter(Boolean) : filterPool(filter);
   if (!pool.length) {
     toast("No hay preguntas para esa opción.");
     return;
@@ -87,16 +151,36 @@ function startTest({
 function resumeSession(sessionObj = null) {
   const session = (sessionObj && sessionObj.ids) ? sessionObj : getSession();
   if (!session || !Array.isArray(session.ids) || !session.ids.length) return;
-  const ids = session.ids.filter((id) => state.byId.has(id));
-  if (!ids.length) {
+  const resolved = [];
+  for (const id of session.ids) {
+    let q = state.byId.get(id);
+    if (!q && typeof id === "string" && !isNaN(id)) {
+      q = state.byId.get(Number(id));
+    }
+    if (!q && typeof id === "number") {
+      q = state.byId.get(String(id));
+    }
+    if (q) resolved.push(q);
+  }
+  if (!resolved.length) {
     clearSession();
     toast("La sesión guardada ya no es válida.");
     renderStart();
     return;
   }
-  state.order = ids.map((id) => state.byId.get(id));
+  state.order = resolved;
   state.index = Math.min(Math.max(session.index || 0, 0), state.order.length - 1);
   state.answers = session.answers || {};
+
+  if (session.aiEvaluations && typeof session.aiEvaluations === "object") {
+    for (const q of state.order) {
+      if (session.aiEvaluations[q.id]) {
+        q.evaluacionIA = session.aiEvaluations[q.id].evaluacionIA;
+        q.evaluacionMensajes = session.aiEvaluations[q.id].evaluacionMensajes || [];
+      }
+    }
+  }
+
   state.immediate = session.immediate !== false;
   state.startedAt = session.startedAt || Date.now();
   state.finished = Boolean(session.finished);
@@ -135,8 +219,11 @@ function formatearFiltroLegible(filter) {
     if (sub === "teoria") return `Apartado ${t}.${ap} · Solo teoría`;
     return `Apartado ${t}.${ap}`;
   }
-  if (filter === "codigo") return "Solo código y desarrollo";
+  if (filter === "codigo") return "Solo código de examen";
   if (filter === "teoria") return "Solo teoría";
+  if (filter === "desarrollo") return "Retos de desarrollo y funciones (Corrección IA)";
+  if (filter === "escribir_codigo") return "Escribir funciones complejas para un 10";
+  if (filter === "traza_linea") return "Traza línea a línea (Event Loop)";
   if (filter === "fallos") return "Repaso de fallos";
   return filter;
 }
@@ -144,29 +231,43 @@ function formatearFiltroLegible(filter) {
 const WEC_ESTRUCTURA_TEMAS = [
   {
     numero: 1,
-    nombre: "Tema 1 · Arquitecturas y herramientas de programación web",
+    nombre: "Tema 1 · Selección de arquitecturas y de herramientas de programación",
     apartados: [
-      { numero: 1, nombre: "Origen y alcance de la web" },
-      { numero: 2, nombre: "Lenguajes de programación en entorno cliente" },
-      { numero: 3, nombre: "Arquitectura del navegador y motores de ejecución" },
-      { numero: 4, nombre: "Subsistema de comunicacions" },
-      { numero: 5, nombre: "Intèrpret de JavaScript" },
-      { numero: 6, nombre: "Conceptos e Introducción a la Integración del Código con HTML" },
-      { numero: 7, nombre: "EINES DE PROGRAMACIÓ SOBRE CLIENTS WEB" },
+      { numero: 1, nombre: "1.1 Modelos de ejecución de código e Introducción" },
+      { numero: 2, nombre: "1.2 Lenguajes en entorno cliente" },
+      { numero: 3, nombre: "1.3 Mecanismos de ejecución en un navegador" },
+      { numero: 4, nombre: "1.4 Capacidades y limitaciones de ejecución" },
+      { numero: 5, nombre: "1.5 Programación de scripts" },
+      { numero: 6, nombre: "1.6 Integración del código con las etiquetas HTML" },
+      { numero: 7, nombre: "1.7 Herramientas de programación sobre clientes web" },
+      { numero: 8, nombre: "Demos D1-D5 y práctica P00" },
     ],
   },
   {
     numero: 2,
-    nombre: "Tema 2 · Sintaxis, tipos de datos, operadores y estructuras de control",
+    nombre: "Tema 2 · Aplicación y verificación de la sintaxis del lenguaje",
     apartados: [
-      { numero: 1, nombre: "Selección del lenguaje de programación del cliente" },
+      { numero: 1, nombre: "2.1 Selección de lenguaje de programación de clientes web" },
+      { numero: 2, nombre: "2.2 Tipos de datos" },
+      { numero: 3, nombre: "2.3 Variables" },
+      { numero: 4, nombre: "2.4 Asignaciones" },
+      { numero: 5, nombre: "2.5 Operadores" },
+      { numero: 6, nombre: "2.6 Sentencias" },
+      { numero: 7, nombre: "2.7 Estructuras de control" },
+      { numero: 8, nombre: "2.8 Comentarios en el código" },
+      { numero: 9, nombre: "2.9 Herramientas para programar, probar y depurar el código" },
+      { numero: 10, nombre: "Demos D1-D5 y prácticas P01 y P02" },
     ],
   },
   {
     numero: 3,
-    nombre: "Tema 3 · Objetos predefinidos y modelo de objetos del documento",
+    nombre: "Tema 3 · Fundamentos de JavaScript",
     apartados: [
-      { numero: 1, nombre: "Objetos predefinidos y modelo de objetos del documento (DOM)" },
+      { numero: 1, nombre: "3.1 Variables y tipos de datos" },
+      { numero: 2, nombre: "3.2 Conversiones y comparaciones" },
+      { numero: 3, nombre: "3.3 Decisiones" },
+      { numero: 4, nombre: "3.4 Bucles" },
+      { numero: 5, nombre: "3.5 Depurar" },
     ],
   },
   {
@@ -250,7 +351,22 @@ function construirArbolDashboardHTML() {
       );
       const fallosTema = respondidasTema.length - aciertosTema.length;
 
-      const apartados = Array.isArray(t.apartados) ? t.apartados : [];
+      let apartados = Array.isArray(t.apartados) ? [...t.apartados] : [];
+      const apsFromQuestions = new Map();
+      preguntasTema.forEach((q) => {
+        const res = resolveApartadoForQuestion(q);
+        const apNum = Number(res.apartado || q.apartado || 0);
+        if (apNum > 0 && !apsFromQuestions.has(apNum)) {
+          apsFromQuestions.set(apNum, q.apartadoNombre || res.titulo || `Apartado ${t.numero}.${apNum}`);
+        }
+      });
+      for (const [apNum, apNombre] of apsFromQuestions.entries()) {
+        if (!apartados.some((a) => Number(a.numero) === apNum)) {
+          apartados.push({ numero: apNum, nombre: apNombre });
+        }
+      }
+      apartados.sort((a, b) => Number(a.numero) - Number(b.numero));
+
       const apartadosHTML = apartados
         .map((ap) => {
           const preguntasAp = preguntasTema.filter((q) => {
@@ -519,32 +635,140 @@ function renderStart() {
       </section>
 
       <div class="home-grid">
-        <section class="home-card home-card-entrenar">
+        <section class="home-card home-card-entrenar" style="grid-column: 1 / -1;">
           <h2>🎯 Modalidades de práctica</h2>
-          <p class="lead">Practica el test completo (ambas), solo código/desarrollo de examen, o solo teoría.</p>
+          <p class="lead">Configura tu sesión de test a medida (tema, tipo de repaso, categoría y cantidad) o usa los accesos rápidos.</p>
+
+          <!-- Configurador de práctica a medida estilo 8765 -->
+          <div class="practice-custom-panel" style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px; margin-bottom:20px;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:16px;">
+              <div style="grid-column: 1 / -1; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.18); padding:10px 14px; border-radius:6px; border:1px solid var(--line);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <i class="fa-brands fa-github" style="font-size:18px; color:#a78bfa;"></i>
+                  <span style="font-size:12px; font-weight:700;">Rama (GitHub privado):</span>
+                  <select class="control" id="custom-practice-branch" style="min-width:240px; font-size:12px; padding:4px 8px;">
+                    <option value="Segundo_grado_superior" selected>Segundo_grado_superior (DWEC)</option>
+                    <option value="master">master</option>
+                  </select>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:11px; color:var(--muted);">Carpeta:</span>
+                  <input type="text" class="control" id="custom-practice-folder" value="datos/bancos/WEC" style="width:160px; font-size:11px; padding:4px 8px;" />
+                  <button class="btn tiny ghost" type="button" id="btn-reload-branch" title="Recargar preguntas desde esta rama de GitHub"><i class="fa-solid fa-arrows-rotate"></i> Cargar de GitHub</button>
+                </div>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Agrupación / Examen</label>
+                <select class="control" id="custom-practice-exam" style="width:100%;">
+                  <option value="Examen 1" selected>Examen 1 (Temas 1–4 · 1.656 preguntas)</option>
+                  <option value="Examen 2">Examen 2 (Próximo / En preparación)</option>
+                  <option value="all">Todos los exámenes</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Tema / Alcance</label>
+                <select class="control" id="custom-practice-theme" style="width:100%;">
+                  <option value="all">Todos los temas (${counts.total})</option>
+                  ${counts.temas.map(t => `<option value="${t.tema}">Tema ${t.tema} (${t.count} preguntas)</option>`).join("")}
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Subapartado</label>
+                <select class="control" id="custom-practice-subapartado" style="width:100%;">
+                  <option value="all">Todos los subapartados</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Tipo de repaso</label>
+                <select class="control" id="custom-practice-review" style="width:100%;">
+                  <option value="faltan" selected>★ Las que me faltan (pendientes de acertar)</option>
+                  <option value="todas">Todas las disponibles (${counts.total})</option>
+                  <option value="con_errores">Con algún error / fallo (${counts.fallos})</option>
+                  <option value="practicadas">Solo practicadas (${counts.practicadas || 515})</option>
+                  <option value="nuevas">Nunca practicadas</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Categoría</label>
+                <select class="control" id="custom-practice-category" style="width:100%;">
+                  <option value="all">Todas las categorías</option>
+                  <option value="oficial">★ Oficiales de examen (${counts.oficiales || 33})</option>
+                  <option value="introduccion">📘 Introducción (${counts.introduccion || 572})</option>
+                  <option value="entrenamiento">⚡ Práctica / Entrenamiento (${counts.entrenamiento || 1051})</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Número de preguntas</label>
+                <select class="control" id="custom-practice-qty" style="width:100%;">
+                  <option value="10">10 preguntas</option>
+                  <option value="20">20 preguntas</option>
+                  <option value="30">30 preguntas</option>
+                  <option value="40" selected>40 preguntas (Recomendado)</option>
+                  <option value="50">50 preguntas</option>
+                  <option value="100">100 preguntas</option>
+                  <option value="200">200 preguntas</option>
+                  <option value="0">Todas las que coincidan con la selección</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Orden</label>
+                <select class="control" id="custom-practice-order" style="width:100%;">
+                  <option value="aleatorio" selected>Aleatorio</option>
+                  <option value="original">Orden original</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-top:1px solid var(--line); padding-top:14px;">
+              <div id="custom-practice-info" style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-circle-check" style="color:var(--ok);"></i>
+                <span>Listo para comenzar tu sesión adaptada.</span>
+              </div>
+              <button class="btn primary large" type="button" id="custom-practice-start-btn" style="padding:10px 24px; font-weight:700; gap:8px;">
+                <i class="fa-solid fa-play"></i> Comenzar sesión personalizada
+              </button>
+            </div>
+          </div>
+
+          <h3 style="font-size:15px; margin:20px 0 10px;"><i class="fa-solid fa-bolt"></i> Accesos rápidos directos</h3>
           <div class="practice-modes-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 16px;">
             <button class="btn primary" type="button" data-start="all" style="justify-content:space-between; padding:12px 14px;">
-              <span><i class="fa-solid fa-layer-group"></i> Ambas (Completo)</span>
+              <span><i class="fa-solid fa-layer-group"></i> Todas las preguntas</span>
               <span class="count">${counts.total}</span>
             </button>
-            <button class="btn" type="button" data-start="codigo" style="justify-content:space-between; padding:12px 14px; border-color:#10b981; color:#10b981;">
-              <span><i class="fa-solid fa-code"></i> Solo Código / Escrito</span>
-              <span class="count" style="background:rgba(16,185,129,0.18); color:#10b981;">${counts.codigo}</span>
+            <button class="btn" type="button" data-start="practicadas" style="justify-content:space-between; padding:12px 14px; border-color:var(--brand); color:var(--brand);">
+              <span><i class="fa-solid fa-clock-rotate-left"></i> Solo Practicadas</span>
+              <span class="count" style="background:var(--brand-soft); color:var(--brand);">${counts.practicadas || 515}</span>
             </button>
-            <button class="btn" type="button" data-start="teoria" style="justify-content:space-between; padding:12px 14px; border-color:#f59e0b; color:#f59e0b;">
-              <span><i class="fa-solid fa-book"></i> Solo Teoría</span>
-              <span class="count" style="background:rgba(245,158,11,0.18); color:#f59e0b;">${counts.teoria}</span>
-            </button>
-            <button class="btn" type="button" data-start-bloque="all" style="justify-content:space-between; padding:12px 14px; border-color:var(--brand);">
-              <span><i class="fa-solid fa-bolt"></i> Bloque de 40 (en caché)</span>
-              <span class="count">40</span>
+            <button class="btn" type="button" data-start="oficial" style="justify-content:space-between; padding:12px 14px; border-color:#f59e0b; color:#f59e0b;">
+              <span><i class="fa-solid fa-star"></i> Oficiales de examen</span>
+              <span class="count" style="background:rgba(245,158,11,0.18); color:#f59e0b;">${counts.oficiales || 33}</span>
             </button>
             <button class="btn ok" type="button" data-start="mastery" style="justify-content:space-between; padding:12px 14px;">
               <span><i class="fa-solid fa-award"></i> Refuerzo sin fallos</span>
               <span class="count">${counts.total}</span>
             </button>
+            ${(counts.desarrollo || 0) > 0 ? `
+              <button class="btn" type="button" data-start="desarrollo" style="justify-content:space-between; padding:12px 14px; border-color:#38bdf8; color:#38bdf8; grid-column: 1 / -1; background:rgba(56,189,248,0.08);">
+                <span><i class="fa-solid fa-graduation-cap"></i> ✍️ Retos de Desarrollo y Código Abierto (Corrección IA con Nota 0-10)</span>
+                <span class="count" style="background:#0284c7; color:#fff;">${counts.desarrollo} retos</span>
+              </button>
+            ` : `
+              <div style="grid-column: 1 / -1; font-size:12px; color:var(--muted); background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-circle-info" style="color:var(--brand);"></i>
+                <span>Las <strong>1.656 preguntas</strong> son de tipo test oficial con corrección instantánea. La corrección de preguntas abiertas de desarrollo requiere tener Ollama local activo en Docker.</span>
+              </div>
+            `}
           </div>
-          <h3 style="font-size:15px; margin:16px 0 8px;"><i class="fa-solid fa-list-ol"></i> Práctica rápida por Tema</h3>
+
+          <h3 style="font-size:15px; margin:20px 0 10px;"><i class="fa-solid fa-list-ol"></i> Práctica por Tema individual</h3>
           <div class="start-actions">
             ${themeButtons}
           </div>
@@ -598,6 +822,73 @@ function renderStart() {
       }
       startTest({ filter, immediate, shuffle, sample });
     });
+  });
+
+  // Actualización dinámica de subapartados según el tema elegido
+  const themeSelect = $("#custom-practice-theme");
+  const subapSelect = $("#custom-practice-subapartado");
+  function actualizarSubapartados() {
+    if (!subapSelect) return;
+    const tVal = themeSelect?.value || "all";
+    subapSelect.innerHTML = '<option value="all">Todos los subapartados</option>';
+    let questionsPool = state.questions;
+    if (tVal !== "all") {
+      questionsPool = questionsPool.filter((q) => Number(q.tema) === Number(tVal));
+    }
+    const apartadosEncontrados = new Map();
+    questionsPool.forEach((q) => {
+      const apNum = q.apartado != null ? q.apartado : 1;
+      if (!apartadosEncontrados.has(apNum)) {
+        apartadosEncontrados.set(apNum, q.apartadoNombre || `Apartado ${apNum}`);
+      }
+    });
+    const sortedAps = [...apartadosEncontrados.entries()].sort((a, b) => Number(a[0]) - Number(b[0]));
+    sortedAps.forEach(([num, nombre]) => {
+      const opt = document.createElement("option");
+      opt.value = num;
+      opt.textContent = `${tVal !== "all" ? `${tVal}.${num}` : `Apartado ${num}`} · ${nombre}`;
+      subapSelect.appendChild(opt);
+    });
+  }
+  themeSelect?.addEventListener("change", actualizarSubapartados);
+  actualizarSubapartados();
+
+  // Inicializar selector de ramas de GitHub si está disponible
+  const branchSelect = $("#custom-practice-branch");
+  const folderInput = $("#custom-practice-folder");
+  if (branchSelect && window.RepoBranchManager) {
+    window.RepoBranchManager.poblarSelectorRamas(branchSelect);
+    branchSelect.addEventListener("change", async () => {
+      const selectedBranch = branchSelect.value;
+      const folderVal = folderInput?.value.trim() || "datos/bancos/WEC";
+      await window.RepoBranchManager.cargarPreguntasDeRama(selectedBranch, folderVal);
+    });
+    $("#btn-reload-branch")?.addEventListener("click", async () => {
+      const selectedBranch = branchSelect.value;
+      const folderVal = folderInput?.value.trim() || "datos/bancos/WEC";
+      await window.RepoBranchManager.cargarPreguntasDeRama(selectedBranch, folderVal);
+    });
+  }
+
+  $("#custom-practice-start-btn")?.addEventListener("click", () => {
+    const examen = $("#custom-practice-exam")?.value || "Examen 1";
+    const tema = $("#custom-practice-theme")?.value || "all";
+    const subapartado = $("#custom-practice-subapartado")?.value || "all";
+    const repaso = $("#custom-practice-review")?.value || "faltan";
+    const categoria = $("#custom-practice-category")?.value || "all";
+    const qty = Number($("#custom-practice-qty")?.value) || 0;
+    const order = $("#custom-practice-order")?.value || "aleatorio";
+
+    const customFilter = { examen, tema, subapartado, repaso, categoria };
+    const pool = filterPool(customFilter);
+    if (!pool.length) {
+      toast("No hay preguntas que coincidan con esa selección.");
+      return;
+    }
+
+    const immediate = $("#immediate-toggle")?.checked !== false;
+    const shuffle = order === "aleatorio";
+    startTest({ filter: customFilter, immediate, shuffle, sample: qty });
   });
   $$("[data-resume-filter]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
@@ -805,7 +1096,8 @@ function renderStart() {
 
       $$("[data-repasar-fallos-sub]").forEach((btn) => {
         btn.addEventListener("click", () => {
-          const ids = (btn.dataset.repasarFallosSub || "").split(",").map(Number).filter(Boolean);
+          const raw = (btn.dataset.repasarFallosSub || "").split(",").map((s) => s.trim()).filter(Boolean);
+          const ids = raw.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
           if (ids.length) {
             const immediate = $("#immediate-toggle")?.checked !== false;
             startTest({ ids, immediate, shuffle: true });
