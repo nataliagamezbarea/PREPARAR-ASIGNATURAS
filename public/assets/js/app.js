@@ -1532,17 +1532,19 @@ const SupabaseProgreso = (() => {
       const localStats = typeof getStats === "function" ? getStats() : {};
       const localSession = typeof getSession === "function" ? getSession() : null;
 
-      // Intentar leer de la tabla del schema "grados-informaticos"
+      // Intentar leer de la tabla del schema "grados-informaticos" de forma segura
       let schemaProgress = null;
       try {
-        const { data: dbData } = await c.schema("grados-informaticos")
+        const res = await c.schema("grados-informaticos")
           .from("progreso_tests")
           .select("*")
           .eq("usuario_id", currentUser.id);
-        if (Array.isArray(dbData) && dbData.length > 0) {
-          schemaProgress = dbData[0];
+        if (res && !res.error && Array.isArray(res.data) && res.data.length > 0) {
+          schemaProgress = res.data[0];
         }
-      } catch (_) {}
+      } catch (errDb) {
+        console.warn("Aviso: no se pudo consultar progreso_tests en el esquema grados-informaticos:", errDb?.message || errDb);
+      }
 
       const cloudProgress = schemaProgress?.historial
         ? {
