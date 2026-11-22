@@ -100,14 +100,8 @@ const SupabaseProgreso = (() => {
         console.log("[SupabaseProgreso] Info schema:", dbErr?.message || dbErr);
       }
 
-      // 2. Guardar en Supabase user_metadata (Auth)
-      const { data: updateData, error: updateError } = await c.auth.updateUser({
-        data: { test_progress: payload }
-      });
-
-      if (!updateError && updateData?.user && window.SupabaseAuth) {
-        window.SupabaseAuth.setCurrentUser(updateData.user);
-      }
+      // 2. No guardar el historial completo en user_metadata para no inflar el token JWT de Supabase (>8KB causa 520 en Cloudflare)
+      // El progreso completo ya está guardado en la tabla progreso_tests.
 
       // 3. Aplicar al estado local (caché siempre actualizado)
       if (typeof setHistory === "function") setHistory(mergedHistory);
