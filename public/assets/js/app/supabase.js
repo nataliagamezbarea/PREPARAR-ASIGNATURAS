@@ -522,7 +522,7 @@ const SupabaseAuth = (() => {
 
       const textoLimpio = decodeURIComponent(errDesc).replace(/\+/g, " ");
       if (textoLimpio.toLowerCase().includes("bad_oauth_state") || textoLimpio.toLowerCase().includes("state not found")) {
-        errorAlInicio = "Aviso OAuth: Supabase redirigió a localhost:3000 o el enlace expiró. Ve a Supabase -> Authentication -> URL Configuration y pon Site URL: http://localhost:8124 y añade en Redirect URLs: http://localhost:8124/**";
+        errorAlInicio = "El enlace anterior expiró o se limpió la sesión previa. Pulsa en Continuar con Google o GitHub para acceder.";
       } else {
         errorAlInicio = `Aviso: ${textoLimpio}. Pulsa de nuevo para entrar.`;
       }
