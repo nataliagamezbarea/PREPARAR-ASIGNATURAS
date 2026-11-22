@@ -49,10 +49,6 @@
       <button id="gate-btn-submit-email" type="submit" style="width:100%; padding:11px 16px; margin-top:6px; background:#0284c7; color:#fff; font-weight:600; font-size:0.9rem; border:none; border-radius:10px; cursor:pointer; box-shadow:0 2px 6px rgba(2,132,199,0.25);">
         Iniciar sesión
       </button>
-      <button id="gate-btn-guest" type="button" style="width:100%; padding:9px 16px; background:#f8fafc; color:#475569; font-weight:600; font-size:0.86rem; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s ease;">
-        <i class="fa-solid fa-user-clock" style="color:#64748b;"></i>
-        <span>Acceder como Invitado</span>
-      </button>
     </form>
 
     <p style="font-size:0.72rem; color:#64748b; margin-top:16px; text-align:center; line-height:1.45;">
@@ -64,13 +60,39 @@
 <div class="topbar" style="display:none;">
   <div class="topbar-inner">
     <a class="brand brand-link" href="/" aria-label="Volver al inicio">
-      <div class="logo" id="brand-logo">T</div>
-      <div>
-        <div class="brand-title" id="brand-title">Test interactivo</div>
-        <div class="brand-sub" id="brand-sub">Cargando preguntas…</div>
+      <div class="logo" id="brand-logo">PT</div>
+      <div class="brand-text-wrap">
+        <div class="brand-title" id="brand-title">Tests</div>
       </div>
     </a>
+    <div class="topbar-asig-wrap" style="display:inline-flex; align-items:center; gap:6px; margin:0 4px;">
+      <i class="fa-solid fa-book" style="color:var(--brand); font-size:0.9rem;" title="Asignatura actual"></i>
+      <select id="navbar-subject-select" aria-label="Seleccionar asignatura" style="font-weight:600; font-size:0.84rem; padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; outline:none; max-width:200px; text-overflow:ellipsis;">
+      </select>
+    </div>
+    <div class="topbar-rama-wrap" style="position:relative; display:inline-flex; align-items:center; margin:0 4px;">
+      <button class="icon-btn" id="btn-toggle-branch" type="button" title="Seleccionar Grado o Rama" aria-label="Seleccionar Grado o Rama" style="width:36px; height:36px; border-radius:9px; font-size:0.95rem; color:var(--brand);">
+        <i class="fa-solid fa-code-branch"></i>
+      </button>
+      <div id="branch-dropdown-popover" class="hidden" style="position:absolute; top:calc(100% + 8px); left:0; z-index:110; min-width:230px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px; box-shadow:0 12px 30px rgba(0,0,0,0.25);">
+        <label for="navbar-branch-select" style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);"><i class="fa-solid fa-code-branch"></i> Grado / Rama</label>
+        <select id="navbar-branch-select" aria-label="Seleccionar grado o rama" style="width:100%; font-weight:600; font-size:0.84rem; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; outline:none;">
+        </select>
+      </div>
+    </div>
     <div class="top-actions">
+      <button class="btn tiny primary" id="btn-navbar-modalidades" type="button" style="display:inline-flex;align-items:center;gap:6px;" title="Crear sesión de test · Modalidades de práctica">
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        <span>Crear sesión</span>
+      </button>
+      <button class="btn tiny ok" id="btn-navbar-apuntes" type="button" style="display:inline-flex;align-items:center;gap:6px;" title="Practicar tests desde tus apuntes privados">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        <span>Tests desde apuntes</span>
+      </button>
+      <button class="btn tiny" id="btn-gestionar-asignaturas" type="button" style="display:inline-flex;align-items:center;gap:6px;" title="Crear asignatura y subir tests JSON">
+        <i class="fa-solid fa-folder-plus" aria-hidden="true"></i>
+        <span>Asignaturas y Tests</span>
+      </button>
       <span class="chip brand hidden" id="mode-chip"></span>
       <button class="btn tiny" id="auth-btn" type="button" style="display:inline-flex;align-items:center;gap:6px;" title="Iniciar sesión con Supabase">
         <i class="fa-solid fa-user" aria-hidden="true"></i>
@@ -80,7 +102,7 @@
         <span aria-hidden="true">🔔</span><span class="generation-notification-dot" aria-hidden="true"></span>
       </button>
       <div class="topbar-dropdown-wrap" style="position:relative;display:inline-flex">
-        <button class="icon-btn" id="options-toggle-btn" type="button" title="Opciones de test y corrección" aria-label="Opciones de test"><i class="fa-solid fa-sliders" aria-hidden="true"></i></button>
+        <button class="icon-btn" id="options-toggle-btn" type="button" title="Opciones de test y corrección" aria-label="Opciones de test"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>
         <div class="topbar-dropdown-menu hidden" id="options-dropdown" style="position:absolute; right:0; top:calc(100% + 8px); z-index:100; min-width:270px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:0 12px 32px rgba(0,0,0,0.18);">
           <div style="font-weight:700; margin-bottom:12px; font-size:14px; display:flex; align-items:center; gap:8px"><i class="fa-solid fa-sliders"></i> Opciones de práctica</div>
           <div class="option-list" style="display:flex; flex-direction:column; gap:12px;">
@@ -102,6 +124,122 @@
 <main id="main" style="display:none;"></main>
 <footer class="footer" id="footer" style="display:none;">Cargando preguntas…</footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- MODAL CREAR SESIÓN DE TEST · MODALIDADES DE PRÁCTICA -->
+<div id="modal-modalidades-practica" class="hidden" style="position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:16px;">
+  <div style="background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:18px; width:100%; max-width:760px; padding:24px; box-shadow:0 20px 48px rgba(0,0,0,0.3); position:relative; max-height:90vh; overflow-y:auto; display:flex; flex-direction:column; gap:18px;">
+    
+    <button type="button" id="btn-cerrar-modal-modalidades" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:24px; color:var(--muted); cursor:pointer; line-height:1;" aria-label="Cerrar">&times;</button>
+
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="width:44px; height:44px; border-radius:12px; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">
+        <i class="fa-solid fa-sliders"></i>
+      </div>
+      <div>
+        <h3 style="margin:0; font-size:1.2rem; font-weight:800;">Crear sesión de test · Modalidades de práctica</h3>
+        <p style="margin:3px 0 0; font-size:0.83rem; color:var(--muted);">Configura tu sesión de test a medida (tema, tipo de repaso, categoría y cantidad) o usa los accesos rápidos.</p>
+      </div>
+    </div>
+
+    <div id="modal-modalidades-body" style="display:flex; flex-direction:column; gap:18px;">
+      <!-- Rellenado dinámicamente -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL GESTIONAR ASIGNATURAS Y TESTS (SIN ACCESO DIRECTO A CARPETAS DEL SISTEMA) -->
+<div id="modal-gestionar-asignaturas" class="hidden" style="position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:16px;">
+  <div style="background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:18px; width:100%; max-width:540px; padding:24px; box-shadow:0 16px 36px rgba(0,0,0,0.22); position:relative; max-height:90vh; overflow-y:auto; display:flex; flex-direction:column; gap:16px;">
+    
+    <button type="button" id="btn-cerrar-modal-gestionar" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:22px; color:var(--muted); cursor:pointer; line-height:1;" aria-label="Cerrar">&times;</button>
+    
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="width:42px; height:42px; border-radius:12px; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:20px;">
+        <i class="fa-solid fa-layer-group"></i>
+      </div>
+      <div>
+        <h3 style="margin:0; font-size:1.15rem; font-weight:700;">Gestión de Asignaturas y Tests</h3>
+        <p style="margin:0; font-size:0.8rem; color:var(--muted);">Crea asignaturas por grado y sube bancos de preguntas JSON</p>
+      </div>
+    </div>
+
+    <!-- Pestañas -->
+    <div style="display:flex; border-bottom:1px solid var(--line); gap:8px;">
+      <button type="button" id="tab-crear-asig" style="padding:8px 14px; font-weight:600; font-size:0.85rem; border:none; background:none; color:var(--brand); border-bottom:2px solid var(--brand); cursor:pointer;">
+        <i class="fa-solid fa-folder-plus"></i> 1. Crear Asignatura
+      </button>
+      <button type="button" id="tab-subir-tests" style="padding:8px 14px; font-weight:600; font-size:0.85rem; border:none; background:none; color:var(--muted); border-bottom:2px solid transparent; cursor:pointer;">
+        <i class="fa-solid fa-file-import"></i> 2. Subir Test JSON
+      </button>
+    </div>
+
+    <!-- Panel 1: Crear Asignatura -->
+    <div id="panel-crear-asig" style="display:flex; flex-direction:column; gap:12px;">
+      <div>
+        <label for="input-asig-grado" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Grado / Rama</label>
+        <select id="input-asig-grado" class="control" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text);">
+          <option value="Segundo_grado_medio" selected>Segundo grado medio (SMR)</option>
+          <option value="Primer_grado_medio">Primer grado medio</option>
+          <option value="Primer_grado_superior_DAW">Primer grado superior (DAW)</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="input-asig-nombre" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Nombre de la Asignatura</label>
+        <input type="text" id="input-asig-nombre" class="control" placeholder="Ej: SOR · Sistemas Operativos en Red" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box;">
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div>
+          <label for="input-asig-id" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Código / ID corto</label>
+          <input type="text" id="input-asig-id" class="control" placeholder="Ej: sor" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box;">
+        </div>
+        <div>
+          <label for="input-asig-desc" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Descripción</label>
+          <input type="text" id="input-asig-desc" class="control" placeholder="Ej: 2º Grado Medio · Active Directory y Samba" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box;">
+        </div>
+      </div>
+
+      <div>
+        <label for="input-asig-temas" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Temas (uno por línea)</label>
+        <textarea id="input-asig-temas" class="control" rows="3" placeholder="Tema 1 · Instalación y arquitectura&#10;Tema 2 · Servicios de directorio&#10;Tema 3 · Compartición de recursos" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box; font-family:inherit; font-size:0.85rem;"></textarea>
+      </div>
+
+      <p style="font-size:0.75rem; color:var(--muted); margin:2px 0;">
+        <i class="fa-solid fa-shield-halved"></i> Guardado automático y seguro en la ruta interna del grado (sin manipulación de carpetas de sistema).
+      </p>
+
+      <button type="button" class="btn primary" id="btn-submit-crear-asig" style="justify-content:center; gap:8px; padding:10px;">
+        <i class="fa-solid fa-floppy-disk"></i> Guardar y Registrar Asignatura
+      </button>
+    </div>
+
+    <!-- Panel 2: Subir Test JSON -->
+    <div id="panel-subir-tests" style="display:none; flex-direction:column; gap:12px;">
+      <div>
+        <label for="select-subir-asig" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Asignatura de destino</label>
+        <select id="select-subir-asig" class="control" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text);"></select>
+      </div>
+
+      <div>
+        <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Seleccionar archivo JSON de preguntas</label>
+        <input type="file" id="input-file-test-json" accept=".json,application/json" style="width:100%; padding:6px; border-radius:8px; border:1px solid var(--line); background:var(--card); font-size:0.85rem;">
+      </div>
+
+      <div>
+        <label for="textarea-test-json" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">O pegar contenido JSON directamente</label>
+        <textarea id="textarea-test-json" class="control" rows="4" placeholder="[ { &quot;enunciado&quot;: &quot;¿...?&quot;, &quot;opciones&quot;: { &quot;A&quot;: &quot;...&quot;, &quot;B&quot;: &quot;...&quot; }, &quot;correcta&quot;: &quot;A&quot; } ]" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box; font-family:monospace; font-size:0.8rem;"></textarea>
+      </div>
+
+      <div id="subir-test-preview" style="display:none; background:var(--card2); border:1px solid var(--line); border-radius:8px; padding:10px; font-size:0.8rem;"></div>
+
+      <button type="button" class="btn ok" id="btn-submit-subir-test" style="justify-content:center; gap:8px; padding:10px;">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Test en el Banco Oficial
+      </button>
+    </div>
+
+  </div>
+</div>
 <script src="./assets/js/app.js?v=2.9" defer></script>
 <script type="module" src="./assets/js/app/consola-vivo.js"></script>
 <script type="module" src="./assets/js/practicar-apuntes.js"></script>

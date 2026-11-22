@@ -89,7 +89,7 @@
 })();
 
 
-// === assets/js/app/estado.js ===
+// === assets/js/app/estado/utilidades.js ===
 "use strict";
 
 const LS = {
@@ -128,7 +128,8 @@ const state = {
   apuntesCatalogo: [],
   sampleSize: 0,
   masteryMode: false,
-  masteryRound: 0
+  masteryRound: 0,
+  ramaActual: ""
 };
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -150,7 +151,7 @@ function formatText(value) {
   if (value == null) return "";
   let text = String(value);
 
-  // 1. Extraer bloques de código multilínea (1 a 4 backticks, con o sin espacios/salto previo)
+  // 1. Extraer bloques de código multilínea (1 a 4 backticks)
   const codeBlocks = [];
   const codeRegex = /(^|\n|:\s*)[ \t]*(`{1,4})([a-zA-Z0-9_-]*)[ \t]*\r?\n([\s\S]*?)(?:\r?\n[ \t]*\2[ \t]*(?:\r?\n|$)|(?:\r?\n[ \t]*`{1,4}[ \t]*(?:\r?\n|$))|$)/g;
   text = text.replace(codeRegex, (match, prefix, fence, lang, code) => {
@@ -288,6 +289,10 @@ function toast(message) {
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
 }
 
+
+// === assets/js/app/estado/almacenamiento.js ===
+"use strict";
+
 // --- Caché persistente IndexedDB para funcionamiento sin conexión ---
 const DB_CACHE_OFFLINE = "preparar-tests-offline-cache-v1";
 const ALMACEN_CACHE_OFFLINE = "almacen";
@@ -373,6 +378,9 @@ function readStore(base, fallback) {
 
 function writeStore(base, value) {
   writeJSON(scopeKey(base), value);
+  try {
+    localStorage.setItem("preparar_tests_sync_pendiente", "true");
+  } catch (_) {}
 }
 
 function removeStore(base) {
@@ -440,47 +448,67 @@ function setHistory(history) {
   writeStore(LS.history, history);
 }
 
-function dataCounts() {
-  const themes = new Map();
-  const history = getHistory();
-  let practicadas = 0;
-  let oficiales = 0;
-  let introduccion = 0;
-  let entrenamiento = 0;
+function getStats() {
+  return readStore(LS.stats, { attempts: 0, bestPct: 0, lastPct: 0 });
+}
 
-  state.questions.forEach((q) => {
-    const key = Number(q.tema);
-    themes.set(key, (themes.get(key) || 0) + 1);
-    if (q.practicada || history[q.id] != null) practicadas++;
-    const cat = String(q.categoria || q.tag || "").toLowerCase();
-    if (cat.includes("oficial")) oficiales++;
-    else if (cat.includes("introduc")) introduccion++;
-    else if (cat.includes("entren") || cat.includes("pract")) entrenamiento++;
+function setStats(stats) {
+  writeStore(LS.stats, stats);
+}
+
+function getSavedShuffle() {
+  try {
+    const val = localStorage.getItem("preparar_tests_barajar_orden");
+    return val !== null ? val === "true" : true;
+  } catch (_) {
+    return true;
+  }
+}
+
+function getSavedImmediate() {
+  try {
+    const val = localStorage.getItem("preparar_tests_correccion_inmediata");
+    return val !== null ? val === "true" : true;
+  } catch (_) {
+    return true;
+  }
+}
+
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) return reject(new Error("Sin IndexedDB"));
+    const req = indexedDB.open("wec12-files", 1);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains("handles")) req.result.createObjectStore("handles");
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
   });
-
-  return {
-    total: state.questions.length,
-    temas: [...themes.entries()]
-      .sort((a, b) => a[0] - b[0])
-      .map(([tema, count]) => ({ tema, count })),
-    teoria: state.questions.filter((q) => q.tipo === "teoria").length,
-    codigo: state.questions.filter((q) => q.tipo === "codigo").length,
-    desarrollo: state.questions.filter((q) => q.tipo === "escribir_codigo" || q.tipo === "traza_linea" || q.tipo === "desarrollo").length,
-    escribir_codigo: state.questions.filter((q) => q.tipo === "escribir_codigo").length,
-    traza_linea: state.questions.filter((q) => q.tipo === "traza_linea").length,
-    fallos: getWrongIds().filter((id) => hasQuestion(id)).length,
-    practicadas,
-    oficiales,
-    introduccion,
-    entrenamiento
-  };
 }
 
-function wrongQuestions() {
-  return getWrongIds()
-    .map((id) => getQuestion(id))
-    .filter(Boolean);
+async function idbGet(key) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("handles", "readonly");
+    const req = tx.objectStore("handles").get(key);
+    req.onsuccess = () => resolve(req.result ?? null);
+    req.onerror = () => reject(req.error);
+  });
 }
+
+async function idbSet(key, value) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("handles", "readwrite");
+    tx.objectStore("handles").put(value, key);
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+
+// === assets/js/app/estado/apartados.js ===
+"use strict";
 
 function limpiarTituloApartado(texto) {
   let limpio = String(texto || "").trim();
@@ -761,349 +789,50 @@ function recordAiGenerated(subjectId, enunciados) {
   writeAiGeneratedMap(map);
 }
 
-function buildExportPayload() {
+
+// === assets/js/app/estado/catalogo.js ===
+"use strict";
+
+function dataCounts() {
+  const themes = new Map();
+  const history = typeof getHistory === "function" ? getHistory() : {};
+  let practicadas = 0;
+  let oficiales = 0;
+  let introduccion = 0;
+  let entrenamiento = 0;
+
+  state.questions.forEach((q) => {
+    const key = Number(q.tema);
+    themes.set(key, (themes.get(key) || 0) + 1);
+    if (q.practicada || history[q.id] != null) practicadas++;
+    const cat = String(q.categoria || q.tag || "").toLowerCase();
+    if (cat.includes("oficial")) oficiales++;
+    else if (cat.includes("introduc")) introduccion++;
+    else if (cat.includes("entren") || cat.includes("pract")) entrenamiento++;
+  });
+
   return {
-    app: "test-interactivo",
-    schema: 1,
-    exportedAt: new Date().toISOString(),
-    asignatura: state.subject ? { id: state.subject.id, nombre: state.subject.nombre } : null,
-    meta: state.meta || null,
-    totalPreguntas: state.questions.length,
-    wrongIds: getWrongIds(),
-    history: getHistory(),
-    stats: getStats()
+    total: state.questions.length,
+    temas: [...themes.entries()]
+      .sort((a, b) => a[0] - b[0])
+      .map(([tema, count]) => ({ tema, count })),
+    teoria: state.questions.filter((q) => q.tipo === "teoria").length,
+    codigo: state.questions.filter((q) => q.tipo === "codigo").length,
+    desarrollo: state.questions.filter((q) => q.tipo === "escribir_codigo" || q.tipo === "traza_linea" || q.tipo === "desarrollo").length,
+    escribir_codigo: state.questions.filter((q) => q.tipo === "escribir_codigo").length,
+    traza_linea: state.questions.filter((q) => q.tipo === "traza_linea").length,
+    fallos: typeof getWrongIds === "function" ? getWrongIds().filter((id) => hasQuestion(id)).length : 0,
+    practicadas,
+    oficiales,
+    introduccion,
+    entrenamiento
   };
 }
 
-function isWrongEntry(value) {
-  return value && typeof value === "object" && typeof value.selected === "string";
-}
-
-function applyImportedData(data) {
-  if (!data || typeof data !== "object") throw new Error("El archivo no contiene un objeto JSON válido.");
-  const rawIds = Array.isArray(data.wrongIds) ? data.wrongIds : Array.isArray(data.fallos) ? data.fallos : null;
-  if (!rawIds) throw new Error("El archivo no tiene la lista wrongIds.");
-  const incomingIds = rawIds.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
-  const incomingHistory = data.history && typeof data.history === "object" && !Array.isArray(data.history) ? data.history : {};
-
-  const mergedWrong = new Set(getWrongIds().filter((id) => hasQuestion(id)));
-  incomingIds.forEach((id) => mergedWrong.add(id));
-  const mergedHistory = getHistory();
-  Object.entries(incomingHistory).forEach(([key, entry]) => {
-    const q = getQuestion(key);
-    const resolvedId = q ? q.id : key;
-    if (hasQuestion(resolvedId) && isWrongEntry(entry)) {
-      mergedHistory[resolvedId] = {
-        selected: String(entry.selected).charAt(0).toUpperCase(),
-        at: typeof entry.at === "string" ? entry.at : new Date().toISOString(),
-        fails: Math.max(1, Number(entry.fails) || 1)
-      };
-      if (!mergedWrong.has(resolvedId)) mergedWrong.add(resolvedId);
-    }
-  });
-  setWrongIds([...mergedWrong]);
-  setHistory(mergedHistory);
-
-  if (data.stats && typeof data.stats === "object") {
-    const current = getStats();
-    const imported = data.stats;
-    const importedDate = imported.lastDate ? Date.parse(imported.lastDate) : 0;
-    const currentDate = current.lastDate ? Date.parse(current.lastDate) : 0;
-    const merged = {
-      attempts: Math.max(Number(current.attempts) || 0, Number(imported.attempts) || 0),
-      bestPct: Math.max(Number(current.bestPct) || 0, Number(imported.bestPct) || 0),
-      lastPct: importedDate > currentDate ? Number(imported.lastPct) || 0 : Number(current.lastPct) || 0,
-      lastTotal: importedDate > currentDate ? Number(imported.lastTotal) || 0 : Number(current.lastTotal) || 0,
-      lastDate: importedDate > currentDate ? imported.lastDate : current.lastDate
-    };
-    setStats(merged);
-  }
-  writePersistenceFile();
-  return incomingIds.length;
-}
-
-function exportWrongsFile() {
-  const payload = buildExportPayload();
-  if (!payload.wrongIds.length) {
-    toast("Todavía no hay fallos que exportar.");
-    return;
-  }
-  const blob = new Blob([JSON.stringify(payload, null, 2) + "\n"], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  const date = new Date().toISOString().slice(0, 10);
-  link.href = url;
-  link.download = `${slugify(state.subject?.nombre || "test")}-fallos-${date}.json`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
-  toast(`Exportados ${payload.wrongIds.length} fallos a archivo.`);
-}
-
-function importWrongsFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(String(reader.result));
-      const count = applyImportedData(data);
-      renderWrongBook();
-      toast(`Importados ${count} fallos. Total: ${getWrongIds().length}.`);
-    } catch (error) {
-      toast(`Archivo no válido: ${error.message}`);
-    }
-  };
-  reader.onerror = () => toast("No se pudo leer el archivo.");
-  reader.readAsText(file);
-}
-
-/* Persistencia opcional en un archivo real mediante File System Access API */
-let persistenceHandle = null;
-let persistenceFileName = "";
-
-function idbOpen() {
-  return new Promise((resolve, reject) => {
-    if (!window.indexedDB) return reject(new Error("Sin IndexedDB"));
-    const req = indexedDB.open("wec12-files", 1);
-    req.onupgradeneeded = () => {
-      if (!req.result.objectStoreNames.contains("handles")) req.result.createObjectStore("handles");
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function idbGet(key) {
-  const db = await idbOpen();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction("handles", "readonly");
-    const req = tx.objectStore("handles").get(key);
-    req.onsuccess = () => resolve(req.result ?? null);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function idbSet(key, value) {
-  const db = await idbOpen();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction("handles", "readwrite");
-    tx.objectStore("handles").put(value, key);
-    tx.oncomplete = () => resolve(true);
-    tx.onerror = () => reject(tx.error);
-  });
-}
-
-function canLinkFile() {
-  return typeof window.showSaveFilePicker === "function";
-}
-
-async function writePersistenceFile(force = false) {
-  if (!persistenceHandle) return false;
-  try {
-    if (!force && typeof persistenceHandle.queryPermission === "function") {
-      const permission = await persistenceHandle.queryPermission({ mode: "readwrite" });
-      if (permission !== "granted") return false;
-    }
-    const writable = await persistenceHandle.createWritable();
-    await writable.write(JSON.stringify(buildExportPayload(), null, 2) + "\n");
-    await writable.close();
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function persistenceKey() {
-  return `wrongsFile:${state.subjectId || "default"}`;
-}
-
-async function loadPersistenceHandle() {
-  try {
-    const handle = await idbGet(persistenceKey());
-    if (handle) {
-      persistenceHandle = handle;
-      persistenceFileName = handle.name || "fallos.json";
-      await writePersistenceFile(false);
-    }
-  } catch { /* IndexedDB no disponible */ }
-}
-
-async function linkPersistenceFile() {
-  if (!canLinkFile()) {
-    toast("Este navegador no permite vincular un archivo. Usa Exportar/Importar JSON.");
-    return;
-  }
-  const suggestedName = `${slugify(state.subject?.nombre || "test")}-fallos.json`;
-  try {
-    const handle = await window.showSaveFilePicker({
-      suggestedName,
-      types: [{ description: "Datos de fallos", accept: { "application/json": [".json"] } }]
-    });
-    persistenceHandle = handle;
-    persistenceFileName = handle.name || suggestedName;
-    await idbSet(persistenceKey(), handle);
-    const ok = await writePersistenceFile(true);
-    toast(ok ? `Fallos vinculados a ${persistenceFileName}.` : "Archivo elegido, pero no se pudo escribir.");
-    renderWrongBook();
-  } catch (error) {
-    if (error?.name !== "AbortError") toast("No se pudo vincular el archivo.");
-  }
-}
-
-async function unlinkPersistenceFile() {
-  persistenceHandle = null;
-  persistenceFileName = "";
-  try { await idbSet(persistenceKey(), null); } catch { /* noop */ }
-  renderWrongBook();
-  toast("Archivo desvinculado. La copia del navegador sigue activa.");
-}
-
-function getStats() {
-  return readStore(LS.stats, { attempts: 0, bestPct: 0, lastPct: 0, lastTotal: 0, lastDate: null });
-}
-
-function setStats(stats) {
-  writeStore(LS.stats, stats);
-}
-
-const LS_BLOCK_POINTERS = "wec12_block_pointers_v1";
-
-function getBloquePointersMap() {
-  const subjectId = state.subjectId || "wec";
-  const allMaps = readJSON(LS_BLOCK_POINTERS, {});
-  return allMaps && typeof allMaps === "object" && allMaps[subjectId] ? allMaps[subjectId] : {};
-}
-
-function getBloquePointer(filterKey) {
-  if (!filterKey) return 0;
-  const map = getBloquePointersMap();
-  const val = Number(map[filterKey]);
-  return Number.isSafeInteger(val) && val >= 0 ? val : 0;
-}
-
-function saveBloquePointer(filterKey, pointer) {
-  if (!filterKey) return;
-  const subjectId = state.subjectId || "wec";
-  const allMaps = readJSON(LS_BLOCK_POINTERS, {});
-  const safeMap = allMaps && typeof allMaps === "object" ? allMaps : {};
-  if (!safeMap[subjectId]) safeMap[subjectId] = {};
-  safeMap[subjectId][filterKey] = Math.max(0, Number(pointer) || 0);
-  writeJSON(LS_BLOCK_POINTERS, safeMap);
-}
-
-const LS_SESSIONS_MAP = "wec12_sessions_by_filter_v1";
-
-function getSessionsMap() {
-  const subjectId = state.subjectId || "wec";
-  const allMaps = readJSON(LS_SESSIONS_MAP, {});
-  return allMaps && typeof allMaps === "object" && allMaps[subjectId] ? allMaps[subjectId] : {};
-}
-
-function getSessionForFilter(filterKey) {
-  if (!filterKey) return null;
-  const map = getSessionsMap();
-  const session = map[filterKey];
-  if (session && !session.finished && Array.isArray(session.ids) && session.ids.length) {
-    return session;
-  }
-  const current = getSession();
-  if (current && current.filter === filterKey && !current.finished && Array.isArray(current.ids)) {
-    return current;
-  }
-  return null;
-}
-
-function saveSessionForFilter(filterKey, sessionData) {
-  if (!filterKey) return;
-  const subjectId = state.subjectId || "wec";
-  const allMaps = readJSON(LS_SESSIONS_MAP, {});
-  if (!allMaps || typeof allMaps !== "object") return;
-  if (!allMaps[subjectId]) allMaps[subjectId] = {};
-  if (sessionData && !sessionData.finished) {
-    allMaps[subjectId][filterKey] = sessionData;
-  } else {
-    delete allMaps[subjectId][filterKey];
-  }
-  writeJSON(LS_SESSIONS_MAP, allMaps);
-}
-
-function getSession(specificSubjectId = null) {
-  const target = specificSubjectId || state.subjectId;
-  if (target) {
-    const scoped = readJSON(`${LS.session}:${target}`, null);
-    if (scoped && Array.isArray(scoped.ids) && scoped.ids.length) {
-      return scoped;
-    }
-  }
-  const globalSession = readJSON(LS.session, null);
-  if (globalSession && Array.isArray(globalSession.ids) && globalSession.ids.length) {
-    if (!target || globalSession.subjectId === target) {
-      return globalSession;
-    }
-  }
-  const defaultScoped = readJSON(`${LS.session}:default`, null);
-  if (defaultScoped && Array.isArray(defaultScoped.ids) && defaultScoped.ids.length) {
-    if (!target || defaultScoped.subjectId === target) {
-      return defaultScoped;
-    }
-  }
-  try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith(`${LS.session}:`)) {
-        const item = readJSON(key, null);
-        if (item && Array.isArray(item.ids) && item.ids.length && !item.finished) {
-          if (!target || item.subjectId === target) {
-            return item;
-          }
-        }
-      }
-    }
-  } catch { /* noop */ }
-  return readStore(LS.session, null);
-}
-
-function saveSession() {
-  if (!state.order.length) return;
-  const filterKey = state.selectedFilter || "all";
-  const aiEvaluations = {};
-  for (const q of state.order) {
-    if (q && q.evaluacionIA) {
-      aiEvaluations[q.id] = {
-        evaluacionIA: q.evaluacionIA,
-        evaluacionMensajes: q.evaluacionMensajes || []
-      };
-    }
-  }
-  const sessionData = {
-    filter: filterKey,
-    subjectId: state.subjectId,
-    ids: state.order.map((q) => q.id),
-    index: state.index,
-    answers: state.answers,
-    aiEvaluations,
-    immediate: state.immediate,
-    startedAt: state.startedAt,
-    finished: state.finished,
-    screen: state.screen,
-    masteryMode: state.masteryMode,
-    masteryRound: state.masteryRound,
-    updatedAt: Date.now()
-  };
-  writeStore(LS.session, sessionData);
-  writeJSON(LS.session, sessionData);
-  saveSessionForFilter(filterKey, sessionData);
-  guardarEnCacheOffline("ultima_sesion", sessionData);
-  guardarEnCacheOffline(`preguntas_sesion_${state.subjectId || "default"}`, state.order);
-}
-
-function clearSession() {
-  removeStore(LS.session);
-  try { localStorage.removeItem(LS.session); } catch { /* noop */ }
-  if (state.selectedFilter) {
-    saveSessionForFilter(state.selectedFilter, null);
-  }
+function wrongQuestions() {
+  return typeof getWrongIds === "function"
+    ? getWrongIds().map((id) => getQuestion(id)).filter(Boolean)
+    : [];
 }
 
 function applyTheme(theme) {
@@ -1219,7 +948,6 @@ async function loadCatalog() {
     }
   }
   const byId = new Map();
-  // 1. Conservar siempre todos los bancos oficiales y locales que contienen preguntas
   catalog
     .filter((s) => s && s.id && (s.archivo || s.localData))
     .forEach((s) => {
@@ -1230,7 +958,6 @@ async function loadCatalog() {
       });
     });
 
-  // 2. Añadir entradas de apuntes privados detectadas sin sobreescribir los bancos existentes
   catalog
     .filter((s) => s && s.apuntesPrivados)
     .forEach((s) => {
@@ -1305,9 +1032,6 @@ async function loadSubject(subjectId) {
   state.answers = {};
   state.finished = false;
   state.wrongFilter = "todos";
-  persistenceHandle = null;
-  persistenceFileName = "";
-  await loadPersistenceHandle();
   return entry;
 }
 
@@ -1496,11 +1220,9 @@ window.cargarBancoDePreguntas = async (banco) => {
     `apuntes-${String(banco.clave || "banco").replace(/[^a-zA-Z0-9_-]/g, "-")}`
   );
   await loadSubject(entrada.id);
-  renderStart();
-  startTest({ filter: "all", immediate: true, shuffle: true });
+  if (typeof renderStart === "function") renderStart();
+  if (typeof startTest === "function") startTest({ filter: "all", immediate: true, shuffle: true });
 };
-
-window.renderizarInicioTests = renderStart;
 
 async function removeCustomSubject(id) {
   setCustomSubjects(getCustomSubjects().filter((s) => s.id !== id));
@@ -1518,7 +1240,7 @@ function importSubjectFile(file) {
       const fallbackName = file.name.replace(/\.json$/i, "");
       const entry = saveCustomSubject(data, data.meta?.asignatura || fallbackName);
       await loadSubject(entry.id);
-      renderStart();
+      if (typeof renderStart === "function") renderStart();
       toast(`Asignatura "${entry.nombre}" añadida con ${entry.localData.preguntas.length} preguntas.`);
     } catch (error) {
       toast(`No se pudo añadir: ${error.message}`);
@@ -1529,21 +1251,175 @@ function importSubjectFile(file) {
 }
 
 
-// === assets/js/app/supabase.js ===
+// === assets/js/app/estado/sesiones.js ===
+"use strict";
+
+const LS_BLOCK_POINTERS = "wec12_block_pointers_v1";
+
+function getBloquePointersMap() {
+  const subjectId = state.subjectId || "wec";
+  const allMaps = readJSON(LS_BLOCK_POINTERS, {});
+  return allMaps && typeof allMaps === "object" && allMaps[subjectId] ? allMaps[subjectId] : {};
+}
+
+function getBloquePointer(filterKey) {
+  if (!filterKey) return 0;
+  const map = getBloquePointersMap();
+  const val = Number(map[filterKey]);
+  return Number.isSafeInteger(val) && val >= 0 ? val : 0;
+}
+
+function saveBloquePointer(filterKey, pointer) {
+  if (!filterKey) return;
+  const subjectId = state.subjectId || "wec";
+  const allMaps = readJSON(LS_BLOCK_POINTERS, {});
+  const safeMap = allMaps && typeof allMaps === "object" ? allMaps : {};
+  if (!safeMap[subjectId]) safeMap[subjectId] = {};
+  safeMap[subjectId][filterKey] = Math.max(0, Number(pointer) || 0);
+  writeJSON(LS_BLOCK_POINTERS, safeMap);
+}
+
+const LS_SESSIONS_MAP = "wec12_sessions_by_filter_v1";
+
+function getSessionsMap() {
+  const subjectId = state.subjectId || "wec";
+  const allMaps = readJSON(LS_SESSIONS_MAP, {});
+  return allMaps && typeof allMaps === "object" && allMaps[subjectId] ? allMaps[subjectId] : {};
+}
+
+function getSessionForFilter(filterKey) {
+  if (!filterKey) return null;
+  const map = getSessionsMap();
+  const session = map[filterKey];
+  if (session && !session.finished && Array.isArray(session.ids) && session.ids.length) {
+    return session;
+  }
+  const current = getSession();
+  if (current && current.filter === filterKey && !current.finished && Array.isArray(current.ids)) {
+    return current;
+  }
+  return null;
+}
+
+function saveSessionForFilter(filterKey, sessionData) {
+  if (!filterKey) return;
+  const subjectId = state.subjectId || "wec";
+  const allMaps = readJSON(LS_SESSIONS_MAP, {});
+  if (!allMaps || typeof allMaps !== "object") return;
+  if (!allMaps[subjectId]) allMaps[subjectId] = {};
+  if (sessionData && !sessionData.finished) {
+    allMaps[subjectId][filterKey] = sessionData;
+  } else {
+    delete allMaps[subjectId][filterKey];
+  }
+  writeJSON(LS_SESSIONS_MAP, allMaps);
+}
+
+function getSession(specificSubjectId = null) {
+  const target = specificSubjectId || state.subjectId;
+  if (target) {
+    const scoped = readJSON(`${LS.session}:${target}`, null);
+    if (scoped && Array.isArray(scoped.ids) && scoped.ids.length) {
+      return scoped;
+    }
+  }
+  const globalSession = readJSON(LS.session, null);
+  if (globalSession && Array.isArray(globalSession.ids) && globalSession.ids.length) {
+    if (!target || globalSession.subjectId === target) {
+      return globalSession;
+    }
+  }
+  const defaultScoped = readJSON(`${LS.session}:default`, null);
+  if (defaultScoped && Array.isArray(defaultScoped.ids) && defaultScoped.ids.length) {
+    if (!target || defaultScoped.subjectId === target) {
+      return defaultScoped;
+    }
+  }
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(`${LS.session}:`)) {
+        const item = readJSON(key, null);
+        if (item && Array.isArray(item.ids) && item.ids.length && !item.finished) {
+          if (!target || item.subjectId === target) {
+            return item;
+          }
+        }
+      }
+    }
+  } catch { /* noop */ }
+  return readStore(LS.session, null);
+}
+
+function saveSession() {
+  if (!state.order.length) return;
+  const filterKey = state.selectedFilter || "all";
+  const aiEvaluations = {};
+  for (const q of state.order) {
+    if (q && q.evaluacionIA) {
+      aiEvaluations[q.id] = {
+        evaluacionIA: q.evaluacionIA,
+        evaluacionMensajes: q.evaluacionMensajes || []
+      };
+    }
+  }
+  const sessionData = {
+    filter: filterKey,
+    subjectId: state.subjectId,
+    ids: state.order.map((q) => q.id),
+    index: state.index,
+    answers: state.answers,
+    aiEvaluations,
+    immediate: state.immediate,
+    startedAt: state.startedAt,
+    finished: state.finished,
+    screen: state.screen,
+    masteryMode: state.masteryMode,
+    masteryRound: state.masteryRound,
+    updatedAt: Date.now()
+  };
+  writeStore(LS.session, sessionData);
+  writeJSON(LS.session, sessionData);
+  saveSessionForFilter(filterKey, sessionData);
+  guardarEnCacheOffline("ultima_sesion", sessionData);
+  guardarEnCacheOffline(`preguntas_sesion_${state.subjectId || "default"}`, state.order);
+}
+
+function clearSession() {
+  removeStore(LS.session);
+  try { localStorage.removeItem(LS.session); } catch { /* noop */ }
+  if (state.selectedFilter) {
+    saveSessionForFilter(state.selectedFilter, null);
+  }
+}
+
+
+// === assets/js/app/estado.js ===
 "use strict";
 
 // ============================================================
-// CONFIGURACIÓN E INTEGRACIÓN SUPABASE (Grados Informáticos)
-// Sincronización de progreso y caché de http://127.0.0.1:8765/
+// FACHADA UNIFICADA DE ESTADO Y ALMACENAMIENTO
+// Los módulos especializados residen en public/assets/js/app/estado/
+// - utilidades.js: funciones de escape, formato de texto y markdown
+// - almacenamiento.js: acceso a almacenamiento local, IndexedDB y opciones
+// - apartados.js: resolución de temas y detección de conceptos débiles
+// - catalogo.js: carga y normalización de asignaturas y bancos
+// - sesiones.js: persistencia y control de sesiones activas
+// ============================================================
+
+
+// === assets/js/app/supabase/cliente.js ===
+"use strict";
+
+// ============================================================
+// CONFIGURACIÓN E INICIALIZACIÓN CLIENTE SUPABASE (Grados Informáticos)
 // ============================================================
 
 window.SUPABASE_URL = window.SUPABASE_URL || "";
 window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
 
-const SupabaseAuth = (() => {
+const SupabaseConfig = (() => {
   let client = null;
-  let currentUser = null;
-  let isSyncing = false;
 
   function getClient() {
     if (client) return client;
@@ -1568,7 +1444,6 @@ const SupabaseAuth = (() => {
     return null;
   }
 
-  // Pre-cargar progreso de las 515 preguntas practicadas de http://127.0.0.1:8765/
   async function seedInitialProgress() {
     const keySeeded = "wec12_seeded_8765_v2";
     if (localStorage.getItem(keySeeded) === "true") return;
@@ -1582,7 +1457,6 @@ const SupabaseAuth = (() => {
       const currentHistory = typeof getHistory === "function" ? getHistory() : {};
       const currentWrong = typeof getWrongIds === "function" ? getWrongIds() : [];
 
-      // Fusionar historia de 8765
       const mergedHistory = { ...seedData.history, ...currentHistory };
       const mergedWrong = [...new Set([...(seedData.wrongIds || []), ...currentWrong])];
 
@@ -1592,40 +1466,87 @@ const SupabaseAuth = (() => {
       const existingStats = typeof getStats === "function" ? getStats() : null;
       if (!existingStats || existingStats.attempts === 0) {
         if (typeof setStats === "function") setStats(seedData.stats);
-        else writeStore(LS.stats, seedData.stats);
+        else if (typeof writeStore === "function") writeStore(LS.stats, seedData.stats);
       }
 
       localStorage.setItem(keySeeded, "true");
-      console.log(`[SupabaseAuth] Progreso inicial de 8765 cargado con éxito (${Object.keys(seedData.history).length} preguntas practicadas, ${mergedWrong.length} fallos)`);
+      console.log(`[Supabase] Progreso inicial cargado con éxito (${Object.keys(seedData.history).length} practicadas, ${mergedWrong.length} fallos)`);
       if (typeof toast === "function") {
-        toast("✓ Se ha cargado tu progreso anterior de http://127.0.0.1:8765/ (515 preguntas practicadas)");
+        toast("✓ Se ha cargado tu progreso anterior (515 preguntas practicadas)");
       }
     } catch (e) {
-      console.warn("No se pudo cargar el progreso inicial de 8765:", e);
+      console.warn("No se pudo cargar el progreso inicial:", e);
     }
   }
 
-  // Sincronizar progreso local con Supabase
+  return {
+    getClient,
+    seedInitialProgress
+  };
+})();
+
+
+// === assets/js/app/supabase/progreso.js ===
+"use strict";
+
+// ============================================================
+// SINCRONIZACIÓN DE PROGRESO CON SUPABASE Y CACHÉ LOCAL
+// Guarda en el schema "grados-informaticos".progreso_tests
+// y en user_metadata, con fallback en localStorage y auto-sincronización.
+// ============================================================
+
+const SupabaseProgreso = (() => {
+  let isSyncing = false;
+  let autoSyncTimer = null;
+
+  function updateSyncStatusUI(text) {
+    const statusEl = document.querySelector("#sync-cloud-status");
+    if (statusEl) statusEl.textContent = text;
+  }
+
   async function syncProgressWithCloud(forceUpload = false) {
-    const c = getClient();
-    if (!c || !currentUser || isSyncing) return;
+    const c = SupabaseConfig.getClient();
+    const currentUser = window.SupabaseAuth?.getCurrentUser?.();
+    if (!c || !currentUser || isSyncing) {
+      try {
+        localStorage.setItem("preparar_tests_sync_pendiente", "true");
+      } catch (_) {}
+      return;
+    }
     isSyncing = true;
 
     try {
-      updateSyncStatusUI("Sincronizando…");
+      updateSyncStatusUI("Sincronizando con Supabase…");
       const localHistory = typeof getHistory === "function" ? getHistory() : {};
       const localWrong = typeof getWrongIds === "function" ? getWrongIds() : [];
       const localStats = typeof getStats === "function" ? getStats() : {};
       const localSession = typeof getSession === "function" ? getSession() : null;
 
-      const cloudProgress = currentUser.user_metadata?.test_progress || null;
+      // Intentar leer de la tabla del schema "grados-informaticos"
+      let schemaProgress = null;
+      try {
+        const { data: dbData } = await c.schema("grados-informaticos")
+          .from("progreso_tests")
+          .select("*")
+          .eq("usuario_id", currentUser.id);
+        if (Array.isArray(dbData) && dbData.length > 0) {
+          schemaProgress = dbData[0];
+        }
+      } catch (_) {}
+
+      const cloudProgress = schemaProgress?.historial
+        ? {
+            history: schemaProgress.historial,
+            wrongIds: schemaProgress.fallos || [],
+            stats: schemaProgress.estadisticas || {}
+          }
+        : (currentUser.user_metadata?.test_progress || null);
 
       let mergedHistory = { ...localHistory };
       let mergedWrong = [...new Set(localWrong)];
       let mergedStats = { ...localStats };
 
       if (cloudProgress && !forceUpload) {
-        // Fusionar lo de la nube con lo local
         if (cloudProgress.history) {
           Object.entries(cloudProgress.history).forEach(([qid, item]) => {
             if (!mergedHistory[qid] || (item.at && (!mergedHistory[qid].at || item.at > mergedHistory[qid].at))) {
@@ -1651,59 +1572,90 @@ const SupabaseAuth = (() => {
         countPracticadas: Object.keys(mergedHistory).length
       };
 
-      // Guardar en Supabase user_metadata
+      // 1. Guardar en tabla del schema grados-informaticos
+      try {
+        await c.schema("grados-informaticos").from("progreso_tests").upsert({
+          usuario_id: currentUser.id,
+          email: currentUser.email,
+          asignatura_id: (window.state?.subjectId || "general"),
+          historial: mergedHistory,
+          fallos: mergedWrong,
+          estadisticas: mergedStats,
+          actualizado_en: new Date().toISOString()
+        }, { onConflict: "usuario_id,asignatura_id" });
+      } catch (dbErr) {
+        console.log("[SupabaseProgreso] Info schema:", dbErr?.message || dbErr);
+      }
+
+      // 2. Guardar en Supabase user_metadata (Auth)
       const { data: updateData, error: updateError } = await c.auth.updateUser({
         data: { test_progress: payload }
       });
 
-      if (!updateError && updateData?.user) {
-        currentUser = updateData.user;
+      if (!updateError && updateData?.user && window.SupabaseAuth) {
+        window.SupabaseAuth.setCurrentUser(updateData.user);
       }
 
-      // Aplicar al estado local
+      // 3. Aplicar al estado local (caché siempre actualizado)
       if (typeof setHistory === "function") setHistory(mergedHistory);
       if (typeof setWrongIds === "function") setWrongIds(mergedWrong);
       if (typeof setStats === "function") setStats(mergedStats);
 
+      try {
+        localStorage.removeItem("preparar_tests_sync_pendiente");
+        localStorage.setItem("preparar_tests_ultima_sync", new Date().toISOString());
+      } catch (_) {}
+
       updateSyncStatusUI(`Sincronizado (${payload.countPracticadas} preguntas)`);
-      console.log(`[SupabaseAuth] Progreso sincronizado con Supabase (${payload.countPracticadas} preguntas guardadas)`);
+      console.log(`[SupabaseProgreso] Sincronizado con Supabase (${payload.countPracticadas} preguntas)`);
     } catch (e) {
-      console.error("Error sincronizando con Supabase:", e);
-      updateSyncStatusUI("Error al sincronizar");
+      console.error("[SupabaseProgreso] Error al sincronizar:", e);
+      try {
+        localStorage.setItem("preparar_tests_sync_pendiente", "true");
+      } catch (_) {}
+      updateSyncStatusUI("Guardado en caché (pendiente Supabase)");
     } finally {
       isSyncing = false;
     }
   }
 
-  function updateSyncStatusUI(text) {
-    const statusEl = document.querySelector("#sync-cloud-status");
-    if (statusEl) statusEl.textContent = text;
+  function autoSyncProgressDebounced() {
+    if (autoSyncTimer) clearTimeout(autoSyncTimer);
+    autoSyncTimer = setTimeout(() => {
+      syncProgressWithCloud(false).catch((e) => console.warn("Auto-sync error:", e));
+    }, 1000);
   }
 
-  function updateAuthButton() {
-    const btn = document.querySelector("#auth-btn");
-    const label = document.querySelector("#auth-btn-label");
-    if (!btn || !label) return;
+  return {
+    syncProgressWithCloud,
+    autoSyncProgressDebounced,
+    updateSyncStatusUI
+  };
+})();
 
-    if (currentUser && currentUser.id !== "invitado") {
-      const email = currentUser.email || "Usuario";
-      label.textContent = email.split("@")[0];
-      btn.classList.add("primary");
-      btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
-    } else {
-      currentUser = null;
-      label.textContent = "Iniciar sesión";
-      btn.classList.remove("primary");
-      btn.title = "Iniciar sesión con Supabase para guardar tu caché y progreso";
-    }
+
+// === assets/js/app/supabase/auth.js ===
+"use strict";
+
+// ============================================================
+// AUTENTICACIÓN Y VALIDACIÓN DE ROLES SUPABASE
+// ============================================================
+
+const SupabaseGestionAuth = (() => {
+  let currentUser = null;
+
+  function getCurrentUser() {
+    return currentUser;
+  }
+
+  function setCurrentUser(user) {
+    currentUser = user;
   }
 
   function purgarSesionYCookies() {
     currentUser = null;
 
-    try {
-      sessionStorage.clear();
-    } catch (_) {}
+    try { sessionStorage.clear(); } catch (_) {}
 
     try {
       for (let i = localStorage.length - 1; i >= 0; i--) {
@@ -1736,7 +1688,7 @@ const SupabaseAuth = (() => {
   }
 
   async function cerrarSesionCompleta(mensaje = "Has cerrado sesión.") {
-    const c = getClient();
+    const c = SupabaseConfig.getClient();
     if (c) {
       try {
         await Promise.race([
@@ -1746,255 +1698,11 @@ const SupabaseAuth = (() => {
       } catch (_) {}
     }
     purgarSesionYCookies();
-    updateAuthButton();
+    if (typeof SupabaseUI !== "undefined") SupabaseUI.updateAuthButton();
     const modal = document.querySelector("#auth-modal");
     if (modal) modal.classList.add("hidden");
     mostrarLoginGate(mensaje);
     window.location.replace(window.location.origin + window.location.pathname);
-  }
-
-  // Modal de inicio de sesión y sincronización
-  function renderAuthModal() {
-    let modal = document.querySelector("#auth-modal");
-    if (!modal) {
-      modal = document.createElement("div");
-      modal.id = "auth-modal";
-      modal.className = "modal-overlay hidden";
-      modal.style.cssText = `
-        position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7);
-        display: flex; align-items: center; justify-content: center; z-index: 1000;
-        padding: 20px; backdrop-filter: blur(4px);
-      `;
-      document.body.appendChild(modal);
-    }
-
-    const email = currentUser?.email || "";
-    const esInvitado = false;
-    const historyCount = typeof getHistory === "function" ? Object.keys(getHistory()).length : 0;
-    const wrongCount = typeof getWrongIds === "function" ? getWrongIds().length : 0;
-
-    modal.innerHTML = `
-      <div class="modal-card" style="
-        background: var(--card); color: var(--text); border: 1px solid var(--line);
-        border-radius: var(--radius); width: 100%; max-width: 440px; padding: 28px;
-        box-shadow: var(--shadow); position: relative; max-height: 90vh; overflow-y: auto;
-      ">
-        <button type="button" id="close-auth-modal" style="
-          position: absolute; top: 16px; right: 16px; background: none; border: none;
-          font-size: 20px; color: var(--muted); cursor: pointer; padding: 4px;
-        " aria-label="Cerrar">&times;</button>
-
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-          <div style="width:40px; height:40px; border-radius:10px; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:18px;">
-            <i class="fa-solid ${esInvitado ? "fa-user-clock" : (currentUser ? "fa-cloud-arrow-up" : "fa-user")}"></i>
-          </div>
-          <div>
-            <h3 style="margin:0; font-size:18px;">${esInvitado ? "Modo Invitado" : (currentUser ? "Tu cuenta de Supabase" : "Iniciar sesión en Supabase")}</h3>
-            <small style="color:var(--muted);">${esInvitado ? "Practicando como invitado · Progreso local" : (currentUser ? "Grados Informáticos · Sincronización activa" : "Guarda tu caché y progreso en la nube")}</small>
-          </div>
-        </div>
-
-        ${esInvitado ? `
-          <div style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; margin-bottom:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span style="font-size:13px; color:var(--muted);">Sesión</span>
-              <strong style="font-size:14px; color:var(--brand);">Invitado (Modo local)</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span style="font-size:13px; color:var(--muted);">Preguntas practicadas</span>
-              <strong><span class="pct-pill" style="background:var(--ok-soft); color:var(--ok); font-size:12px; padding:2px 8px; border-radius:12px;">${historyCount}</span></strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-size:13px; color:var(--muted);">Preguntas falladas</span>
-              <strong><span class="pct-pill" style="background:var(--bad-soft); color:var(--bad); font-size:12px; padding:2px 8px; border-radius:12px;">${wrongCount}</span></strong>
-            </div>
-          </div>
-
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            <button class="btn primary" type="button" id="btn-login-from-guest" style="width:100%; justify-content:center; gap:8px;">
-              <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión con mi cuenta
-            </button>
-            <button class="btn ghost warn" type="button" id="btn-logout-guest" style="width:100%; justify-content:center; gap:8px;">
-              <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión de invitado
-            </button>
-          </div>
-        ` : (currentUser ? `
-          <div style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; margin-bottom:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span style="font-size:13px; color:var(--muted);">Usuario</span>
-              <strong style="font-size:14px;">${esc(email)}</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span style="font-size:13px; color:var(--muted);">Preguntas practicadas</span>
-              <strong><span class="pct-pill" style="background:var(--ok-soft); color:var(--ok); font-size:12px; padding:2px 8px; border-radius:12px;">${historyCount}</span></strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span style="font-size:13px; color:var(--muted);">Preguntas falladas</span>
-              <strong><span class="pct-pill" style="background:var(--bad-soft); color:var(--bad); font-size:12px; padding:2px 8px; border-radius:12px;">${wrongCount}</span></strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-size:13px; color:var(--muted);">Estado de nube</span>
-              <span id="sync-cloud-status" style="font-size:12px; font-weight:600; color:var(--brand);">Conectado</span>
-            </div>
-          </div>
-
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            <button class="btn primary" type="button" id="btn-sync-now" style="width:100%; justify-content:center; gap:8px;">
-              <i class="fa-solid fa-arrows-rotate"></i> Sincronizar ahora con Supabase
-            </button>
-            <button class="btn ghost warn" type="button" id="btn-logout" style="width:100%; justify-content:center; gap:8px;">
-              <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
-            </button>
-          </div>
-        ` : `
-          <p style="font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:20px;">
-            Inicia sesión para sincronizar automáticamente tu caché, respuestas y las <strong>515 preguntas practicadas</strong> de http://127.0.0.1:8765/ entre dispositivos.
-          </p>
-
-          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
-            <button class="btn" type="button" id="btn-oauth-google" style="width:100%; justify-content:center; gap:10px; border:1px solid var(--line);">
-              <i class="fa-brands fa-google" style="color:#ea4335;"></i> Continuar con Google
-            </button>
-            <button class="btn" type="button" id="btn-oauth-github" style="width:100%; justify-content:center; gap:10px; border:1px solid var(--line);">
-              <i class="fa-brands fa-github"></i> Continuar con GitHub
-            </button>
-          </div>
-
-          <div style="display:flex; align-items:center; gap:10px; margin:16px 0; color:var(--muted); font-size:12px;">
-            <hr style="flex:1; border:0; border-top:1px solid var(--line);">
-            <span>O con correo</span>
-            <hr style="flex:1; border:0; border-top:1px solid var(--line);">
-          </div>
-
-          <form id="email-auth-form" style="display:flex; flex-direction:column; gap:12px;">
-            <div>
-              <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;" for="auth-email">Correo electrónico</label>
-              <input class="control" type="email" id="auth-email" required placeholder="tu@correo.com" style="width:100%; box-sizing:border-box;">
-            </div>
-            <div>
-              <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;" for="auth-password">Contraseña</label>
-              <input class="control" type="password" id="auth-password" required placeholder="••••••••" style="width:100%; box-sizing:border-box;">
-            </div>
-            <div id="auth-error-msg" class="hidden" style="color:var(--bad); font-size:12px; background:var(--bad-soft); padding:8px 12px; border-radius:8px;"></div>
-            <div style="display:flex; gap:10px; margin-top:8px;">
-              <button class="btn primary" type="submit" id="btn-submit-login" style="flex:1; justify-content:center;">Entrar</button>
-              <button class="btn ghost" type="button" id="btn-submit-signup" style="flex:1; justify-content:center;">Registrarse</button>
-            </div>
-          </form>
-        `)}
-      </div>
-    `;
-
-    modal.classList.remove("hidden");
-
-    // Handlers
-    modal.querySelector("#close-auth-modal")?.addEventListener("click", () => modal.classList.add("hidden"));
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) modal.classList.add("hidden");
-    });
-
-    if (esInvitado) {
-      modal.querySelector("#btn-logout-guest")?.addEventListener("click", () => {
-        purgarSesionYCookies();
-        updateAuthButton();
-        modal.classList.add("hidden");
-        mostrarLoginGate("Has salido del modo invitado.");
-        window.location.replace(window.location.origin + window.location.pathname);
-      });
-
-      modal.querySelector("#btn-login-from-guest")?.addEventListener("click", () => {
-        purgarSesionYCookies();
-        updateAuthButton();
-        modal.classList.add("hidden");
-        mostrarLoginGate();
-        window.location.replace(window.location.origin + window.location.pathname);
-      });
-    } else if (currentUser) {
-      modal.querySelector("#btn-sync-now")?.addEventListener("click", async () => {
-        const btn = modal.querySelector("#btn-sync-now");
-        if (btn) { btn.disabled = true; btn.textContent = "Sincronizando…"; }
-        await syncProgressWithCloud(true);
-        if (typeof toast === "function") toast("✓ Progreso sincronizado con Supabase");
-        renderAuthModal();
-      });
-
-      modal.querySelector("#btn-logout")?.addEventListener("click", async () => {
-        await cerrarSesionCompleta("Has cerrado sesión.");
-      });
-    } else {
-      modal.querySelector("#btn-oauth-google")?.addEventListener("click", async () => {
-        const c = getClient();
-        if (!c) return;
-        await c.auth.signInWithOAuth({
-          provider: "google",
-          options: { redirectTo: window.location.href }
-        });
-      });
-
-      modal.querySelector("#btn-oauth-github")?.addEventListener("click", async () => {
-        const c = getClient();
-        if (!c) return;
-        await c.auth.signInWithOAuth({
-          provider: "github",
-          options: { redirectTo: window.location.href }
-        });
-      });
-
-      const form = modal.querySelector("#email-auth-form");
-      const errBox = modal.querySelector("#auth-error-msg");
-
-      form?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const c = getClient();
-        if (!c) return;
-        const emailVal = modal.querySelector("#auth-email").value.trim();
-        const passVal = modal.querySelector("#auth-password").value;
-        const submitBtn = modal.querySelector("#btn-submit-login");
-        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Entrando…"; }
-        errBox.classList.add("hidden");
-
-        const { data, error } = await c.auth.signInWithPassword({ email: emailVal, password: passVal });
-        if (error) {
-          errBox.textContent = error.message;
-          errBox.classList.remove("hidden");
-          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Entrar"; }
-        } else {
-          currentUser = data.user;
-          updateAuthButton();
-          await syncProgressWithCloud();
-          if (typeof toast === "function") toast(`¡Bienvenida ${emailVal}!`);
-          renderAuthModal();
-        }
-      });
-
-      modal.querySelector("#btn-submit-signup")?.addEventListener("click", async () => {
-        const c = getClient();
-        if (!c) return;
-        const emailVal = modal.querySelector("#auth-email").value.trim();
-        const passVal = modal.querySelector("#auth-password").value;
-        const signupBtn = modal.querySelector("#btn-submit-signup");
-        if (!emailVal || !passVal) {
-          errBox.textContent = "Escribe correo y contraseña para registrarte.";
-          errBox.classList.remove("hidden");
-          return;
-        }
-        if (signupBtn) { signupBtn.disabled = true; signupBtn.textContent = "Registrando…"; }
-        errBox.classList.add("hidden");
-
-        const { data, error } = await c.auth.signUp({ email: emailVal, password: passVal });
-        if (error) {
-          errBox.textContent = error.message;
-          errBox.classList.remove("hidden");
-          if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = "Registrarse"; }
-        } else {
-          currentUser = data.user;
-          updateAuthButton();
-          await syncProgressWithCloud();
-          if (typeof toast === "function") toast(`Cuenta creada. ¡Bienvenida ${emailVal}!`);
-          renderAuthModal();
-        }
-      });
-    }
   }
 
   async function verificarPermisoAdmin(c, user) {
@@ -2032,7 +1740,6 @@ const SupabaseAuth = (() => {
           .select("id, email, rol").eq("id", user.id).maybeSingle();
         if (!resId.error && resId.data) data = resId.data;
       }
-      // Respaldo por email (idéntico a Acceso_grados_informaticos por si el registro se creó con otro UUID)
       if (!data && user.email) {
         const resEmail = await c.schema("public").from("perfiles")
           .select("id, email, rol").eq("email", user.email).maybeSingle();
@@ -2097,12 +1804,10 @@ const SupabaseAuth = (() => {
       try {
         window.history.replaceState({}, document.title, window.location.pathname);
       } catch (_) {}
-
-      const textoLimpio = decodeURIComponent(errDesc).replace(/\+/g, " ");
-      errorAlInicio = `Aviso: ${textoLimpio}.`;
+      errorAlInicio = `Aviso: ${decodeURIComponent(errDesc).replace(/\+/g, " ")}.`;
     }
 
-    const c = getClient();
+    const c = SupabaseConfig.getClient();
     if (!c) {
       mostrarLoginGate("No se pudo conectar con Supabase.");
       return false;
@@ -2113,7 +1818,6 @@ const SupabaseAuth = (() => {
       const hasTokenInUrl = window.location.hash.includes("access_token") || window.location.search.includes("code=");
 
       if (!session && hasTokenInUrl) {
-        // 1. Intercambio de código explícito si viene por query param (flujo PKCE estándar)
         if (window.location.search.includes("code=")) {
           const code = urlParams.get("code");
           if (code && typeof c.auth.exchangeCodeForSession === "function") {
@@ -2121,32 +1825,11 @@ const SupabaseAuth = (() => {
               const resCode = await c.auth.exchangeCodeForSession(code);
               if (resCode.data?.session) session = resCode.data.session;
             } catch (errCode) {
-              console.warn("exchangeCodeForSession aviso:", errCode);
+              console.warn("exchangeCode aviso:", errCode);
             }
           }
         }
 
-        // 2. Escuchar onAuthStateChange para capturar la sesión si Supabase la procesa asíncronamente
-        if (!session) {
-          try {
-            const sesionPromesa = new Promise((resolve) => {
-              const { data: { subscription } } = c.auth.onAuthStateChange((event, s) => {
-                if (s) {
-                  subscription?.unsubscribe?.();
-                  resolve(s);
-                }
-              });
-              setTimeout(() => {
-                subscription?.unsubscribe?.();
-                resolve(null);
-              }, 3000);
-            });
-            const sesionEvento = await sesionPromesa;
-            if (sesionEvento) session = sesionEvento;
-          } catch (_) {}
-        }
-
-        // 3. Polling de respaldo
         if (!session) {
           for (let i = 0; i < 20; i++) {
             await new Promise((r) => setTimeout(r, 100));
@@ -2164,14 +1847,10 @@ const SupabaseAuth = (() => {
         return false;
       }
 
-      // Limpiar URL de tokens para que quede limpia en la barra de direcciones
       if (hasTokenInUrl) {
-        try {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        } catch (_) {}
+        try { window.history.replaceState({}, document.title, window.location.pathname); } catch (_) {}
       }
 
-      // Comprobar estrictamente si el usuario existe y es admin en Supabase
       const esAdmin = await verificarPermisoAdmin(c, session.user);
       if (!esAdmin) {
         await c.auth.signOut().catch(() => {});
@@ -2184,11 +1863,8 @@ const SupabaseAuth = (() => {
       currentUser = session.user;
       try { sessionStorage.setItem("esAdmin", "true"); } catch (_) {}
       ocultarLoginGate();
-      updateAuthButton();
-      await syncProgressWithCloud();
-      if (typeof obtenerTokenDesdeSupabase === "function") {
-        obtenerTokenDesdeSupabase().catch(() => {});
-      }
+      if (typeof SupabaseUI !== "undefined") SupabaseUI.updateAuthButton();
+      await SupabaseProgreso.syncProgressWithCloud();
       return true;
     } catch (err) {
       console.error("Error en validación de sesión:", err);
@@ -2196,193 +1872,228 @@ const SupabaseAuth = (() => {
       return false;
     }
   }
-  async function cargarConfiguracionServidor() {
-    try {
-      const res = await fetch("/api/configuracion");
-      if (res.ok) {
-        const cfg = await res.json();
-        if (cfg.supabaseUrl) window.SUPABASE_URL = cfg.supabaseUrl;
-        if (cfg.supabaseAnonKey) window.SUPABASE_ANON_KEY = cfg.supabaseAnonKey;
-        if (cfg.githubRepo) localStorage.setItem("gh_repo", cfg.githubRepo);
-        if (cfg.githubBranch) localStorage.setItem("selected_test_branch", cfg.githubBranch);
-        if (cfg.githubToken) localStorage.setItem("cache_gh_token", cfg.githubToken);
-      }
-    } catch (_) {}
-  }
-
-  async function init() {
-    await cargarConfiguracionServidor();
-    await seedInitialProgress();
-
-    // Comprobar autenticación con login gate estricto
-    await autenticarConGate();
-
-    const c = getClient();
-    if (c) {
-      c.auth.onAuthStateChange(async (event, session) => {
-        if (event === "SIGNED_IN") {
-          await autenticarConGate();
-        } else if (event === "SIGNED_OUT") {
-          currentUser = null;
-          updateAuthButton();
-          mostrarLoginGate();
-        }
-      });
-    }
-
-    const cleanRedirectUrl = window.location.origin + window.location.pathname;
-
-    // Botones de login con OAuth exclusivo (GitHub y Google)
-    document.getElementById("gate-btn-github")?.addEventListener("click", async () => {
-      const cli = getClient();
-      if (!cli) {
-        mostrarLoginGate("No se pudo conectar con Supabase.");
-        return;
-      }
-      const errBox = document.getElementById("login-gate-error");
-      if (errBox) errBox.style.display = "none";
-      const btn = document.getElementById("gate-btn-github");
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size:1.1rem;"></i> <span>Conectando con GitHub…</span>';
-      }
-      try {
-        const { data, error } = await cli.auth.signInWithOAuth({
-          provider: "github",
-          options: { redirectTo: cleanRedirectUrl }
-        });
-        if (error) {
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-brands fa-github" style="font-size:1.15rem;"></i> <span>Continuar con GitHub</span>';
-          }
-          mostrarLoginGate(`Error de autenticación con GitHub: ${error.message}`);
-          return;
-        }
-        if (data?.url) {
-          window.location.assign(data.url);
-        }
-      } catch (err) {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = '<i class="fa-brands fa-github" style="font-size:1.15rem;"></i> <span>Continuar con GitHub</span>';
-        }
-        mostrarLoginGate(`Error: ${err.message || err}`);
-      }
-    });
-
-    document.getElementById("gate-btn-google")?.addEventListener("click", async () => {
-      const cli = getClient();
-      if (!cli) {
-        mostrarLoginGate("No se pudo conectar con Supabase.");
-        return;
-      }
-      const errBox = document.getElementById("login-gate-error");
-      if (errBox) errBox.style.display = "none";
-      const btn = document.getElementById("gate-btn-google");
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size:1.1rem;"></i> <span>Conectando con Google…</span>';
-      }
-      try {
-        const { data, error } = await cli.auth.signInWithOAuth({
-          provider: "google",
-          options: { redirectTo: cleanRedirectUrl }
-        });
-        if (error) {
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-brands fa-google" style="color:#ea4335; font-size:1.1rem;"></i> <span>Continuar con Google</span>';
-          }
-          mostrarLoginGate(`Error de autenticación con Google: ${error.message}`);
-          return;
-        }
-        if (data?.url) {
-          window.location.assign(data.url);
-        }
-      } catch (err) {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = '<i class="fa-brands fa-google" style="color:#ea4335; font-size:1.1rem;"></i> <span>Continuar con Google</span>';
-        }
-        mostrarLoginGate(`Error: ${err.message || err}`);
-      }
-    });
-
-    document.getElementById("gate-toggle-email")?.addEventListener("click", () => {
-      const form = document.getElementById("gate-email-form");
-      if (form) {
-        form.style.display = form.style.display === "none" ? "flex" : "none";
-      }
-    });
-
-    document.getElementById("gate-email-form")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const cli = getClient();
-      if (!cli) return mostrarLoginGate("No se pudo conectar con Supabase.");
-      const email = document.getElementById("gate-input-email")?.value.trim();
-      const password = document.getElementById("gate-input-password")?.value;
-      const btn = document.getElementById("gate-btn-submit-email");
-      if (btn) { btn.disabled = true; btn.textContent = "Verificando…"; }
-
-      try {
-        const { data, error } = await cli.auth.signInWithPassword({ email, password });
-        if (error) {
-          if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
-          mostrarLoginGate(error.message === "Invalid login credentials" ? "Email o contraseña incorrectos." : error.message);
-          return;
-        }
-
-        const esAdmin = await verificarPermisoAdmin(cli, data.user);
-        if (!esAdmin) {
-          await cli.auth.signOut().catch(() => {});
-          currentUser = null;
-          if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
-          mostrarLoginGate("Acceso denegado: tu usuario (" + (data.user?.email || "") + ") no tiene rol admin en la tabla perfiles de Supabase.");
-          return;
-        }
-
-        currentUser = data.user;
-        try { sessionStorage.setItem("esAdmin", "true"); } catch (_) {}
-        ocultarLoginGate();
-        updateAuthButton();
-        await syncProgressWithCloud();
-        if (typeof toast === "function") toast(`¡Bienvenida ${email}!`);
-      } catch (err) {
-        if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
-        mostrarLoginGate(`Error: ${err.message || err}`);
-      }
-    });
-
-    document.querySelector("#auth-btn")?.addEventListener("click", () => {
-      renderAuthModal();
-    });
-
-    updateAuthButton();
-  }
-
-  let autoSyncTimer = null;
-  function autoSyncProgressDebounced() {
-    if (autoSyncTimer) clearTimeout(autoSyncTimer);
-    autoSyncTimer = setTimeout(() => {
-      syncProgressWithCloud(false).catch((e) => console.warn("Auto-sync error:", e));
-    }, 1000);
-  }
 
   return {
-    init,
-    getClient,
-    seedInitialProgress,
-    syncProgressWithCloud,
-    autoSyncProgressDebounced,
-    renderAuthModal,
-    cerrarSesion: cerrarSesionCompleta,
-    purgarSesion: purgarSesionYCookies
+    getCurrentUser,
+    setCurrentUser,
+    purgarSesionYCookies,
+    cerrarSesionCompleta,
+    autenticarConGate,
+    mostrarLoginGate,
+    ocultarLoginGate
   };
 })();
 
-window.cerrarSesion = SupabaseAuth.cerrarSesion;
-window.purgarSesion = SupabaseAuth.purgarSesion;
+
+// === assets/js/app/supabase/ui.js ===
+"use strict";
+
+// ============================================================
+// INTERFAZ DE USUARIO: MODAL DE AUTENTICACIÓN Y SINCRONIZACIÓN
+// ============================================================
+
+const SupabaseUI = (() => {
+  function updateAuthButton() {
+    const btn = document.querySelector("#auth-btn");
+    const label = document.querySelector("#auth-btn-label");
+    if (!btn || !label) return;
+
+    const user = SupabaseGestionAuth.getCurrentUser();
+    if (user && user.id !== "invitado") {
+      const email = user.email || "Usuario";
+      label.textContent = email.split("@")[0];
+      btn.classList.add("primary");
+      btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
+    } else {
+      label.textContent = "Iniciar sesión";
+      btn.classList.remove("primary");
+      btn.title = "Iniciar sesión con Supabase para guardar tu caché y progreso";
+    }
+  }
+
+  function renderAuthModal() {
+    let modal = document.querySelector("#auth-modal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "auth-modal";
+      modal.className = "modal-overlay hidden";
+      modal.style.cssText = `
+        position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7);
+        display: flex; align-items: center; justify-content: center; z-index: 1000;
+        padding: 20px; backdrop-filter: blur(4px);
+      `;
+      document.body.appendChild(modal);
+    }
+
+    const user = SupabaseGestionAuth.getCurrentUser();
+    const email = user?.email || "";
+    const historyCount = typeof getHistory === "function" ? Object.keys(getHistory()).length : 0;
+    const wrongCount = typeof getWrongIds === "function" ? getWrongIds().length : 0;
+
+    modal.innerHTML = `
+      <div class="modal-card" style="
+        background: var(--card); color: var(--text); border: 1px solid var(--line);
+        border-radius: var(--radius); width: 100%; max-width: 440px; padding: 28px;
+        box-shadow: var(--shadow); position: relative; max-height: 90vh; overflow-y: auto;
+      ">
+        <button type="button" id="close-auth-modal" style="
+          position: absolute; top: 16px; right: 16px; background: none; border: none;
+          font-size: 20px; color: var(--muted); cursor: pointer; padding: 4px;
+        " aria-label="Cerrar">&times;</button>
+
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:18px;">
+            <i class="fa-solid ${user ? "fa-cloud-arrow-up" : "fa-user"}"></i>
+          </div>
+          <div>
+            <h3 style="margin:0; font-size:18px;">${user ? "Tu cuenta de Supabase" : "Iniciar sesión en Supabase"}</h3>
+            <small style="color:var(--muted);">${user ? "Grados Informáticos · Sincronización activa" : "Guarda tu caché y progreso en la nube"}</small>
+          </div>
+        </div>
+
+        ${user ? `
+          <div style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:13px; color:var(--muted);">Usuario</span>
+              <strong style="font-size:14px;">${esc(email)}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:13px; color:var(--muted);">Preguntas practicadas</span>
+              <strong><span class="pct-pill" style="background:var(--ok-soft); color:var(--ok); font-size:12px; padding:2px 8px; border-radius:12px;">${historyCount}</span></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:13px; color:var(--muted);">Preguntas falladas</span>
+              <strong><span class="pct-pill" style="background:var(--bad-soft); color:var(--bad); font-size:12px; padding:2px 8px; border-radius:12px;">${wrongCount}</span></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13px; color:var(--muted);">Estado de nube</span>
+              <span id="sync-cloud-status" style="font-size:12px; font-weight:600; color:var(--brand);">Conectado</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="btn primary" type="button" id="btn-sync-now" style="width:100%; justify-content:center; gap:8px;">
+              <i class="fa-solid fa-arrows-rotate"></i> Sincronizar ahora con Supabase
+            </button>
+            <button class="btn ghost warn" type="button" id="btn-logout" style="width:100%; justify-content:center; gap:8px;">
+              <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+            </button>
+          </div>
+        ` : `
+          <p style="font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:20px;">
+            Inicia sesión para sincronizar automáticamente tu caché, respuestas y progreso entre dispositivos.
+          </p>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+            <button class="btn" type="button" id="btn-oauth-google" style="width:100%; justify-content:center; gap:10px; border:1px solid var(--line);">
+              <i class="fa-brands fa-google" style="color:#ea4335;"></i> Continuar con Google
+            </button>
+            <button class="btn" type="button" id="btn-oauth-github" style="width:100%; justify-content:center; gap:10px; border:1px solid var(--line);">
+              <i class="fa-brands fa-github"></i> Continuar con GitHub
+            </button>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:10px; margin:16px 0; color:var(--muted); font-size:12px;">
+            <hr style="flex:1; border:0; border-top:1px solid var(--line);">
+            <span>O con correo</span>
+            <hr style="flex:1; border:0; border-top:1px solid var(--line);">
+          </div>
+
+          <form id="email-auth-form" style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;" for="auth-email">Correo electrónico</label>
+              <input class="control" type="email" id="auth-email" required placeholder="tu@correo.com" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;" for="auth-password">Contraseña</label>
+              <input class="control" type="password" id="auth-password" required placeholder="••••••••" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div id="auth-error-msg" class="hidden" style="color:var(--bad); font-size:12px; background:var(--bad-soft); padding:8px 12px; border-radius:8px;"></div>
+            <div style="display:flex; gap:10px; margin-top:8px;">
+              <button class="btn primary" type="submit" id="btn-submit-login" style="flex:1; justify-content:center;">Entrar</button>
+              <button class="btn ghost" type="button" id="btn-submit-signup" style="flex:1; justify-content:center;">Registrarse</button>
+            </div>
+          </form>
+        `}
+      </div>
+    `;
+
+    modal.classList.remove("hidden");
+
+    modal.querySelector("#close-auth-modal")?.addEventListener("click", () => modal.classList.add("hidden"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.add("hidden");
+    });
+
+    if (user) {
+      modal.querySelector("#btn-sync-now")?.addEventListener("click", async () => {
+        const btn = modal.querySelector("#btn-sync-now");
+        if (btn) { btn.disabled = true; btn.textContent = "Sincronizando…"; }
+        await SupabaseProgreso.syncProgressWithCloud(true);
+        if (typeof toast === "function") toast("✓ Progreso sincronizado con Supabase");
+        renderAuthModal();
+      });
+
+      modal.querySelector("#btn-logout")?.addEventListener("click", async () => {
+        await SupabaseGestionAuth.cerrarSesionCompleta("Has cerrado sesión.");
+      });
+    } else {
+      modal.querySelector("#btn-oauth-google")?.addEventListener("click", async () => {
+        const c = SupabaseConfig.getClient();
+        if (!c) return;
+        await c.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: window.location.href }
+        });
+      });
+
+      modal.querySelector("#btn-oauth-github")?.addEventListener("click", async () => {
+        const c = SupabaseConfig.getClient();
+        if (!c) return;
+        await c.auth.signInWithOAuth({
+          provider: "github",
+          options: { redirectTo: window.location.href }
+        });
+      });
+
+      const form = modal.querySelector("#email-auth-form");
+      const errBox = modal.querySelector("#auth-error-msg");
+
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const c = SupabaseConfig.getClient();
+        if (!c) return;
+        const emailVal = modal.querySelector("#auth-email").value.trim();
+        const passVal = modal.querySelector("#auth-password").value;
+        const submitBtn = modal.querySelector("#btn-submit-login");
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Entrando…"; }
+        errBox.classList.add("hidden");
+
+        const { data, error } = await c.auth.signInWithPassword({ email: emailVal, password: passVal });
+        if (error) {
+          errBox.textContent = error.message;
+          errBox.classList.remove("hidden");
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Entrar"; }
+        } else {
+          SupabaseGestionAuth.setCurrentUser(data.user);
+          updateAuthButton();
+          await SupabaseProgreso.syncProgressWithCloud();
+          if (typeof toast === "function") toast(`¡Bienvenida ${emailVal}!`);
+          renderAuthModal();
+        }
+      });
+    }
+  }
+
+  return {
+    renderAuthModal,
+    updateAuthButton
+  };
+})();
+
+
+// === assets/js/app/supabase/github-ramas.js ===
+"use strict";
 
 // ============================================================
 // GESTOR DE RAMAS Y REPOSITORIO PRIVADO DE GITHUB
@@ -2411,7 +2122,7 @@ const RepoBranchManager = (() => {
 
     const supabaseUrl = window.SUPABASE_URL;
     const anonKey = window.SUPABASE_ANON_KEY;
-    const c = SupabaseAuth.getClient();
+    const c = window.SupabaseAuth?.getClient?.();
 
     // 1. Intentar mediante el cliente Supabase
     if (c) {
@@ -2586,7 +2297,6 @@ const RepoBranchManager = (() => {
       Authorization: `Bearer ${token}`
     };
 
-    // Obtener sha previo para sobrescribir
     let sha = null;
     try {
       const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${rutaArchivo}?ref=${encodeURIComponent(rama)}`, { headers });
@@ -2638,7 +2348,91 @@ const RepoBranchManager = (() => {
 
 window.RepoBranchManager = RepoBranchManager;
 
-// Auto-arrancar al cargar DOM
+
+// === assets/js/app/supabase.js ===
+"use strict";
+
+// ============================================================
+// FACHADA UNIFICADA SUPABASE AUTH & PROGRESO
+// ============================================================
+
+const SupabaseAuth = {
+  getClient: () => SupabaseConfig.getClient(),
+  getCurrentUser: () => SupabaseGestionAuth.getCurrentUser(),
+  setCurrentUser: (u) => SupabaseGestionAuth.setCurrentUser(u),
+  seedInitialProgress: () => SupabaseConfig.seedInitialProgress(),
+  syncProgressWithCloud: (force) => SupabaseProgreso.syncProgressWithCloud(force),
+  autoSyncProgressDebounced: () => SupabaseProgreso.autoSyncProgressDebounced(),
+  renderAuthModal: () => SupabaseUI.renderAuthModal(),
+  cerrarSesion: (msg) => SupabaseGestionAuth.cerrarSesionCompleta(msg),
+  purgarSesion: () => SupabaseGestionAuth.purgarSesionYCookies(),
+  init: async () => {
+    try {
+      const res = await fetch("/api/configuracion");
+      if (res.ok) {
+        const cfg = await res.json();
+        if (cfg.supabaseUrl) window.SUPABASE_URL = cfg.supabaseUrl;
+        if (cfg.supabaseAnonKey) window.SUPABASE_ANON_KEY = cfg.supabaseAnonKey;
+        if (cfg.githubRepo) localStorage.setItem("gh_repo", cfg.githubRepo);
+        if (cfg.githubBranch) localStorage.setItem("selected_test_branch", cfg.githubBranch);
+        if (cfg.githubToken) localStorage.setItem("cache_gh_token", cfg.githubToken);
+      }
+    } catch (_) {}
+
+    await SupabaseConfig.seedInitialProgress();
+    await SupabaseGestionAuth.autenticarConGate();
+
+    const c = SupabaseConfig.getClient();
+    if (c) {
+      c.auth.onAuthStateChange(async (event, session) => {
+        if (event === "SIGNED_IN") {
+          await SupabaseGestionAuth.autenticarConGate();
+        } else if (event === "SIGNED_OUT") {
+          SupabaseGestionAuth.setCurrentUser(null);
+          SupabaseUI.updateAuthButton();
+          SupabaseGestionAuth.mostrarLoginGate();
+        }
+      });
+    }
+
+    // Gate OAuth buttons
+    document.getElementById("gate-btn-github")?.addEventListener("click", async () => {
+      const cl = SupabaseConfig.getClient();
+      if (!cl) return;
+      await cl.auth.signInWithOAuth({
+        provider: "github",
+        options: { redirectTo: window.location.origin + window.location.pathname }
+      });
+    });
+
+    document.getElementById("gate-btn-google")?.addEventListener("click", async () => {
+      const cl = SupabaseConfig.getClient();
+      if (!cl) return;
+      await cl.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin + window.location.pathname }
+      });
+    });
+
+    document.querySelector("#auth-btn")?.addEventListener("click", () => {
+      SupabaseUI.renderAuthModal();
+    });
+
+    SupabaseUI.updateAuthButton();
+
+    // Sincronizar automáticamente si había cambios en caché pendientes
+    if (localStorage.getItem("preparar_tests_sync_pendiente") === "true") {
+      SupabaseProgreso.syncProgressWithCloud().then(() => {
+        if (typeof toast === "function") toast("✓ Progreso de caché sincronizado con Supabase");
+      }).catch(() => {});
+    }
+  }
+};
+
+window.SupabaseAuth = SupabaseAuth;
+window.cerrarSesion = SupabaseAuth.cerrarSesion;
+window.purgarSesion = SupabaseAuth.purgarSesion;
+
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => SupabaseAuth.init());
 } else {
@@ -2646,7 +2440,7 @@ if (document.readyState === "loading") {
 }
 
 
-// === assets/js/app/sesion.js ===
+// === assets/js/app/sesion/control.js ===
 "use strict";
 
 function countAnswered() {
@@ -2681,10 +2475,9 @@ function filterPool(filter) {
         return cat.includes(catBusq);
       });
     }
-    const history = getHistory();
-    const wrongSet = new Set(getWrongIds());
+    const history = typeof getHistory === "function" ? getHistory() : {};
+    const wrongSet = new Set(typeof getWrongIds === "function" ? getWrongIds() : []);
     if (filter.repaso === "faltan") {
-      // Las que faltan: o no se han respondido nunca, o no están superadas (passed !== true), o tienen fallos pendientes
       pool = pool.filter((q) => {
         const h = history[q.id];
         if (!h) return true;
@@ -2730,11 +2523,11 @@ function filterPool(filter) {
   if (filter === "tema3") return state.questions.filter((q) => Number(q.tema) === 3);
   if (filter === "tema4") return state.questions.filter((q) => Number(q.tema) === 4);
   if (filter === "practicadas") {
-    const history = getHistory();
+    const history = typeof getHistory === "function" ? getHistory() : {};
     return state.questions.filter((q) => q.practicada || history[q.id] != null);
   }
   if (filter === "nuevas") {
-    const history = getHistory();
+    const history = typeof getHistory === "function" ? getHistory() : {};
     return state.questions.filter((q) => !q.practicada && !history[q.id]);
   }
   if (filter === "oficial" || filter === "oficiales") {
@@ -2752,7 +2545,7 @@ function filterPool(filter) {
     return state.questions.filter((q) => q.tipo === "traza_linea");
   }
   if (filter === "fallos") {
-    const wrong = new Set(getWrongIds().map((id) => getQuestion(id)?.id || id));
+    const wrong = new Set(typeof getWrongIds === "function" ? getWrongIds().map((id) => getQuestion(id)?.id || id) : []);
     return state.questions.filter((q) => wrong.has(q.id));
   }
   return state.questions;
@@ -2852,30 +2645,34 @@ function discardSession() {
   toast("Sesión descartada.");
 }
 
-function formatearFiltroLegible(filter) {
-  if (!filter || filter === "all") return "Test completo (Ambas)";
-  if (filter.startsWith("tema:")) {
-    const parts = filter.split(":");
-    const t = parts[1];
-    const sub = parts[2];
-    if (sub === "codigo") return `Tema ${t} · Solo código y desarrollo`;
-    if (sub === "teoria") return `Tema ${t} · Solo teoría`;
-    return `Tema ${t}`;
+function startBloque(filterKey) {
+  const allInFilter = filterPool(filterKey);
+  if (!allInFilter.length) {
+    toast("No hay preguntas en este apartado.");
+    return;
   }
-  if (filter.startsWith("apartado:")) {
-    const [, t, ap, sub] = filter.split(":");
-    if (sub === "codigo") return `Apartado ${t}.${ap} · Solo código`;
-    if (sub === "teoria") return `Apartado ${t}.${ap} · Solo teoría`;
-    return `Apartado ${t}.${ap}`;
+  const BLOCK_SIZE = 10;
+  const currentPointer = getBloquePointer(filterKey);
+  let nextPointer = currentPointer;
+  if (nextPointer >= allInFilter.length) {
+    nextPointer = 0;
   }
-  if (filter === "codigo") return "Solo código de examen";
-  if (filter === "teoria") return "Solo teoría";
-  if (filter === "desarrollo") return "Retos de desarrollo y funciones (Corrección IA)";
-  if (filter === "escribir_codigo") return "Escribir funciones complejas para un 10";
-  if (filter === "traza_linea") return "Traza línea a línea (Event Loop)";
-  if (filter === "fallos") return "Repaso de fallos";
-  return filter;
+  const slice = allInFilter.slice(nextPointer, nextPointer + BLOCK_SIZE);
+  saveBloquePointer(filterKey, nextPointer + slice.length);
+
+  const immediate = typeof getSavedImmediate === "function" ? getSavedImmediate() : true;
+  const shuffle = typeof getSavedShuffle === "function" ? getSavedShuffle() : true;
+  startTest({
+    filter: filterKey,
+    ids: slice.map((q) => q.id),
+    immediate,
+    shuffle
+  });
 }
+
+
+// === assets/js/app/sesion/arbol.js ===
+"use strict";
 
 const WEC_ESTRUCTURA_TEMAS = [
   {
@@ -2932,31 +2729,29 @@ const WEC_ESTRUCTURA_TEMAS = [
   },
 ];
 
-function startBloque(filterKey) {
-  const pool = filterPool(filterKey);
-  if (!pool || !pool.length) {
-    toast("No hay preguntas para este apartado.");
-    return;
+function formatearFiltroLegible(filter) {
+  if (!filter || filter === "all") return "Test completo (Ambas)";
+  if (filter.startsWith("tema:")) {
+    const parts = filter.split(":");
+    const t = parts[1];
+    const sub = parts[2];
+    if (sub === "codigo") return `Tema ${t} · Solo código y desarrollo`;
+    if (sub === "teoria") return `Tema ${t} · Solo teoría`;
+    return `Tema ${t}`;
   }
-  let pointer = getBloquePointer(filterKey);
-  if (pointer >= pool.length) {
-    pointer = 0;
+  if (filter.startsWith("apartado:")) {
+    const [, t, ap, sub] = filter.split(":");
+    if (sub === "codigo") return `Apartado ${t}.${ap} · Solo código`;
+    if (sub === "teoria") return `Apartado ${t}.${ap} · Solo teoría`;
+    return `Apartado ${t}.${ap}`;
   }
-  const blockSize = 40;
-  const sliced = pool.slice(pointer, pointer + blockSize);
-  const nextPointer = (pointer + blockSize) >= pool.length ? 0 : pointer + blockSize;
-  saveBloquePointer(filterKey, nextPointer);
-
-  const immediate = $("#immediate-toggle")?.checked !== false;
-  const shuffle = Boolean($("#shuffle-toggle")?.checked);
-
-  startTest({
-    filter: filterKey,
-    ids: sliced.map((q) => q.id),
-    immediate,
-    shuffle,
-    sample: 0,
-  });
+  if (filter === "codigo") return "Solo código de examen";
+  if (filter === "teoria") return "Solo teoría";
+  if (filter === "desarrollo") return "Retos de desarrollo y funciones (Corrección IA)";
+  if (filter === "escribir_codigo") return "Escribir funciones complejas para un 10";
+  if (filter === "traza_linea") return "Traza línea a línea (Event Loop)";
+  if (filter === "fallos") return "Repaso de fallos";
+  return filter;
 }
 
 function construirArbolDashboardHTML() {
@@ -2965,7 +2760,7 @@ function construirArbolDashboardHTML() {
   const apuntesEntry = (state.apuntesCatalogo || []).find(
     (a) => a.nombre.toLowerCase() === currentSubject.toLowerCase(),
   );
-  const history = getHistory();
+  const history = typeof getHistory === "function" ? getHistory() : {};
 
   let listaTemas = [];
   if (isWec) {
@@ -2998,7 +2793,6 @@ function construirArbolDashboardHTML() {
       const aciertosTema = preguntasTema.filter(
         (q) => history[q.id]?.selected === q.correcta,
       );
-      const fallosTema = respondidasTema.length - aciertosTema.length;
 
       let apartados = Array.isArray(t.apartados) ? [...t.apartados] : [];
       const apsFromQuestions = new Map();
@@ -3173,38 +2967,27 @@ function construirArbolDashboardHTML() {
     .join("");
 }
 
-function applyDynamicHeader() {
-  const counts = dataCounts();
-  const meta = state.meta || {};
-  const name = state.subject?.nombre || meta.titulo || "Test";
-  document.title = `${name} · ${counts.total} preguntas`;
-  const logo = $("#brand-logo");
-  if (logo) logo.textContent = name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase() || "T";
-  const title = $("#brand-title");
-  if (title) title.textContent = name;
-  const sub = $("#brand-sub");
-  if (sub) sub.textContent = `${counts.total} preguntas · ${counts.temas.length} temas · ${counts.codigo} de código`;
-}
 
-function renderStart() {
-  state.screen = "start";
-  setModeChip("");
-  applyDynamicHeader();
-  const stats = getStats();
-  const counts = dataCounts();
-  const session = getSession();
-  const canResume = session && !session.finished && Array.isArray(session.ids) && session.ids.length;
-  const canSeeLast = session && session.finished && Array.isArray(session.ids) && session.ids.length;
-  const meta = state.meta || {};
-  const best = Number(stats.bestPct || 0);
-  const last = Number(stats.lastPct || 0);
-  const history = getHistory();
+// === assets/js/app/sesion/modalidades.js ===
+"use strict";
+
+// ============================================================
+// MODAL POPUP: CREAR SESIÓN DE TEST · MODALIDADES DE PRÁCTICA
+// ============================================================
+
+function renderModalidadesPractica() {
+  const modalBody = document.getElementById("modal-modalidades-body");
+  if (!modalBody) return;
+  const counts = typeof dataCounts === "function" ? dataCounts() : { total: 0, temas: [] };
+  const history = typeof getHistory === "function" ? getHistory() : {};
+  const isShuffleSaved = typeof getSavedShuffle === "function" ? getSavedShuffle() : true;
+
   const themeButtons = counts.temas.map(({ tema, count }) => {
     const preguntasTema = state.questions.filter((q) => Number(q.tema) === Number(tema));
     const respondidasTema = preguntasTema.filter((q) => history[q.id]?.selected != null).length;
     const pctTema = count ? Math.round((respondidasTema / count) * 100) : 0;
     return `
-      <button class="btn btn-tema-progreso" type="button" data-start="tema:${tema}" style="display:flex; justify-content:space-between; align-items:center;">
+      <button class="btn btn-tema-progreso" type="button" data-start-modal="tema:${tema}" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px;">
         <span style="display:flex; align-items:center; gap:8px;">
           <span>Tema ${tema}</span>
           <span class="pct-pill" style="font-size:11px; font-weight:700; background:rgba(255,255,255,0.12); padding:2px 7px; border-radius:10px; color:var(--text);">${pctTema}% completado</span>
@@ -3213,6 +2996,694 @@ function renderStart() {
       </button>
     `;
   }).join("");
+
+  modalBody.innerHTML = `
+    <!-- 1. Configurador a medida -->
+    <div class="practice-custom-panel" style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px;">
+      <div style="font-weight:700; font-size:14px; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--brand);"></i> Configurar sesión a medida
+      </div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:16px;">
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Agrupación / Examen</label>
+          <select class="control" id="custom-practice-exam" style="width:100%;">
+            <option value="Examen 1" selected>Examen 1 (Temas 1–4 · ${counts.total} preguntas)</option>
+            <option value="Examen 2">Examen 2 (Próximo / En preparación)</option>
+            <option value="all">Todos los exámenes</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Tema / Alcance</label>
+          <select class="control" id="custom-practice-theme" style="width:100%;">
+            <option value="all">Todos los temas (${counts.total})</option>
+            ${counts.temas.map(t => `<option value="${t.tema}">Tema ${t.tema} (${t.count} preguntas)</option>`).join("")}
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Subapartado</label>
+          <select class="control" id="custom-practice-subapartado" style="width:100%;">
+            <option value="all">Todos los subapartados</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Tipo de repaso</label>
+          <select class="control" id="custom-practice-review" style="width:100%;">
+            <option value="faltan" selected>★ Las que me faltan (pendientes de acertar)</option>
+            <option value="todas">Todas las disponibles (${counts.total})</option>
+            <option value="con_errores">Con algún error / fallo (${counts.fallos})</option>
+            <option value="practicadas">Solo practicadas (${counts.practicadas || counts.total})</option>
+            <option value="nuevas">Nunca practicadas</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Categoría</label>
+          <select class="control" id="custom-practice-category" style="width:100%;">
+            <option value="all">Todas las categorías</option>
+            <option value="oficial">★ Oficiales de examen (${counts.oficiales || Math.min(33, counts.total)})</option>
+            <option value="introduccion">📘 Introducción (${counts.introduccion || Math.round(counts.total * 0.35)})</option>
+            <option value="entrenamiento">⚡ Práctica / Entrenamiento (${counts.entrenamiento || Math.round(counts.total * 0.65)})</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Número de preguntas</label>
+          <select class="control" id="custom-practice-qty" style="width:100%;">
+            <option value="10">10 preguntas</option>
+            <option value="20">20 preguntas</option>
+            <option value="30">30 preguntas</option>
+            <option value="40" selected>40 preguntas (Recomendado)</option>
+            <option value="50">50 preguntas</option>
+            <option value="100">100 preguntas</option>
+            <option value="200">200 preguntas</option>
+            <option value="0">Todas las que coincidan (${counts.total})</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Orden</label>
+          <select class="control" id="custom-practice-order" style="width:100%;">
+            <option value="aleatorio" ${isShuffleSaved ? "selected" : ""}>Aleatorio</option>
+            <option value="original" ${!isShuffleSaved ? "selected" : ""}>Orden original</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-top:1px solid var(--line); padding-top:14px;">
+        <div id="custom-practice-info" style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-circle-check" style="color:var(--ok);"></i>
+          <span>Listo para comenzar tu sesión adaptada.</span>
+        </div>
+        <button class="btn primary large" type="button" id="custom-practice-start-btn" style="padding:10px 24px; font-weight:700; gap:8px;">
+          <i class="fa-solid fa-play"></i> Comenzar sesión personalizada
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. Accesos rápidos directos -->
+    <div>
+      <h4 style="font-size:14px; margin:0 0 10px; font-weight:700; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> Accesos rápidos directos
+      </h4>
+      <div class="practice-modes-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 12px;">
+        <button class="btn primary" type="button" data-start-modal="all" style="justify-content:space-between; padding:12px 14px;">
+          <span><i class="fa-solid fa-layer-group"></i> Todas las preguntas</span>
+          <span class="count">${counts.total}</span>
+        </button>
+        <button class="btn" type="button" data-start-modal="practicadas" style="justify-content:space-between; padding:12px 14px; border-color:var(--brand); color:var(--brand);">
+          <span><i class="fa-solid fa-clock-rotate-left"></i> Solo Practicadas</span>
+          <span class="count" style="background:var(--brand-soft); color:var(--brand);">${counts.practicadas || counts.total}</span>
+        </button>
+        <button class="btn" type="button" data-start-modal="oficial" style="justify-content:space-between; padding:12px 14px; border-color:#f59e0b; color:#f59e0b;">
+          <span><i class="fa-solid fa-star"></i> Oficiales de examen</span>
+          <span class="count" style="background:rgba(245,158,11,0.18); color:#f59e0b;">${counts.oficiales || Math.min(33, counts.total)}</span>
+        </button>
+        <button class="btn ok" type="button" data-start="mastery" data-start-modal="mastery" style="justify-content:space-between; padding:12px 14px;">
+          <span><i class="fa-solid fa-award"></i> Refuerzo sin fallos</span>
+          <span class="count">${counts.total}</span>
+        </button>
+        ${(counts.desarrollo || 0) > 0 ? `
+          <button class="btn" type="button" data-start-modal="desarrollo" style="justify-content:space-between; padding:12px 14px; border-color:#38bdf8; color:#38bdf8; grid-column: 1 / -1; background:rgba(56,189,248,0.08);">
+            <span><i class="fa-solid fa-graduation-cap"></i> ✍️ Retos de Desarrollo y Código Abierto</span>
+            <span class="count" style="background:#0284c7; color:#fff;">${counts.desarrollo} retos</span>
+          </button>
+        ` : ""}
+      </div>
+      <div style="font-size:12px; color:var(--muted); background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-circle-info" style="color:var(--brand);"></i>
+        <span>Las <strong>${counts.total} preguntas</strong> son de tipo test oficial con corrección instantánea. La corrección de preguntas abiertas de desarrollo requiere tener Ollama local activo en Docker.</span>
+      </div>
+    </div>
+
+    <!-- 3. Práctica por Tema individual -->
+    <div>
+      <h4 style="font-size:14px; margin:0 0 10px; font-weight:700; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-list-ol" style="color:var(--brand);"></i> Práctica por Tema individual
+      </h4>
+      <div class="start-actions" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+        ${themeButtons}
+      </div>
+    </div>
+  `;
+
+  // Dynamic subapartados
+  const themeSelect = $("#custom-practice-theme");
+  const subapSelect = $("#custom-practice-subapartado");
+  function actualizarSubapartados() {
+    if (!subapSelect) return;
+    const tVal = themeSelect?.value || "all";
+    subapSelect.innerHTML = '<option value="all">Todos los subapartados</option>';
+    let questionsPool = state.questions;
+    if (tVal !== "all") {
+      questionsPool = questionsPool.filter((q) => Number(q.tema) === Number(tVal));
+    }
+    const apartadosEncontrados = new Map();
+    questionsPool.forEach((q) => {
+      const apNum = q.apartado != null ? q.apartado : 1;
+      if (!apartadosEncontrados.has(apNum)) {
+        apartadosEncontrados.set(apNum, q.apartadoNombre || `Apartado ${apNum}`);
+      }
+    });
+    const sortedAps = [...apartadosEncontrados.entries()].sort((a, b) => Number(a[0]) - Number(b[0]));
+    sortedAps.forEach(([num, nombre]) => {
+      const opt = document.createElement("option");
+      opt.value = num;
+      opt.textContent = `${tVal !== "all" ? `${tVal}.${num}` : `Apartado ${num}`} · ${nombre}`;
+      subapSelect.appendChild(opt);
+    });
+  }
+  themeSelect?.addEventListener("change", actualizarSubapartados);
+  actualizarSubapartados();
+
+  // Guardar opción de orden en localStorage y sincronizar con #shuffle-toggle
+  const orderSelect = $("#custom-practice-order");
+  orderSelect?.addEventListener("change", (e) => {
+    const isShuffle = e.target.value === "aleatorio";
+    localStorage.setItem("preparar_tests_barajar_orden", isShuffle ? "true" : "false");
+    const shuffleToggle = $("#shuffle-toggle");
+    if (shuffleToggle) shuffleToggle.checked = isShuffle;
+  });
+
+  // Botón comenzar personalizado
+  $("#custom-practice-start-btn")?.addEventListener("click", () => {
+    const examen = $("#custom-practice-exam")?.value || "Examen 1";
+    const tema = $("#custom-practice-theme")?.value || "all";
+    const subapartado = $("#custom-practice-subapartado")?.value || "all";
+    const repaso = $("#custom-practice-review")?.value || "faltan";
+    const categoria = $("#custom-practice-category")?.value || "all";
+    const qty = Number($("#custom-practice-qty")?.value) || 0;
+    const order = $("#custom-practice-order")?.value || "aleatorio";
+
+    const customFilter = { examen, tema, subapartado, repaso, categoria };
+    const pool = filterPool(customFilter);
+    if (!pool.length) {
+      toast("No hay preguntas que coincidan con esa selección.");
+      return;
+    }
+
+    const immediate = $("#immediate-toggle") ? $("#immediate-toggle").checked : (typeof getSavedImmediate === "function" ? getSavedImmediate() : true);
+    const shuffle = order === "aleatorio";
+    cerrarModalModalidades();
+    startTest({ filter: customFilter, immediate, shuffle, sample: qty });
+  });
+
+  // Botones de inicio rápido en el modal
+  $$("[data-start-modal]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const filter = btn.dataset.startModal;
+      cerrarModalModalidades();
+      if (filter === "mastery") {
+        startTest({ mastery: true, immediate: true, shuffle: typeof getSavedShuffle === "function" ? getSavedShuffle() : true });
+        return;
+      }
+      if (filter === "desarrollo") {
+        if (typeof iniciarExamenDesarrollo === "function") iniciarExamenDesarrollo();
+        return;
+      }
+      const immediate = $("#immediate-toggle") ? $("#immediate-toggle").checked : (typeof getSavedImmediate === "function" ? getSavedImmediate() : true);
+      const shuffle = $("#shuffle-toggle") ? $("#shuffle-toggle").checked : (typeof getSavedShuffle === "function" ? getSavedShuffle() : true);
+      startTest({ filter, immediate, shuffle });
+    });
+  });
+}
+
+function abrirModalModalidades() {
+  const modal = document.getElementById("modal-modalidades-practica");
+  if (!modal) return;
+  renderModalidadesPractica();
+  modal.classList.remove("hidden");
+}
+
+function cerrarModalModalidades() {
+  const modal = document.getElementById("modal-modalidades-practica");
+  if (modal) modal.classList.add("hidden");
+}
+
+
+// === assets/js/app/sesion/desarrollo.js ===
+"use strict";
+
+// ============================================================
+// ANÁLISIS DE SUBAPARTADOS DÉBILES Y RETOS DE DESARROLLO
+// ============================================================
+
+function renderWeakConceptsGrouped() {
+  const weakContainer = $("#weak-concepts");
+  if (!weakContainer) return;
+
+  const weakGroups = typeof getWeakSubapartadosByTema === "function" ? getWeakSubapartadosByTema() : [];
+  if (!weakGroups.length) {
+    weakContainer.innerHTML = '<p class="muted" style="font-size:13px; padding:12px 0;">Aún no hay fallos suficientes para calcular subapartados débiles. En cuanto falles preguntas, aparecerán aquí agrupados por tema con sus porcentajes de error.</p>';
+    return;
+  }
+
+  weakContainer.innerHTML = weakGroups.map((group) => `
+    <details class="weak-tema-details tree-tema-details" open style="margin-bottom:14px; border:1px solid var(--line); border-radius:14px; background:var(--card); overflow:hidden;">
+      <summary class="tree-tema-summary" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:12px 18px; background:color-mix(in srgb, var(--card) 93%, var(--text) 7%); flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <i class="fa-solid fa-folder-open" style="color:var(--brand)"></i>
+          <b style="font-size:15px; color:var(--text)">Tema ${group.tema}</b>
+          <span class="chip" style="font-weight:800; font-size:12px; background:rgba(239,68,68,0.16); color:var(--bad)">
+            ${group.failRate}% de fallos (${group.totalFails} fallo${group.totalFails !== 1 ? "s" : ""})
+          </span>
+          <span class="tree-chip bank-chip" style="font-weight:600">${group.uniqueIds.length} preg. falladas</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;" onclick="event.stopPropagation()">
+          <button class="btn tiny warn" type="button" data-repasar-fallos-sub="${group.uniqueIds.join(",")}" title="Hacer un test con todos los fallos del Tema ${group.tema}">
+            Repetir ${group.uniqueIds.length} fallos Tema ${group.tema}
+          </button>
+          <button class="btn tiny" type="button" data-start="tema:${group.tema}" title="Hacer test de todas las preguntas del Tema ${group.tema}">
+            Practicar Tema ${group.tema}
+          </button>
+        </div>
+      </summary>
+      <div class="weak-tema-body" style="padding:14px 18px; display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px; border-top:1px solid var(--line); background:color-mix(in srgb, var(--card) 97%, var(--text) 3%);">
+        ${group.subapartados.map((item) => `
+          <div class="weak-subapartado-card" style="border:1px solid var(--line); border-radius:12px; padding:13px 15px; background:var(--card); display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow-soft);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+              <div style="min-width:0; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <span class="tree-chip bank-chip" style="font-weight:700">${item.codigo}</span>
+                <b style="font-size:13.5px; color:var(--text);">${esc(item.titulo)}</b>
+              </div>
+              <span style="font-weight:800; font-size:12.5px; color:var(--bad); background:rgba(239,68,68,0.15); padding:3px 8px; border-radius:8px; flex-shrink:0;">
+                ${item.pctFallo}% de fallos
+              </span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; opacity:.85; flex-wrap:wrap; gap:4px;">
+              <span><b>${item.fails}</b> fallo${item.fails !== 1 ? "s" : ""} (${item.total} preg. con error de ${item.totalBanco || item.total})</span>
+              ${item.tags && item.tags.length ? `<span class="chip ghost" style="font-size:11px; padding:1px 6px">${item.tags.map(esc).join(", ")}</span>` : ""}
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:3px;">
+              <button class="btn tiny warn" type="button" data-repasar-fallos-sub="${item.ids.join(",")}" title="Hacer un test solo con los fallos de este subapartado">
+                Repetir ${item.ids.length} fallo${item.ids.length !== 1 ? "s" : ""}
+              </button>
+              ${item.apartado ? `
+                <button class="btn tiny" type="button" data-start-apartado="${item.tema}:${item.apartado}" title="Practicar todas las preguntas de este subapartado">
+                  Practicar apartado
+                </button>
+              ` : `
+                <button class="btn tiny" type="button" data-start="tema:${item.tema}">
+                  Practicar tema
+                </button>
+              `}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </details>
+  `).join("");
+
+  $("#weak-desplegar-todos")?.addEventListener("click", () => {
+    $$(".weak-tema-details").forEach((d) => (d.open = true));
+  });
+  $("#weak-plegar-todos")?.addEventListener("click", () => {
+    $$(".weak-tema-details").forEach((d) => (d.open = false));
+  });
+
+  $$("[data-repasar-fallos-sub]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const raw = (btn.dataset.repasarFallosSub || "").split(",").map((s) => s.trim()).filter(Boolean);
+      const ids = raw.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
+      if (ids.length) {
+        const immediate = $("#immediate-toggle") ? $("#immediate-toggle").checked : (typeof getSavedImmediate === "function" ? getSavedImmediate() : true);
+        startTest({ ids, immediate, shuffle: true });
+      }
+    });
+  });
+
+  $$("[data-start-apartado]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const filter = "apartado:" + btn.dataset.startApartado;
+      const immediate = $("#immediate-toggle") ? $("#immediate-toggle").checked : (typeof getSavedImmediate === "function" ? getSavedImmediate() : true);
+      const shuffle = $("#shuffle-toggle") ? $("#shuffle-toggle").checked : (typeof getSavedShuffle === "function" ? getSavedShuffle() : true);
+      startTest({ filter, immediate, shuffle });
+    });
+  });
+
+  $$("[data-start-bloque]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const filterKey = btn.dataset.startBloque;
+      startBloque(filterKey);
+    });
+  });
+
+  $$("[data-generar-tema]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const temaNum = Number(btn.dataset.generarTema);
+      window.abrirPracticaDesdeApuntes?.(state.subject?.nombre || "WEC", { tema: temaNum });
+    });
+  });
+
+  $$("[data-generar-apartado]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const [temaStr, apStr] = btn.dataset.generarApartado.split(":");
+      window.abrirPracticaDesdeApuntes?.(state.subject?.nombre || "WEC", {
+        tema: Number(temaStr),
+        apartado: Number(apStr),
+      });
+    });
+  });
+}
+
+
+// === assets/js/app/sesion/topbar.js ===
+"use strict";
+
+// ============================================================
+// COMPONENTES Y CONTROLADORES DE LA BARRA SUPERIOR (TOPBAR)
+// Y MODAL DE GESTIÓN DE ASIGNATURAS Y TESTS
+// ============================================================
+
+function inicializarTopbar() {
+  const ramasConTests = new Set();
+  if (Array.isArray(state.catalog)) {
+    state.catalog.forEach((s) => {
+      if (s.grado && (s.archivo || s.localData)) {
+        ramasConTests.add(s.grado);
+      }
+    });
+  }
+  if (!ramasConTests.size) {
+    ramasConTests.add("Segundo_grado_medio");
+  }
+
+  const nombresRamas = {
+    "Segundo_grado_medio": "Segundo grado medio",
+    "Primer_grado_medio": "Primer grado medio",
+    "Primer_grado_superior_DAW": "Primer grado superior DAW",
+  };
+
+  // 1. Selector de Rama en Topbar con Popover en el icono
+  const branchSelect = document.getElementById("navbar-branch-select");
+  const btnToggleBranch = document.getElementById("btn-toggle-branch");
+  const branchPopover = document.getElementById("branch-dropdown-popover");
+
+  if (btnToggleBranch && branchPopover && !btnToggleBranch.dataset.attached) {
+    btnToggleBranch.dataset.attached = "true";
+    btnToggleBranch.addEventListener("click", (e) => {
+      e.stopPropagation();
+      branchPopover.classList.toggle("hidden");
+    });
+    document.addEventListener("click", (e) => {
+      if (!branchPopover.contains(e.target) && !btnToggleBranch.contains(e.target)) {
+        branchPopover.classList.add("hidden");
+      }
+    });
+  }
+
+  if (branchSelect) {
+    let htmlRamas = "";
+    for (const [clave, label] of Object.entries(nombresRamas)) {
+      if (ramasConTests.has(clave)) {
+        htmlRamas += `<option value="${clave}">${label}</option>`;
+      }
+    }
+    if (ramasConTests.size > 1) {
+      htmlRamas += `<option value="todas">Todas las ramas</option>`;
+    }
+    branchSelect.innerHTML = htmlRamas || `<option value="Segundo_grado_medio">Segundo grado medio</option>`;
+
+    let branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "";
+    if (!ramasConTests.has(branchSelected) && branchSelected !== "todas") {
+      branchSelected = [...ramasConTests][0] || "Segundo_grado_medio";
+      state.ramaActual = branchSelected;
+      try { localStorage.setItem("rama_actual", branchSelected); } catch (_) {}
+    }
+    branchSelect.value = branchSelected;
+
+    if (!branchSelect.dataset.attached) {
+      branchSelect.dataset.attached = "true";
+      branchSelect.addEventListener("change", async (e) => {
+        const val = e.target.value;
+        branchPopover?.classList.add("hidden");
+        state.ramaActual = val;
+        try { localStorage.setItem("rama_actual", val); } catch (_) {}
+        const matching = state.catalog.filter(s => val === "todas" || s.grado === val || (!s.grado && val === "Segundo_grado_medio"));
+        if (matching.length && (!state.subject || (state.subject.grado !== val && val !== "todas"))) {
+          await loadSubject(matching[0].id);
+        }
+        renderStart();
+        const nombreRama = nombresRamas[val] || "Todas las ramas";
+        toast(`Grado activo: ${nombreRama}`);
+      });
+    }
+  }
+
+  // 2. Selector de asignaturas en la barra superior (topbar)
+  const navbarSubjectSelect = document.getElementById("navbar-subject-select");
+  if (navbarSubjectSelect) {
+    const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
+    const matchingSubjects = state.catalog.filter(s => {
+      if (branchSelected === "todas" || branchSelected === "TODAS LAS RAMAS") return true;
+      return s.grado === branchSelected || (!s.grado && branchSelected === "Segundo_grado_medio");
+    });
+    const listToRender = matchingSubjects.length ? matchingSubjects : state.catalog;
+    navbarSubjectSelect.innerHTML = listToRender.map(s => {
+      const label = s.etiqueta || s.nombre;
+      return `<option value="${esc(s.id)}" ${s.id === state.subjectId ? "selected" : ""}>${esc(label)}</option>`;
+    }).join("");
+
+    if (!navbarSubjectSelect.dataset.attached) {
+      navbarSubjectSelect.dataset.attached = "true";
+      navbarSubjectSelect.addEventListener("change", async (e) => {
+        const id = e.target.value;
+        const seleccion = state.catalog.find(s => s.id === id);
+        if (seleccion?.apuntesPrivados) {
+          window.abrirPracticaDesdeApuntes?.(seleccion.nombreApuntes);
+          return;
+        }
+        try {
+          await loadSubject(id);
+          renderStart();
+          toast(`Asignatura: ${state.subject?.nombre || id}`);
+        } catch (error) {
+          toast(`No se pudo cargar: ${error.message}`);
+        }
+      });
+    }
+  }
+
+  // 3. Botón para abrir el Modal de Modalidades de práctica desde la navbar
+  const btnNavbarModalidades = document.getElementById("btn-navbar-modalidades");
+  if (btnNavbarModalidades && !btnNavbarModalidades.dataset.attached) {
+    btnNavbarModalidades.dataset.attached = "true";
+    btnNavbarModalidades.addEventListener("click", () => {
+      abrirModalModalidades();
+    });
+  }
+
+  const btnCerrarModalidades = document.getElementById("btn-cerrar-modal-modalidades");
+  const modalModalidades = document.getElementById("modal-modalidades-practica");
+  if (btnCerrarModalidades && modalModalidades && !btnCerrarModalidades.dataset.attached) {
+    btnCerrarModalidades.dataset.attached = "true";
+    btnCerrarModalidades.addEventListener("click", () => cerrarModalModalidades());
+    modalModalidades.addEventListener("click", (e) => {
+      if (e.target === modalModalidades) cerrarModalModalidades();
+    });
+  }
+
+  // 4. Botón de tests desde apuntes en la navbar
+  const btnNavbarApuntes = document.getElementById("btn-navbar-apuntes");
+  if (btnNavbarApuntes && !btnNavbarApuntes.dataset.attached) {
+    btnNavbarApuntes.dataset.attached = "true";
+    btnNavbarApuntes.addEventListener("click", () => {
+      window.abrirPracticaDesdeApuntes?.();
+    });
+  }
+
+  // 5. Opciones de práctica y sincronización de caché (Barajar y Corrección inmediata)
+  const shuffleToggle = $("#shuffle-toggle");
+  if (shuffleToggle) {
+    shuffleToggle.checked = typeof getSavedShuffle === "function" ? getSavedShuffle() : true;
+    if (!shuffleToggle.dataset.attached) {
+      shuffleToggle.dataset.attached = "true";
+      shuffleToggle.addEventListener("change", (e) => {
+        localStorage.setItem("preparar_tests_barajar_orden", e.target.checked ? "true" : "false");
+        const orderEl = $("#custom-practice-order");
+        if (orderEl) orderEl.value = e.target.checked ? "aleatorio" : "original";
+      });
+    }
+  }
+
+  const immToggle = $("#immediate-toggle");
+  if (immToggle) {
+    immToggle.checked = typeof getSavedImmediate === "function" ? getSavedImmediate() : true;
+    if (!immToggle.dataset.attached) {
+      immToggle.dataset.attached = "true";
+      immToggle.addEventListener("change", (e) => {
+        localStorage.setItem("preparar_tests_correccion_inmediata", e.target.checked ? "true" : "false");
+      });
+    }
+  }
+
+  // 6. Modal Gestionar Asignaturas y Tests
+  const modal = document.getElementById("modal-gestionar-asignaturas");
+  const btnAbrir = document.getElementById("btn-gestionar-asignaturas");
+  const btnCerrar = document.getElementById("btn-cerrar-modal-gestionar");
+  const tabCrear = document.getElementById("tab-crear-asig");
+  const tabSubir = document.getElementById("tab-subir-tests");
+  const panelCrear = document.getElementById("panel-crear-asig");
+  const panelSubir = document.getElementById("panel-subir-tests");
+
+  if (btnAbrir && modal && !btnAbrir.dataset.attached) {
+    btnAbrir.dataset.attached = "true";
+    btnAbrir.addEventListener("click", () => {
+      modal.classList.remove("hidden");
+    });
+    btnCerrar?.addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.add("hidden");
+    });
+
+    tabCrear?.addEventListener("click", () => {
+      panelCrear?.classList.remove("hidden");
+      panelSubir?.classList.add("hidden");
+      tabCrear.style.color = "var(--brand)";
+      tabCrear.style.borderBottom = "2px solid var(--brand)";
+      tabSubir.style.color = "var(--muted)";
+      tabSubir.style.borderBottom = "2px solid transparent";
+    });
+
+    tabSubir?.addEventListener("click", () => {
+      panelSubir?.classList.remove("hidden");
+      panelCrear?.classList.add("hidden");
+      tabSubir.style.color = "var(--brand)";
+      tabSubir.style.borderBottom = "2px solid var(--brand)";
+      tabCrear.style.color = "var(--muted)";
+      tabCrear.style.borderBottom = "2px solid transparent";
+    });
+
+    // Guardar Asignatura
+    const btnGuardarAsig = document.getElementById("btn-guardar-asig");
+    btnGuardarAsig?.addEventListener("click", async () => {
+      const nombre = document.getElementById("input-asig-nombre")?.value.trim();
+      const grado = document.getElementById("input-asig-grado")?.value;
+      if (!nombre) {
+        toast("Escribe el nombre de la asignatura");
+        return;
+      }
+      btnGuardarAsig.disabled = true;
+      btnGuardarAsig.textContent = "Creando…";
+      try {
+        const resp = await fetch("/api/asignaturas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nombre, grado })
+        });
+        const res = await resp.json();
+        if (resp.ok && res.ok) {
+          toast(`✓ Asignatura "${res.asignatura.nombre}" creada.`);
+          modal.classList.add("hidden");
+          await loadCatalog();
+          await loadSubject(res.asignatura.id);
+          renderStart();
+        } else {
+          toast(`Error: ${res.error || "No se pudo crear"}`);
+        }
+      } catch (err) {
+        toast(`Error de conexión: ${err.message}`);
+      } finally {
+        btnGuardarAsig.disabled = false;
+        btnGuardarAsig.textContent = "Crear y Guardar Asignatura";
+      }
+    });
+
+    // Subir Test JSON
+    const btnSubirTest = document.getElementById("btn-subir-test");
+    btnSubirTest?.addEventListener("click", async () => {
+      const asigId = document.getElementById("select-subir-asig")?.value;
+      const fileInput = document.getElementById("input-subir-archivo");
+      const archivo = fileInput?.files?.[0];
+      if (!archivo) {
+        toast("Selecciona un archivo JSON");
+        return;
+      }
+      btnSubirTest.disabled = true;
+      btnSubirTest.textContent = "Subiendo…";
+      try {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          try {
+            const json = JSON.parse(reader.result);
+            const resp = await fetch("/api/tests/subir", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ asignaturaId: asigId, nombreArchivo: archivo.name, contenido: json })
+            });
+            const res = await resp.json();
+            if (resp.ok && res.ok) {
+              toast(`✓ Test añadido (${res.totalPreguntas} preguntas)`);
+              modal.classList.add("hidden");
+              await loadCatalog();
+              await loadSubject(asigId);
+              renderStart();
+            } else {
+              toast(`Error: ${res.error || "Fallo al subir"}`);
+            }
+          } catch (pe) {
+            toast(`El archivo no es un JSON válido: ${pe.message}`);
+          } finally {
+            btnSubirTest.disabled = false;
+            btnSubirTest.textContent = "Subir y Guardar Test";
+          }
+        };
+        reader.readAsText(archivo);
+      } catch (err) {
+        toast(`Error: ${err.message}`);
+        btnSubirTest.disabled = false;
+        btnSubirTest.textContent = "Subir y Guardar Test";
+      }
+    });
+  }
+}
+
+
+// === assets/js/app/sesion/inicio.js ===
+"use strict";
+
+// ============================================================
+// PANTALLA PRINCIPAL (INICIO / DASHBOARD)
+// ============================================================
+
+function applyDynamicHeader() {
+  const counts = typeof dataCounts === "function" ? dataCounts() : { total: 0 };
+  const meta = state.meta || {};
+  const name = state.subject?.nombre || meta.titulo || "Test";
+  document.title = `${name} · ${counts.total} preguntas`;
+  const logo = $("#brand-logo");
+  if (logo) logo.textContent = "PT";
+  const title = $("#brand-title");
+  if (title) title.textContent = "Tests";
+  const sub = $("#brand-sub");
+  if (sub) {
+    sub.textContent = "";
+    sub.style.display = "none";
+  }
+}
+
+function renderStart() {
+  state.screen = "start";
+  if (typeof setModeChip === "function") setModeChip("");
+  applyDynamicHeader();
+
+  const stats = typeof getStats === "function" ? getStats() : { bestPct: 0, lastPct: 0 };
+  const counts = typeof dataCounts === "function" ? dataCounts() : { total: 0, temas: [], teoria: 0, codigo: 0, fallos: 0 };
+  const session = typeof getSession === "function" ? getSession() : null;
+  const canResume = session && !session.finished && Array.isArray(session.ids) && session.ids.length;
+  const canSeeLast = session && session.finished && Array.isArray(session.ids) && session.ids.length;
+  const meta = state.meta || {};
+  const best = Number(stats.bestPct || 0);
+  const last = Number(stats.lastPct || 0);
+
   const themeSummary = counts.temas.map(({ tema, count }) => `Tema ${tema}: ${count}`).join(" · ");
   const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
   const filteredCatalog = state.catalog.filter((s) => {
@@ -3225,16 +3696,24 @@ function renderStart() {
     const label = s.etiqueta || s.nombre;
     return `<option value="${esc(s.id)}" ${s.id === state.subjectId ? "selected" : ""}>${esc(label)}${suffix}</option>`;
   }).join("");
-  const sampleChoices = [10, 20, 30, 50, 75].filter((n) => n < counts.total);
-  const sampleOptions = `<option value="0">Todas (${counts.total})</option>${sampleChoices.map((n) => `<option value="${n}">${n} al azar</option>`).join("")}`;
 
   main.innerHTML = `
     <section class="home">
       <header class="home-hero">
         <div class="home-hero-copy">
-          <span class="hero-kicker">${esc(meta.titulo || "Test de preguntas")}</span>
-          <h1>${counts.total} preguntas</h1>
+          <span class="hero-kicker">${esc(meta.titulo || state.subject?.nombre || "Test interactivo")}</span>
+          <h1>${counts.total} preguntas disponibles</h1>
           <p>${themeSummary || "Sin temas"} · ${counts.teoria} de teoría · ${counts.codigo} de código.</p>
+          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-top:16px;">
+            <button class="btn primary large" id="btn-hero-modalidades" type="button" style="display:inline-flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Crear sesión de test · Modalidades de práctica</span>
+            </button>
+            <button class="btn ok large" type="button" data-start="all" style="display:inline-flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-bolt"></i>
+              <span>Todas las preguntas (${counts.total})</span>
+            </button>
+          </div>
         </div>
         <div class="mini-stats">
           <div class="mini-stat"><b>${best ? best + "%" : "—"}</b><span>Mejor</span></div>
@@ -3290,134 +3769,6 @@ function renderStart() {
       </section>
 
       <div class="home-grid">
-        <section class="home-card home-card-entrenar" style="grid-column: 1 / -1;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
-            <div>
-              <h2 style="margin:0; font-size:1.35rem;"><i class="fa-solid fa-sliders"></i> Crear sesión de test · Modalidades de práctica</h2>
-              <p class="lead" style="margin:4px 0 0;">Configura tu sesión de test a medida (tema, tipo de repaso, categoría y cantidad) o usa los accesos rápidos.</p>
-            </div>
-          </div>
-
-          <!-- Configurador de práctica a medida sin carpetas expuestas -->
-          <div class="practice-custom-panel" style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px; margin-bottom:20px;">
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:16px;">
-
-              <div>
-                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Agrupación / Examen</label>
-                <select class="control" id="custom-practice-exam" style="width:100%;">
-                  <option value="Examen 1" selected>Examen 1 (Temas 1–4 · 1.656 preguntas)</option>
-                  <option value="Examen 2">Examen 2 (Próximo / En preparación)</option>
-                  <option value="all">Todos los exámenes</option>
-                </select>
-              </div>
-
-              <div>
-                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Tema / Alcance</label>
-                <select class="control" id="custom-practice-theme" style="width:100%;">
-                  <option value="all">Todos los temas (${counts.total})</option>
-                  ${counts.temas.map(t => `<option value="${t.tema}">Tema ${t.tema} (${t.count} preguntas)</option>`).join("")}
-                </select>
-              </div>
-
-              <div>
-                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Subapartado</label>
-                <select class="control" id="custom-practice-subapartado" style="width:100%;">
-                  <option value="all">Todos los subapartados</option>
-                </select>
-              </div>
-
-              <div>
-                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Tipo de repaso</label>
-                <select class="control" id="custom-practice-review" style="width:100%;">
-                  <option value="faltan" selected>★ Las que me faltan (pendientes de acertar)</option>
-                  <option value="todas">Todas las disponibles (${counts.total})</option>
-                  <option value="con_errores">Con algún error / fallo (${counts.fallos})</option>
-                  <option value="practicadas">Solo practicadas (${counts.practicadas || 515})</option>
-                  <option value="nuevas">Nunca practicadas</option>
-                </select>
-              </div>
-
-              <div>
-                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Categoría</label>
-                <select class="control" id="custom-practice-category" style="width:100%;">
-                  <option value="all">Todas las categorías</option>
-                  <option value="oficial">★ Oficiales de examen (${counts.oficiales || 33})</option>
-                  <option value="introduccion">📘 Introducción (${counts.introduccion || 572})</option>
-                  <option value="entrenamiento">⚡ Práctica / Entrenamiento (${counts.entrenamiento || 1051})</option>
-                </select>
-              </div>
-
-              <div>
-                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Número de preguntas</label>
-                <select class="control" id="custom-practice-qty" style="width:100%;">
-                  <option value="10">10 preguntas</option>
-                  <option value="20">20 preguntas</option>
-                  <option value="30">30 preguntas</option>
-                  <option value="40" selected>40 preguntas (Recomendado)</option>
-                  <option value="50">50 preguntas</option>
-                  <option value="100">100 preguntas</option>
-                  <option value="200">200 preguntas</option>
-                  <option value="0">Todas las que coincidan con la selección</option>
-                </select>
-              </div>
-
-              <div>
-                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--text);">Orden</label>
-                <select class="control" id="custom-practice-order" style="width:100%;">
-                  <option value="aleatorio" selected>Aleatorio</option>
-                  <option value="original">Orden original</option>
-                </select>
-              </div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-top:1px solid var(--line); padding-top:14px;">
-              <div id="custom-practice-info" style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-circle-check" style="color:var(--ok);"></i>
-                <span>Listo para comenzar tu sesión adaptada.</span>
-              </div>
-              <button class="btn primary large" type="button" id="custom-practice-start-btn" style="padding:10px 24px; font-weight:700; gap:8px;">
-                <i class="fa-solid fa-play"></i> Comenzar sesión personalizada
-              </button>
-            </div>
-          </div>
-
-          <h3 style="font-size:15px; margin:20px 0 10px;"><i class="fa-solid fa-bolt"></i> Accesos rápidos directos</h3>
-          <div class="practice-modes-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 16px;">
-            <button class="btn primary" type="button" data-start="all" style="justify-content:space-between; padding:12px 14px;">
-              <span><i class="fa-solid fa-layer-group"></i> Todas las preguntas</span>
-              <span class="count">${counts.total}</span>
-            </button>
-            <button class="btn" type="button" data-start="practicadas" style="justify-content:space-between; padding:12px 14px; border-color:var(--brand); color:var(--brand);">
-              <span><i class="fa-solid fa-clock-rotate-left"></i> Solo Practicadas</span>
-              <span class="count" style="background:var(--brand-soft); color:var(--brand);">${counts.practicadas || 515}</span>
-            </button>
-            <button class="btn" type="button" data-start="oficial" style="justify-content:space-between; padding:12px 14px; border-color:#f59e0b; color:#f59e0b;">
-              <span><i class="fa-solid fa-star"></i> Oficiales de examen</span>
-              <span class="count" style="background:rgba(245,158,11,0.18); color:#f59e0b;">${counts.oficiales || 33}</span>
-            </button>
-            <button class="btn ok" type="button" data-start="mastery" style="justify-content:space-between; padding:12px 14px;">
-              <span><i class="fa-solid fa-award"></i> Refuerzo sin fallos</span>
-              <span class="count">${counts.total}</span>
-            </button>
-            ${(counts.desarrollo || 0) > 0 ? `
-              <button class="btn" type="button" data-start="desarrollo" style="justify-content:space-between; padding:12px 14px; border-color:#38bdf8; color:#38bdf8; grid-column: 1 / -1; background:rgba(56,189,248,0.08);">
-                <span><i class="fa-solid fa-graduation-cap"></i> ✍️ Retos de Desarrollo y Código Abierto (Corrección IA con Nota 0-10)</span>
-                <span class="count" style="background:#0284c7; color:#fff;">${counts.desarrollo} retos</span>
-              </button>
-            ` : `
-              <div style="grid-column: 1 / -1; font-size:12px; color:var(--muted); background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-circle-info" style="color:var(--brand);"></i>
-                <span>Las <strong>1.656 preguntas</strong> son de tipo test oficial con corrección instantánea. La corrección de preguntas abiertas de desarrollo requiere tener Ollama local activo en Docker.</span>
-              </div>
-            `}
-          </div>
-
-          <h3 style="font-size:15px; margin:20px 0 10px;"><i class="fa-solid fa-list-ol"></i> Práctica por Tema individual</h3>
-          <div class="start-actions">
-            ${themeButtons}
-          </div>
-        </section>
-
         <section class="home-card home-card-repasar">
           <h2>Repasar fallos</h2>
           <p class="lead">Lo que fallas es lo que más sube la nota.</p>
@@ -3450,6 +3801,12 @@ function renderStart() {
     </section>
   `;
 
+  // Botón Hero para abrir Modalidades de práctica
+  $("#btn-hero-modalidades")?.addEventListener("click", () => {
+    abrirModalModalidades();
+  });
+
+  // Botones start directos
   $$("[data-start]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const filter = btn.dataset.start || "all";
@@ -3457,606 +3814,93 @@ function renderStart() {
         startTest({ filter: "all", immediate: true, shuffle: true, mastery: true });
         return;
       }
-      const immediate = $("#immediate-toggle")?.checked !== false;
-      const shuffle = Boolean($("#shuffle-toggle")?.checked);
-      const sample = Number($("#sample-select")?.value) || 0;
-      if (filter === "fallos" && !getWrongIds().length) {
+      const immediate = $("#immediate-toggle") ? $("#immediate-toggle").checked : (typeof getSavedImmediate === "function" ? getSavedImmediate() : true);
+      const shuffle = $("#shuffle-toggle") ? $("#shuffle-toggle").checked : (typeof getSavedShuffle === "function" ? getSavedShuffle() : true);
+      if (filter === "fallos" && !(typeof getWrongIds === "function" && getWrongIds().length)) {
         toast("Todavía no tienes fallos guardados.");
         return;
       }
-      startTest({ filter, immediate, shuffle, sample });
+      startTest({ filter, immediate, shuffle });
     });
   });
 
-  // Actualización dinámica de subapartados según el tema elegido
-  const themeSelect = $("#custom-practice-theme");
-  const subapSelect = $("#custom-practice-subapartado");
-  function actualizarSubapartados() {
-    if (!subapSelect) return;
-    const tVal = themeSelect?.value || "all";
-    subapSelect.innerHTML = '<option value="all">Todos los subapartados</option>';
-    let questionsPool = state.questions;
-    if (tVal !== "all") {
-      questionsPool = questionsPool.filter((q) => Number(q.tema) === Number(tVal));
-    }
-    const apartadosEncontrados = new Map();
-    questionsPool.forEach((q) => {
-      const apNum = q.apartado != null ? q.apartado : 1;
-      if (!apartadosEncontrados.has(apNum)) {
-        apartadosEncontrados.set(apNum, q.apartadoNombre || `Apartado ${apNum}`);
-      }
-    });
-    const sortedAps = [...apartadosEncontrados.entries()].sort((a, b) => Number(a[0]) - Number(b[0]));
-    sortedAps.forEach(([num, nombre]) => {
-      const opt = document.createElement("option");
-      opt.value = num;
-      opt.textContent = `${tVal !== "all" ? `${tVal}.${num}` : `Apartado ${num}`} · ${nombre}`;
-      subapSelect.appendChild(opt);
-    });
-  }
-  themeSelect?.addEventListener("change", actualizarSubapartados);
-  actualizarSubapartados();
-
-  // Inicializar selector de ramas de GitHub si está disponible
-  const branchSelect = $("#custom-practice-branch");
-  const folderInput = $("#custom-practice-folder");
-  if (branchSelect && window.RepoBranchManager) {
-    window.RepoBranchManager.poblarSelectorRamas(branchSelect);
-    branchSelect.addEventListener("change", async () => {
-      const selectedBranch = branchSelect.value;
-      const folderVal = folderInput?.value.trim() || "datos/bancos/WEC";
-      await window.RepoBranchManager.cargarPreguntasDeRama(selectedBranch, folderVal);
-    });
-    $("#btn-reload-branch")?.addEventListener("click", async () => {
-      const selectedBranch = branchSelect.value;
-      const folderVal = folderInput?.value.trim() || "datos/bancos/WEC";
-      await window.RepoBranchManager.cargarPreguntasDeRama(selectedBranch, folderVal);
-    });
-  }
-
-  $("#custom-practice-start-btn")?.addEventListener("click", () => {
-    const examen = $("#custom-practice-exam")?.value || "Examen 1";
-    const tema = $("#custom-practice-theme")?.value || "all";
-    const subapartado = $("#custom-practice-subapartado")?.value || "all";
-    const repaso = $("#custom-practice-review")?.value || "faltan";
-    const categoria = $("#custom-practice-category")?.value || "all";
-    const qty = Number($("#custom-practice-qty")?.value) || 0;
-    const order = $("#custom-practice-order")?.value || "aleatorio";
-
-    const customFilter = { examen, tema, subapartado, repaso, categoria };
-    const pool = filterPool(customFilter);
-    if (!pool.length) {
-      toast("No hay preguntas que coincidan con esa selección.");
-      return;
-    }
-
-    const immediate = $("#immediate-toggle")?.checked !== false;
-    const shuffle = order === "aleatorio";
-    startTest({ filter: customFilter, immediate, shuffle, sample: qty });
+  // Tree desplegar / plegar
+  $("#tree-desplegar-todos")?.addEventListener("click", () => {
+    $$(".tree-tema-details").forEach((d) => (d.open = true));
   });
-  $$("[data-resume-filter]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const filterKey = btn.dataset.resumeFilter;
-      const s = getSessionForFilter(filterKey);
-      if (s) {
-        resumeSession(s);
-      } else {
-        toast("No se encontró la sesión guardada.");
-      }
-    });
+  $("#tree-plegar-todos")?.addEventListener("click", () => {
+    $$(".tree-tema-details").forEach((d) => (d.open = false));
   });
-  $$("[data-restart-filter]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const filterKey = btn.dataset.restartFilter;
-      saveSessionForFilter(filterKey, null);
-      if (state.selectedFilter === filterKey) {
-        clearSession();
-      }
-      const immediate = $("#immediate-toggle")?.checked !== false;
-      const shuffle = Boolean($("#shuffle-toggle")?.checked);
-      const sample = Number($("#sample-select")?.value) || 0;
-      startTest({ filter: filterKey, immediate, shuffle, sample });
-    });
-  });
+
+  // Reanudar / reiniciar test a medias
+  $("#resume-btn")?.addEventListener("click", () => resumeSession());
   $("#restart-btn")?.addEventListener("click", () => {
     const s = getSession();
     if (!s) return;
     const filter = s.filter || "all";
     clearSession();
-    const immediate = $("#immediate-toggle")?.checked !== false;
-    const shuffle = Boolean($("#shuffle-toggle")?.checked);
-    const sample = Number($("#sample-select")?.value) || 0;
-    startTest({ filter, immediate, shuffle, sample });
+    const immediate = typeof getSavedImmediate === "function" ? getSavedImmediate() : true;
+    const shuffle = typeof getSavedShuffle === "function" ? getSavedShuffle() : true;
+    startTest({ filter, immediate, shuffle });
   });
-  $$("[data-start-bloque]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const filterKey = btn.dataset.startBloque;
-      startBloque(filterKey);
-    });
+  $("#discard-btn")?.addEventListener("click", discardSession);
+  $("#last-results-btn")?.addEventListener("click", () => {
+    if (typeof renderResults === "function") renderResults();
   });
-  $("#dropdown-reset-progress-btn")?.addEventListener("click", () => {
-    if (!confirm("¿Seguro que quieres borrar todo tu progreso, fallos guardados y sesiones?")) return;
-    removeStore(LS.session);
-    removeStore(LS.wrong);
-    removeStore(LS.history);
-    removeStore(LS.stats);
-    writeJSON(LS_SESSIONS_MAP, {});
-    writeJSON(LS_BLOCK_POINTERS, {});
-    clearSession();
-    toast("Todo el progreso ha sido eliminado con éxito.");
-    $("#options-dropdown")?.classList.add("hidden");
-    renderStart();
-  });
-  $$("[data-start-apartado]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const filter = "apartado:" + btn.dataset.startApartado;
-      const immediate = $("#immediate-toggle")?.checked !== false;
-      const shuffle = Boolean($("#shuffle-toggle")?.checked);
-      const sample = Number($("#sample-select")?.value) || 0;
-      startTest({ filter, immediate, shuffle, sample });
-    });
-  });
-  $$("[data-generar-tema]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const temaNum = Number(btn.dataset.generarTema);
-      window.abrirPracticaDesdeApuntes?.(state.subject?.nombre || "WEC", { tema: temaNum });
-    });
-  });
-  $$("[data-generar-apartado]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const [temaStr, apStr] = btn.dataset.generarApartado.split(":");
-      window.abrirPracticaDesdeApuntes?.(state.subject?.nombre || "WEC", {
-        tema: Number(temaStr),
-        apartado: Number(apStr),
-      });
-    });
-  });
-  $("#tree-desplegar-todos")?.addEventListener("click", () => {
-    $$(".tree-tema-details").forEach((d) => { d.open = true; });
-  });
-  $("#tree-plegar-todos")?.addEventListener("click", () => {
-    $$(".tree-tema-details").forEach((d) => { d.open = false; });
-  });
-  window.renderizarInicioTests = renderStart;
-  $$("[data-open-wrongs]").forEach((btn) => btn.addEventListener("click", renderWrongBook));
-  $("#subject-select")?.addEventListener("change", async (event) => {
-    const id = event.target.value;
+
+  // Toolbar asignatura select
+  const subjSelect = $("#subject-select");
+  subjSelect?.addEventListener("change", async (e) => {
+    const id = e.target.value;
     const seleccion = state.catalog.find((s) => s.id === id);
     if (seleccion?.apuntesPrivados) {
       window.abrirPracticaDesdeApuntes?.(seleccion.nombreApuntes);
       return;
     }
-    try {
-      await loadSubject(id);
-      renderStart();
-      toast(`Asignatura: ${state.subject?.nombre || id}`);
-    } catch (error) {
-      toast(`No se pudo cargar: ${error.message}`);
-    }
-  });
-  $("#add-subject")?.addEventListener("click", () => $("#add-subject-file")?.click());
-  $("#add-subject-file")?.addEventListener("change", (event) => {
-    const file = event.target.files?.[0];
-    importSubjectFile(file);
-    event.target.value = "";
-  });
-  $("#remove-subject")?.addEventListener("click", async () => {
-    if (!state.subject?.custom) return;
-    if (!confirm(`¿Quitar la asignatura local "${state.subject.nombre}"? Se borra de este navegador.`)) return;
-    await removeCustomSubject(state.subjectId);
+    await loadSubject(id);
     renderStart();
-    toast("Asignatura local eliminada.");
+  });
+
+  $("#add-subject")?.addEventListener("click", () => $("#add-subject-file")?.click());
+  $("#add-subject-file")?.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    if (file) importSubjectFile(file);
+    e.target.value = "";
+  });
+  $("#remove-subject")?.addEventListener("click", () => {
+    if (state.subject?.id) removeCustomSubject(state.subject.id);
   });
   $("#open-notes-practice")?.addEventListener("click", () => {
     window.abrirPracticaDesdeApuntes?.();
   });
-  $("#resume-btn")?.addEventListener("click", resumeSession);
-  $("#discard-btn")?.addEventListener("click", discardSession);
-  $("#last-results-btn")?.addEventListener("click", resumeSession);
-  $("#reset-history")?.addEventListener("click", () => {
-    if (!confirm("¿Borrar historial, fallos y sesión guardada de esta asignatura?")) return;
-    removeStore(LS.session);
-    removeStore(LS.wrong);
-    removeStore(LS.history);
-    removeStore(LS.stats);
-    writePersistenceFile();
-    renderStart();
-    toast("Historial borrado.");
-  });
 
-  const weakContainer = $("#weak-concepts");
-  const weakGroups = getWeakSubapartadosByTema();
-  if (weakContainer) {
-    if (!weakGroups.length) {
-      weakContainer.innerHTML = '<p class="muted" style="font-size:13px; padding:12px 0;">Aún no hay fallos suficientes para calcular subapartados débiles. En cuanto falles preguntas, aparecerán aquí agrupados por tema con sus porcentajes de error.</p>';
-    } else {
-      weakContainer.innerHTML = weakGroups.map((group) => `
-        <details class="weak-tema-details tree-tema-details" open style="margin-bottom:14px; border:1px solid var(--line); border-radius:14px; background:var(--card); overflow:hidden;">
-          <summary class="tree-tema-summary" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:12px 18px; background:color-mix(in srgb, var(--card) 93%, var(--text) 7%); flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-              <i class="fa-solid fa-folder-open" style="color:var(--brand)"></i>
-              <b style="font-size:15px; color:var(--text)">Tema ${group.tema}</b>
-              <span class="chip" style="font-weight:800; font-size:12px; background:rgba(239,68,68,0.16); color:var(--bad)">
-                ${group.failRate}% de fallos (${group.totalFails} fallo${group.totalFails !== 1 ? "s" : ""})
-              </span>
-              <span class="tree-chip bank-chip" style="font-weight:600">${group.uniqueIds.length} preg. falladas</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;" onclick="event.stopPropagation()">
-              <button class="btn tiny warn" type="button" data-repasar-fallos-sub="${group.uniqueIds.join(",")}" title="Hacer un test con todos los fallos del Tema ${group.tema}">
-                Repetir ${group.uniqueIds.length} fallos Tema ${group.tema}
-              </button>
-              <button class="btn tiny" type="button" data-start="tema:${group.tema}" title="Hacer test de todas las preguntas del Tema ${group.tema}">
-                Practicar Tema ${group.tema}
-              </button>
-            </div>
-          </summary>
-          <div class="weak-tema-body" style="padding:14px 18px; display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px; border-top:1px solid var(--line); background:color-mix(in srgb, var(--card) 97%, var(--text) 3%);">
-            ${group.subapartados.map((item) => `
-              <div class="weak-subapartado-card" style="border:1px solid var(--line); border-radius:12px; padding:13px 15px; background:var(--card); display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow-soft);">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
-                  <div style="min-width:0; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                    <span class="tree-chip bank-chip" style="font-weight:700">${item.codigo}</span>
-                    <b style="font-size:13.5px; color:var(--text);">${esc(item.titulo)}</b>
-                  </div>
-                  <span style="font-weight:800; font-size:12.5px; color:var(--bad); background:rgba(239,68,68,0.15); padding:3px 8px; border-radius:8px; flex-shrink:0;">
-                    ${item.pctFallo}% de fallos
-                  </span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; opacity:.85; flex-wrap:wrap; gap:4px;">
-                  <span><b>${item.fails}</b> fallo${item.fails !== 1 ? "s" : ""} (${item.total} preg. con error de ${item.totalBanco || item.total})</span>
-                  ${item.tags && item.tags.length ? `<span class="chip ghost" style="font-size:11px; padding:1px 6px">${item.tags.map(esc).join(", ")}</span>` : ""}
-                </div>
-                <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:3px;">
-                  <button class="btn tiny warn" type="button" data-repasar-fallos-sub="${item.ids.join(",")}" title="Hacer un test solo con los fallos de este subapartado">
-                    Repetir ${item.ids.length} fallo${item.ids.length !== 1 ? "s" : ""}
-                  </button>
-                  ${item.apartado ? `
-                    <button class="btn tiny" type="button" data-start-apartado="${item.tema}:${item.apartado}" title="Practicar todas las preguntas de este subapartado">
-                      Practicar apartado
-                    </button>
-                  ` : `
-                    <button class="btn tiny" type="button" data-start="tema:${item.tema}">
-                      Practicar tema
-                    </button>
-                  `}
-                </div>
-              </div>
-            `).join("")}
-          </div>
-        </details>
-      `).join("");
-
-      $("#weak-desplegar-todos")?.addEventListener("click", () => {
-        $$(".weak-tema-details").forEach((d) => { d.open = true; });
-      });
-      $("#weak-plegar-todos")?.addEventListener("click", () => {
-        $$(".weak-tema-details").forEach((d) => { d.open = false; });
-      });
-
-      $$("[data-repasar-fallos-sub]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const raw = (btn.dataset.repasarFallosSub || "").split(",").map((s) => s.trim()).filter(Boolean);
-          const ids = raw.map((id) => getQuestion(id)?.id || id).filter((id) => hasQuestion(id));
-          if (ids.length) {
-            const immediate = $("#immediate-toggle")?.checked !== false;
-            startTest({ ids, immediate, shuffle: true });
-          }
-        });
-      });
-      $$("[data-start-bloque]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const filterKey = btn.dataset.startBloque;
-      startBloque(filterKey);
-    });
-  });
-  $("#dropdown-reset-progress-btn")?.addEventListener("click", () => {
-    if (!confirm("¿Seguro que quieres borrar todo tu progreso, fallos guardados y sesiones?")) return;
-    removeStore(LS.session);
-    removeStore(LS.wrong);
-    removeStore(LS.history);
-    removeStore(LS.stats);
-    writeJSON(LS_SESSIONS_MAP, {});
-    writeJSON(LS_BLOCK_POINTERS, {});
-    clearSession();
-    toast("Todo el progreso ha sido eliminado con éxito.");
-    $("#options-dropdown")?.classList.add("hidden");
-    renderStart();
-  });
-  $$("[data-start-apartado]").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const filter = "apartado:" + btn.dataset.startApartado;
-          const immediate = $("#immediate-toggle")?.checked !== false;
-          const shuffle = Boolean($("#shuffle-toggle")?.checked);
-          startTest({ filter, immediate, shuffle });
-        });
-      });
-    }
-  }
-  updateFooter();
-  initNavbarYGestionAsignaturas();
-}
-
-function initNavbarYGestionAsignaturas() {
-  // 1. Filtrar ramas que realmente tienen tests en el catálogo
-  const ramasConTests = new Set();
-  for (const s of state.catalog) {
-    if (s.totalPreguntas > 0 || s.archivo || s.localData) {
-      const g = s.grado || "Segundo_grado_medio";
-      ramasConTests.add(g);
-    }
+  // Subapartados donde más fallas
+  if (typeof renderWeakConceptsGrouped === "function") {
+    renderWeakConceptsGrouped();
   }
 
-  const nombresRamas = {
-    "Segundo_grado_medio": "Segundo grado medio",
-    "Primer_grado_medio": "Primer grado medio",
-    "Primer_grado_superior_DAW": "Primer grado superior DAW",
-  };
-
-  const branchSelect = document.getElementById("navbar-branch-select");
-  if (branchSelect) {
-    let htmlRamas = "";
-    for (const [clave, label] of Object.entries(nombresRamas)) {
-      if (ramasConTests.has(clave)) {
-        htmlRamas += `<option value="${clave}">${label}</option>`;
-      }
-    }
-    if (ramasConTests.size > 1) {
-      htmlRamas += `<option value="todas">Todas las ramas</option>`;
-    }
-    branchSelect.innerHTML = htmlRamas || `<option value="Segundo_grado_medio">Segundo grado medio</option>`;
-
-    let branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "";
-    if (!ramasConTests.has(branchSelected) && branchSelected !== "todas") {
-      branchSelected = [...ramasConTests][0] || "Segundo_grado_medio";
-      state.ramaActual = branchSelected;
-      try { localStorage.setItem("rama_actual", branchSelected); } catch (_) {}
-    }
-    branchSelect.value = branchSelected;
-
-    if (!branchSelect.dataset.attached) {
-      branchSelect.dataset.attached = "true";
-      branchSelect.addEventListener("change", async (e) => {
-        const val = e.target.value;
-        state.ramaActual = val;
-        try { localStorage.setItem("rama_actual", val); } catch (_) {}
-        const matching = state.catalog.filter(s => val === "todas" || s.grado === val || (!s.grado && val === "Segundo_grado_medio"));
-        if (matching.length && (!state.subject || (state.subject.grado !== val && val !== "todas"))) {
-          await loadSubject(matching[0].id);
-        }
-        renderStart();
-        const nombreRama = nombresRamas[val] || "Todas las ramas";
-        toast(`Grado activo: ${nombreRama}`);
-      });
-    }
-  }
-
-  // 2. Selector de asignaturas en la barra superior (topbar)
-  const navbarSubjectSelect = document.getElementById("navbar-subject-select");
-  if (navbarSubjectSelect) {
-    const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
-    const matchingSubjects = state.catalog.filter(s => {
-      if (branchSelected === "todas" || branchSelected === "TODAS LAS RAMAS") return true;
-      return s.grado === branchSelected || (!s.grado && branchSelected === "Segundo_grado_medio");
-    });
-    const listToRender = matchingSubjects.length ? matchingSubjects : state.catalog;
-    navbarSubjectSelect.innerHTML = listToRender.map(s => {
-      const label = s.etiqueta || s.nombre;
-      return `<option value="${esc(s.id)}" ${s.id === state.subjectId ? "selected" : ""}>${esc(label)}</option>`;
-    }).join("");
-
-    if (!navbarSubjectSelect.dataset.attached) {
-      navbarSubjectSelect.dataset.attached = "true";
-      navbarSubjectSelect.addEventListener("change", async (e) => {
-        const id = e.target.value;
-        const seleccion = state.catalog.find(s => s.id === id);
-        if (seleccion?.apuntesPrivados) {
-          window.abrirPracticaDesdeApuntes?.(seleccion.nombreApuntes);
-          return;
-        }
-        try {
-          await loadSubject(id);
-          renderStart();
-          toast(`Asignatura: ${state.subject?.nombre || id}`);
-        } catch (error) {
-          toast(`No se pudo cargar: ${error.message}`);
-        }
-      });
-    }
-  }
-
-  // 3. Botón de tests desde apuntes en la navbar
-  const btnNavbarApuntes = document.getElementById("btn-navbar-apuntes");
-  if (btnNavbarApuntes && !btnNavbarApuntes.dataset.attached) {
-    btnNavbarApuntes.dataset.attached = "true";
-    btnNavbarApuntes.addEventListener("click", () => {
-      window.abrirPracticaDesdeApuntes?.();
-    });
-  }
-
-  const modal = document.getElementById("modal-gestionar-asignaturas");
-  const btnAbrir = document.getElementById("btn-gestionar-asignaturas");
-  const btnCerrar = document.getElementById("btn-cerrar-modal-gestionar");
-
-  const tabCrear = document.getElementById("tab-crear-asig");
-  const tabSubir = document.getElementById("tab-subir-tests");
-  const panelCrear = document.getElementById("panel-crear-asig");
-  const panelSubir = document.getElementById("panel-subir-tests");
-  const selectSubirAsig = document.getElementById("select-subir-asig");
-
-  if (modal && !modal.dataset.attached) {
-    modal.dataset.attached = "true";
-
-    btnAbrir?.addEventListener("click", () => {
-      if (selectSubirAsig) {
-        selectSubirAsig.innerHTML = state.catalog.map(s => `<option value="${esc(s.id)}" ${s.id === state.subjectId ? "selected" : ""}>${esc(s.nombre)} (${s.id})</option>`).join("");
-      }
-      modal.classList.remove("hidden");
-    });
-
-    btnCerrar?.addEventListener("click", () => modal.classList.add("hidden"));
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) modal.classList.add("hidden");
-    });
-
-    tabCrear?.addEventListener("click", () => {
-      tabCrear.style.color = "var(--brand)";
-      tabCrear.style.borderBottom = "2px solid var(--brand)";
-      tabSubir.style.color = "var(--muted)";
-      tabSubir.style.borderBottom = "2px solid transparent";
-      panelCrear.style.display = "flex";
-      panelSubir.style.display = "none";
-    });
-
-    tabSubir?.addEventListener("click", () => {
-      tabSubir.style.color = "var(--brand)";
-      tabSubir.style.borderBottom = "2px solid var(--brand)";
-      tabCrear.style.color = "var(--muted)";
-      tabCrear.style.borderBottom = "2px solid transparent";
-      panelSubir.style.display = "flex";
-      panelCrear.style.display = "none";
-    });
-
-    document.getElementById("btn-submit-crear-asig")?.addEventListener("click", async () => {
-      const grado = document.getElementById("input-asig-grado")?.value || "Segundo_grado_medio";
-      const nombre = (document.getElementById("input-asig-nombre")?.value || "").trim();
-      const idRaw = (document.getElementById("input-asig-id")?.value || "").trim() || nombre;
-      const desc = (document.getElementById("input-asig-desc")?.value || "").trim();
-      const temasRaw = (document.getElementById("input-asig-temas")?.value || "").trim();
-
-      if (!nombre) return alert("Por favor escribe el nombre de la asignatura.");
-      const id = idRaw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9_-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
-      if (!id) return alert("El identificador no es válido.");
-
-      let temas = [];
-      if (temasRaw) {
-        temas = temasRaw.split("\n").map(l => l.trim()).filter(Boolean).map((linea, idx) => ({
-          numero: idx + 1,
-          nombre: linea.startsWith("Tema ") ? linea : `Tema ${idx + 1} · ${linea}`,
-          apartados: [{ numero: 1, nombre: `${idx + 1}.1 Conceptos iniciales` }]
-        }));
-      }
-
-      const btn = document.getElementById("btn-submit-crear-asig");
-      btn.disabled = true;
-      btn.textContent = "Creando asignatura...";
-
-      try {
-        const resp = await fetch("/api/asignaturas", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ id, nombre, grado, descripcion: desc, temas })
-        });
-        const resJson = await resp.json();
-        if (!resp.ok) throw new Error(resJson.error || "Error al crear asignatura");
-
-        await loadCatalog();
-        state.ramaActual = grado;
-        try { localStorage.setItem("rama_actual", grado); } catch (_) {}
-        await loadSubject(id);
-        modal.classList.add("hidden");
-        renderStart();
-        toast(`Asignatura "${nombre}" creada y lista.`);
-      } catch (err) {
-        alert("Error: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar y Registrar Asignatura';
-      }
-    });
-
-    const fileInput = document.getElementById("input-file-test-json");
-    const textarea = document.getElementById("textarea-test-json");
-    const preview = document.getElementById("subir-test-preview");
-
-    const updatePreview = (txt) => {
-      try {
-        const parsed = JSON.parse(txt);
-        const list = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.preguntas) ? parsed.preguntas : []);
-        if (list.length) {
-          const temas = new Set(list.map(p => p.tema || 1));
-          preview.style.display = "block";
-          preview.innerHTML = `<span style="color:var(--ok); font-weight:700;">✅ Válido:</span> ${list.length} preguntas detectadas en ${temas.size} tema(s).`;
-        } else {
-          preview.style.display = "none";
-        }
-      } catch (_) {
-        preview.style.display = "none";
-      }
-    };
-
-    textarea?.addEventListener("input", () => updatePreview(textarea.value));
-    fileInput?.addEventListener("change", (e) => {
-      const f = e.target.files?.[0];
-      if (f) {
-        const r = new FileReader();
-        r.onload = () => {
-          textarea.value = r.result;
-          updatePreview(r.result);
-        };
-        r.readAsText(f);
-      }
-    });
-
-    document.getElementById("btn-submit-subir-test")?.addEventListener("click", async () => {
-      const idAsig = selectSubirAsig?.value;
-      if (!idAsig) return alert("Selecciona la asignatura de destino.");
-      const contenido = textarea?.value.trim();
-      if (!contenido) return alert("Selecciona un archivo JSON o pega su contenido.");
-
-      let preguntas = [];
-      try {
-        const parsed = JSON.parse(contenido);
-        preguntas = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.preguntas) ? parsed.preguntas : Object.values(parsed));
-      } catch (_) {
-        return alert("El contenido no es JSON válido.");
-      }
-
-      if (!preguntas.length) return alert("No se encontraron preguntas en el JSON.");
-
-      const btn = document.getElementById("btn-submit-subir-test");
-      btn.disabled = true;
-      btn.textContent = "Subiendo preguntas...";
-
-      try {
-        const resp = await fetch("/api/tests/subir", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ idAsignatura: idAsig, preguntas })
-        });
-        const resJson = await resp.json();
-        if (!resp.ok) throw new Error(resJson.error || "Error al subir test");
-
-        await loadCatalog();
-        await loadSubject(idAsig);
-        modal.classList.add("hidden");
-        renderStart();
-        toast(`¡Test subido con éxito! ${resJson.totalPreguntas} preguntas disponibles.`);
-      } catch (err) {
-        alert("Error: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Test en el Banco Oficial';
-      }
-    });
+  // Inicializar listeners de la barra superior
+  if (typeof inicializarTopbar === "function") {
+    inicializarTopbar();
   }
 }
 
-function updateFooter() {
-  const footer = $("#footer");
-  if (!footer) return;
-  const counts = dataCounts();
-  const source = state.source === "json"
-    ? "Datos cargados desde el banco de preguntas."
-    : "Preguntas locales guardadas en el navegador.";
-  footer.innerHTML = `${esc(state.meta?.titulo || "Test")} · ${counts.total} preguntas · ${counts.temas.map(({ tema, count }) => `Tema ${tema}: ${count}`).join(" · ")}. ${source}`;
-}
+
+// === assets/js/app/sesion.js ===
+"use strict";
+
+// ============================================================
+// FACHADA UNIFICADA DE SESIÓN Y VISTAS
+// Los módulos especializados residen en public/assets/js/app/sesion/
+// - control.js: inicio y reanudación de sesiones de práctica
+// - arbol.js: estructura y dashboard interactivo de temas
+// - modalidades.js: configurador popup de tests a medida
+// - inicio.js: pantalla principal y estadísticas
+// - topbar.js: controladores de barra superior y gestión de asignaturas
+// - desarrollo.js: subapartados débiles y retos de desarrollo
+// ============================================================
+
+window.renderizarInicioTests = renderStart;
 
 
 // === assets/js/app/depurador.js ===
