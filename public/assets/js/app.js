@@ -1703,10 +1703,7 @@ const SupabaseGestionAuth = (() => {
     const c = SupabaseConfig.getClient();
     if (c) {
       try {
-        await Promise.race([
-          c.auth.signOut({ scope: "global" }),
-          new Promise((r) => setTimeout(r, 1500))
-        ]);
+        await c.auth.signOut({ scope: "local" });
       } catch (_) {}
     }
     purgarSesionYCookies();
@@ -1906,7 +1903,7 @@ const SupabaseGestionAuth = (() => {
 
       const esAdmin = await verificarPermisoAdmin(c, session.user);
       if (!esAdmin) {
-        await c.auth.signOut().catch(() => {});
+        await c.auth.signOut({ scope: "local" }).catch(() => {});
         currentUser = null;
         try { sessionStorage.removeItem("esAdmin"); } catch (_) {}
         mostrarLoginGate("Acceso denegado: tu usuario (" + (session.user.email || session.user.id) + ") no tiene rol admin en la tabla perfiles de Supabase.");
