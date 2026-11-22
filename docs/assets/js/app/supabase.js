@@ -5,8 +5,8 @@
 // Sincronización de progreso y caché de http://127.0.0.1:8765/
 // ============================================================
 
-window.SUPABASE_URL = window.SUPABASE_URL || "https://lztatgnlplpduiatmlrv.supabase.co";
-window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "sb_publishable_z_T7Y3yKqPdXLnvL3ltnQA_ZAPrXImZ";
+window.SUPABASE_URL = window.SUPABASE_URL || "";
+window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
 
 const SupabaseAuth = (() => {
   let client = null;
@@ -15,6 +15,7 @@ const SupabaseAuth = (() => {
 
   function getClient() {
     if (client) return client;
+    if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) return null;
     if (window.supabase && typeof window.supabase.createClient === "function") {
       try {
         client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
@@ -477,18 +478,20 @@ const SupabaseAuth = (() => {
     }
 
     try {
-      const u = window.SUPABASE_URL || "https://lztatgnlplpduiatmlrv.supabase.co";
-      const k = window.SUPABASE_ANON_KEY || "sb_publishable_z_T7Y3yKqPdXLnvL3ltnQA_ZAPrXImZ";
-      const idFiltro = user.id ? `id=eq.${encodeURIComponent(user.id)}` : (user.email ? `email=eq.${encodeURIComponent(user.email)}` : null);
-      if (idFiltro) {
-        const resp = await fetch(`${u}/rest/v1/perfiles?select=rol&${idFiltro}`, {
-          credentials: "omit",
-          headers: { "apikey": k, "Authorization": `Bearer ${k}` }
-        });
-        if (resp.ok) {
-          const arr = await resp.json();
-          if (Array.isArray(arr) && arr.length > 0 && String(arr[0].rol || "").trim().toLowerCase() === "admin") {
-            return true;
+      const u = window.SUPABASE_URL;
+      const k = window.SUPABASE_ANON_KEY;
+      if (u && k) {
+        const idFiltro = user.id ? `id=eq.${encodeURIComponent(user.id)}` : (user.email ? `email=eq.${encodeURIComponent(user.email)}` : null);
+        if (idFiltro) {
+          const resp = await fetch(`${u}/rest/v1/perfiles?select=rol&${idFiltro}`, {
+            credentials: "omit",
+            headers: { "apikey": k, "Authorization": `Bearer ${k}` }
+          });
+          if (resp.ok) {
+            const arr = await resp.json();
+            if (Array.isArray(arr) && arr.length > 0 && String(arr[0].rol || "").trim().toLowerCase() === "admin") {
+              return true;
+            }
           }
         }
       }
@@ -664,6 +667,9 @@ const SupabaseAuth = (() => {
       ocultarLoginGate();
       updateAuthButton();
       await syncProgressWithCloud();
+      if (typeof obtenerTokenDesdeSupabase === "function") {
+        obtenerTokenDesdeSupabase().catch(() => {});
+      }
       return true;
     } catch (err) {
       console.error("Error en validación de sesión:", err);
@@ -896,16 +902,20 @@ const RepoBranchManager = (() => {
     let token = getToken();
     if (token) return token;
 
+    const supabaseUrl = window.SUPABASE_URL;
+    const anonKey = window.SUPABASE_ANON_KEY;
     const c = SupabaseAuth.getClient();
+
+    // 1. Intentar mediante el cliente Supabase
     if (c) {
       try {
         const { data, error } = await c.schema("grados-informaticos").from("configuracion_privada").select("clave, valor");
-        if (!error && Array.isArray(data)) {
-          const rowToken = data.find((r) => r.clave === "gh_token");
+        if (!error && Array.isArray(data) && data.length > 0) {
+          const rowToken = data.find((r) => r.clave === "gh_token" || r.clave === "gh_token_general");
           const rowRepo = data.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
           if (rowToken?.valor) {
-            localStorage.setItem("cache_gh_token", rowToken.valor);
             token = rowToken.valor;
+            localStorage.setItem("cache_gh_token", token);
           }
           if (rowRepo?.valor) {
             localStorage.setItem("gh_repo", rowRepo.valor);
@@ -913,6 +923,48 @@ const RepoBranchManager = (() => {
         }
       } catch (_) {}
     }
+
+    // 2. Si aún no hay token, consultar vía REST pasando el token de sesión autenticada
+    if (!token && supabaseUrl && anonKey) {
+      try {
+        let accessToken = anonKey;
+        if (c?.auth?.getSession) {
+          const sRes = await c.auth.getSession();
+          if (sRes?.data?.session?.access_token) {
+            accessToken = sRes.data.session.access_token;
+          }
+        }
+
+        const url = `${supabaseUrl}/rest/v1/configuracion_privada?select=clave,valor&clave=in.(gh_repo,gh_repo_general,gh_token,gh_token_general)`;
+        const resp = await fetch(url, {
+          headers: {
+            apikey: anonKey,
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+            "Accept-Profile": "grados-informaticos"
+          },
+          cache: "no-store"
+        });
+
+        if (resp.ok) {
+          const filas = await resp.json();
+          if (Array.isArray(filas) && filas.length > 0) {
+            const rowToken = filas.find((r) => r.clave === "gh_token" || r.clave === "gh_token_general");
+            const rowRepo = filas.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
+            if (rowToken?.valor) {
+              token = rowToken.valor;
+              localStorage.setItem("cache_gh_token", token);
+            }
+            if (rowRepo?.valor) {
+              localStorage.setItem("gh_repo", rowRepo.valor);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Fallo leyendo configuracion_privada de Supabase:", err);
+      }
+    }
+
     return token || getToken();
   }
 
@@ -1067,6 +1119,7 @@ const RepoBranchManager = (() => {
   return {
     getRepo,
     getToken,
+    obtenerTokenDesdeSupabase,
     listarRamas,
     poblarSelectorRamas,
     cargarPreguntasDeRama,
