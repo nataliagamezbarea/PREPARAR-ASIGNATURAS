@@ -21,7 +21,7 @@ const SupabaseAuth = (() => {
         client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
           db: { schema: "grados-informaticos" },
           auth: {
-            flowType: "implicit",
+            flowType: "pkce",
             persistSession: true,
             autoRefreshToken: true,
             detectSessionInUrl: true
@@ -549,7 +549,7 @@ const SupabaseAuth = (() => {
     if (footer) footer.style.display = "";
     const topbar = document.querySelector(".topbar");
     if (topbar) topbar.style.display = "";
-    if (typeof window.renderizarInicioTests === "function" && mainEl && !mainEl.innerHTML.trim()) {
+    if (typeof window.renderizarInicioTests === "function") {
       window.renderizarInicioTests();
     }
   }
@@ -578,11 +578,7 @@ const SupabaseAuth = (() => {
       } catch (_) {}
 
       const textoLimpio = decodeURIComponent(errDesc).replace(/\+/g, " ");
-      if (textoLimpio.toLowerCase().includes("bad_oauth_state") || textoLimpio.toLowerCase().includes("state not found")) {
-        errorAlInicio = "";
-      } else {
-        errorAlInicio = `Aviso: ${textoLimpio}.`;
-      }
+      errorAlInicio = `Aviso: ${textoLimpio}.`;
     }
 
     const c = getClient();
@@ -596,26 +592,8 @@ const SupabaseAuth = (() => {
       const hasTokenInUrl = window.location.hash.includes("access_token") || window.location.search.includes("code=");
 
       if (!session && hasTokenInUrl) {
-        // 1. Escuchar onAuthStateChange para capturar la sesión si Supabase la procesa asíncronamente
-        try {
-          const sesionPromesa = new Promise((resolve) => {
-            const { data: { subscription } } = c.auth.onAuthStateChange((event, s) => {
-              if (s) {
-                subscription?.unsubscribe?.();
-                resolve(s);
-              }
-            });
-            setTimeout(() => {
-              subscription?.unsubscribe?.();
-              resolve(null);
-            }, 3000);
-          });
-          const sesionEvento = await sesionPromesa;
-          if (sesionEvento) session = sesionEvento;
-        } catch (_) {}
-
-        // 2. Intercambio de código explícito si viene por query param (PKCE flow)
-        if (!session && window.location.search.includes("code=")) {
+        // 1. Intercambio de código explícito si viene por query param (flujo PKCE estándar)
+        if (window.location.search.includes("code=")) {
           const code = urlParams.get("code");
           if (code && typeof c.auth.exchangeCodeForSession === "function") {
             try {
@@ -623,6 +601,29 @@ const SupabaseAuth = (() => {
               if (resCode.data?.session) session = resCode.data.session;
             } catch (errCode) {
               console.warn("exchangeCodeForSession aviso:", errCode);
+            }
+          }
+        }
+
+        // 2. Escuchar onAuthStateChange para capturar la sesión si Supabase la procesa asíncronamente
+        if (!session) {
+          try {
+            const sesionPromesa = new Promise((resolve) => {
+              const { data: { subscription } } = c.auth.onAuthStateChange((event, s) => {
+                if (s) {
+                  subscription?.unsubscribe?.();
+                  resolve(s);
+                }
+              });
+              setTimeout(() => {
+                subscription?.unsubscribe?.();
+                resolve(null);
+              }, 3000);
+            });
+            const sesionEvento = await sesionPromesa;
+            if (sesionEvento) session = sesionEvento;
+          } catch (_) {}
+        }
             }
           }
         }
