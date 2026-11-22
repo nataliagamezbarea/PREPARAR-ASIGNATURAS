@@ -170,6 +170,61 @@ const SupabaseAuth = (() => {
     }
   }
 
+  function purgarSesionYCookies() {
+    currentUser = null;
+
+    try {
+      sessionStorage.clear();
+    } catch (_) {}
+
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith("sb-") || k.includes("supabase") || k.includes("auth") || k.includes("token") || k.includes("admin") || k.includes("invitado") || k.includes("verifier"))) {
+          localStorage.removeItem(k);
+        }
+      }
+    } catch (_) {}
+
+    try {
+      const cookies = document.cookie.split(";");
+      for (const c of cookies) {
+        const eqPos = c.indexOf("=");
+        const name = eqPos > -1 ? c.substring(0, eqPos).trim() : c.trim();
+        if (name) {
+          document.cookie = `${name}=; Max-Age=-99999999; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+          document.cookie = `${name}=; Max-Age=-99999999; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=;`;
+          document.cookie = `${name}=; Max-Age=-99999999; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${window.location.hostname};`;
+          document.cookie = `${name}=; Max-Age=-99999999; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.${window.location.hostname};`;
+        }
+      }
+    } catch (_) {}
+
+    try {
+      if (window.location.hash || window.location.search) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    } catch (_) {}
+  }
+
+  async function cerrarSesionCompleta(mensaje = "Has cerrado sesión.") {
+    const c = getClient();
+    if (c) {
+      try {
+        await Promise.race([
+          c.auth.signOut({ scope: "global" }),
+          new Promise((r) => setTimeout(r, 1500))
+        ]);
+      } catch (_) {}
+    }
+    purgarSesionYCookies();
+    updateAuthButton();
+    const modal = document.querySelector("#auth-modal");
+    if (modal) modal.classList.add("hidden");
+    mostrarLoginGate(mensaje);
+    window.location.replace(window.location.origin + window.location.pathname);
+  }
+
   // Modal de inicio de sesión y sincronización
   function renderAuthModal() {
     let modal = document.querySelector("#auth-modal");
@@ -312,22 +367,19 @@ const SupabaseAuth = (() => {
 
     if (esInvitado) {
       modal.querySelector("#btn-logout-guest")?.addEventListener("click", () => {
-        sessionStorage.removeItem("esInvitado");
-        sessionStorage.removeItem("esAdmin");
-        currentUser = null;
+        purgarSesionYCookies();
         updateAuthButton();
         modal.classList.add("hidden");
-        mostrarLoginGate("Has salido del modo invitado. Inicia sesión para continuar.");
-        if (typeof toast === "function") toast("Sesión de invitado cerrada.");
+        mostrarLoginGate("Has salido del modo invitado.");
+        window.location.replace(window.location.origin + window.location.pathname);
       });
 
       modal.querySelector("#btn-login-from-guest")?.addEventListener("click", () => {
-        sessionStorage.removeItem("esInvitado");
-        sessionStorage.removeItem("esAdmin");
-        currentUser = null;
+        purgarSesionYCookies();
         updateAuthButton();
         modal.classList.add("hidden");
         mostrarLoginGate();
+        window.location.replace(window.location.origin + window.location.pathname);
       });
     } else if (currentUser) {
       modal.querySelector("#btn-sync-now")?.addEventListener("click", async () => {
@@ -339,15 +391,7 @@ const SupabaseAuth = (() => {
       });
 
       modal.querySelector("#btn-logout")?.addEventListener("click", async () => {
-        const c = getClient();
-        if (c) await c.auth.signOut().catch(() => {});
-        sessionStorage.removeItem("esInvitado");
-        sessionStorage.removeItem("esAdmin");
-        currentUser = null;
-        updateAuthButton();
-        modal.classList.add("hidden");
-        mostrarLoginGate("Has cerrado sesión.");
-        if (typeof toast === "function") toast("Has cerrado sesión.");
+        await cerrarSesionCompleta("Has cerrado sesión.");
       });
     } else {
       modal.querySelector("#btn-oauth-google")?.addEventListener("click", async () => {
@@ -601,7 +645,7 @@ const SupabaseAuth = (() => {
         if (event === "SIGNED_IN") {
           await autenticarConGate();
         } else if (event === "SIGNED_OUT") {
-          currentUser = null;
+          purgarSesionYCookies();
           updateAuthButton();
           mostrarLoginGate();
         }
@@ -765,9 +809,14 @@ const SupabaseAuth = (() => {
     seedInitialProgress,
     syncProgressWithCloud,
     autoSyncProgressDebounced,
-    renderAuthModal
+    renderAuthModal,
+    cerrarSesion: cerrarSesionCompleta,
+    purgarSesion: purgarSesionYCookies
   };
 })();
+
+window.cerrarSesion = SupabaseAuth.cerrarSesion;
+window.purgarSesion = SupabaseAuth.purgarSesion;
 
 // ============================================================
 // GESTOR DE RAMAS Y REPOSITORIO PRIVADO DE GITHUB
