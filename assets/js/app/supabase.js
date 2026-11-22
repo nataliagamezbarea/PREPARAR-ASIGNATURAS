@@ -624,9 +624,6 @@ const SupabaseAuth = (() => {
             if (sesionEvento) session = sesionEvento;
           } catch (_) {}
         }
-            }
-          }
-        }
 
         // 3. Polling de respaldo
         if (!session) {
