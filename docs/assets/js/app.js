@@ -1799,6 +1799,19 @@ const SupabaseGestionAuth = (() => {
   }
 
   async function autenticarConGate() {
+    // Si el usuario inició autenticación desde generador-apuntes y Supabase redirigió aquí por Site URL
+    try {
+      const authOrigin = localStorage.getItem("auth_origin_app");
+      if (authOrigin && authOrigin.includes("generador-apuntes")) {
+        localStorage.removeItem("auth_origin_app");
+        const destino = new URL(authOrigin);
+        destino.search = window.location.search;
+        destino.hash = window.location.hash;
+        window.location.replace(destino.toString());
+        return false;
+      }
+    } catch (_) {}
+
     try {
       sessionStorage.removeItem("esInvitado");
       localStorage.removeItem("esInvitado");
