@@ -12,3 +12,4 @@
 // ============================================================
 
 window.renderizarInicioTests = renderStart;
+window.updateFooter = updateFooter;

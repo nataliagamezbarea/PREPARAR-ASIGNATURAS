@@ -3883,7 +3883,22 @@ function renderStart() {
   if (typeof inicializarTopbar === "function") {
     inicializarTopbar();
   }
+
+  updateFooter();
 }
+
+function updateFooter() {
+  const footer = $("#footer");
+  if (!footer) return;
+  const counts = typeof dataCounts === "function" ? dataCounts() : { total: 0, temas: [] };
+  const source = state.source === "json"
+    ? "Datos cargados desde el banco de preguntas."
+    : "Preguntas locales guardadas en el navegador.";
+  footer.innerHTML = `${esc(state.meta?.titulo || "Test")} · ${counts.total} preguntas · ${(counts.temas || []).map(({ tema, count }) => `Tema ${tema}: ${count}`).join(" · ")}. ${source}`;
+  footer.style.display = "";
+}
+
+window.updateFooter = updateFooter;
 
 
 // === assets/js/app/sesion.js ===
@@ -3901,6 +3916,7 @@ function renderStart() {
 // ============================================================
 
 window.renderizarInicioTests = renderStart;
+window.updateFooter = updateFooter;
 
 
 // === assets/js/app/depurador.js ===
