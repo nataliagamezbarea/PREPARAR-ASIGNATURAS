@@ -1,7 +1,7 @@
 services:
   preparar-tests:
     build:
-      context: .
+      context: ..
       dockerfile: docker/Dockerfile
     image: preparar-tests:local
     container_name: preparar-tests
@@ -29,9 +29,9 @@ services:
       - "127.0.0.1:3000:3000"
     volumes:
       - ${DIRECTORIO_APUNTES:?Selecciona primero la carpeta de apuntes}:/data/apuntes:ro
-      - ./datos/bancos:/app/datos/bancos
-      - ./public:/app/public:ro
-      - ./server:/app/server:ro
+      - ../datos/bancos:/app/datos/bancos
+      - ../public:/app/public:ro
+      - ../server:/app/server:ro
     networks:
       - ollama_compartido
     restart: unless-stopped

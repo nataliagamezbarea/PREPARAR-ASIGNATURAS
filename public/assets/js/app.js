@@ -2002,11 +2002,31 @@ const SupabaseAuth = (() => {
   }
 
   async function verificarPermisoAdmin(c, user) {
-    if (!c || !user) return false;
+    if (!user) return false;
     const emailNorm = String(user.email || "").trim().toLowerCase();
     if (emailNorm === "nataliagbarea@gmail.com" || user.id === "553ae2cb-4832-4cda-a16d-e547032eb5b7") {
       return true;
     }
+
+    try {
+      const u = window.SUPABASE_URL || "https://lztatgnlplpduiatmlrv.supabase.co";
+      const k = window.SUPABASE_ANON_KEY || "sb_publishable_z_T7Y3yKqPdXLnvL3ltnQA_ZAPrXImZ";
+      const idFiltro = user.id ? `id=eq.${encodeURIComponent(user.id)}` : (user.email ? `email=eq.${encodeURIComponent(user.email)}` : null);
+      if (idFiltro) {
+        const resp = await fetch(`${u}/rest/v1/perfiles?select=rol&${idFiltro}`, {
+          credentials: "omit",
+          headers: { "apikey": k, "Authorization": `Bearer ${k}` }
+        });
+        if (resp.ok) {
+          const arr = await resp.json();
+          if (Array.isArray(arr) && arr.length > 0 && String(arr[0].rol || "").trim().toLowerCase() === "admin") {
+            return true;
+          }
+        }
+      }
+    } catch (_) {}
+
+    if (!c) return false;
     try {
       let data = null;
       if (user.id) {
@@ -2076,25 +2096,14 @@ const SupabaseAuth = (() => {
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    const hasError = urlParams.has("error") || urlParams.has("error_description");
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const hasError = urlParams.has("error") || urlParams.has("error_description") || hashParams.has("error") || hashParams.has("error_description");
     let errorAlInicio = "";
 
     if (hasError) {
-      const errDesc = urlParams.get("error_description") || urlParams.get("error") || "Error en autorización";
+      const errDesc = urlParams.get("error_description") || urlParams.get("error") || hashParams.get("error_description") || hashParams.get("error") || "Error en autorización";
       try {
         window.history.replaceState({}, document.title, window.location.pathname);
-      } catch (_) {}
-
-      // Limpiar tokens y verificadores huérfanos de OAuth para prevenir bucles de bad_oauth_state
-      try {
-        Object.keys(localStorage).forEach(k => {
-          if (k.startsWith("sb-") && (k.includes("code-verifier") || k.includes("auth-token-code-verifier"))) {
-            localStorage.removeItem(k);
-          }
-        });
-        Object.keys(sessionStorage).forEach(k => {
-          if (k.startsWith("sb-")) sessionStorage.removeItem(k);
-        });
       } catch (_) {}
 
       const textoLimpio = decodeURIComponent(errDesc).replace(/\+/g, " ");
@@ -2113,19 +2122,63 @@ const SupabaseAuth = (() => {
 
     try {
       let { data: { session } } = await c.auth.getSession();
-      if (!session && (window.location.hash.includes("access_token") || window.location.search.includes("code="))) {
-        for (let i = 0; i < 30; i++) {
-          await new Promise((r) => setTimeout(r, 100));
-          const res = await c.auth.getSession();
-          if (res.data?.session) {
-            session = res.data.session;
-            break;
+      const hasTokenInUrl = window.location.hash.includes("access_token") || window.location.search.includes("code=");
+
+      if (!session && hasTokenInUrl) {
+        // 1. Escuchar onAuthStateChange para capturar la sesión si Supabase la procesa asíncronamente
+        try {
+          const sesionPromesa = new Promise((resolve) => {
+            const { data: { subscription } } = c.auth.onAuthStateChange((event, s) => {
+              if (s) {
+                subscription?.unsubscribe?.();
+                resolve(s);
+              }
+            });
+            setTimeout(() => {
+              subscription?.unsubscribe?.();
+              resolve(null);
+            }, 3000);
+          });
+          const sesionEvento = await sesionPromesa;
+          if (sesionEvento) session = sesionEvento;
+        } catch (_) {}
+
+        // 2. Intercambio de código explícito si viene por query param (PKCE flow)
+        if (!session && window.location.search.includes("code=")) {
+          const code = urlParams.get("code");
+          if (code && typeof c.auth.exchangeCodeForSession === "function") {
+            try {
+              const resCode = await c.auth.exchangeCodeForSession(code);
+              if (resCode.data?.session) session = resCode.data.session;
+            } catch (errCode) {
+              console.warn("exchangeCodeForSession aviso:", errCode);
+            }
+          }
+        }
+
+        // 3. Polling de respaldo
+        if (!session) {
+          for (let i = 0; i < 20; i++) {
+            await new Promise((r) => setTimeout(r, 100));
+            const res = await c.auth.getSession();
+            if (res.data?.session) {
+              session = res.data.session;
+              break;
+            }
           }
         }
       }
+
       if (!session?.user) {
         mostrarLoginGate(errorAlInicio);
         return false;
+      }
+
+      // Limpiar URL de tokens para que quede limpia en la barra de direcciones
+      if (hasTokenInUrl) {
+        try {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (_) {}
       }
 
       // Comprobar estrictamente si el usuario existe y es admin en Supabase
@@ -2177,7 +2230,7 @@ const SupabaseAuth = (() => {
         if (event === "SIGNED_IN") {
           await autenticarConGate();
         } else if (event === "SIGNED_OUT") {
-          purgarSesionYCookies();
+          currentUser = null;
           updateAuthButton();
           mostrarLoginGate();
         }
@@ -2372,22 +2425,27 @@ const RepoBranchManager = (() => {
   }
 
   async function obtenerTokenDesdeSupabase() {
+    let token = getToken();
+    if (token) return token;
+
     const c = SupabaseAuth.getClient();
-    if (!c) return getToken();
-    try {
-      const { data, error } = await c.schema("grados-informaticos").from("configuracion_privada").select("clave, valor");
-      if (!error && Array.isArray(data)) {
-        const rowToken = data.find((r) => r.clave === "gh_token");
-        const rowRepo = data.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
-        if (rowToken?.valor) {
-          localStorage.setItem("cache_gh_token", rowToken.valor);
+    if (c) {
+      try {
+        const { data, error } = await c.schema("grados-informaticos").from("configuracion_privada").select("clave, valor");
+        if (!error && Array.isArray(data)) {
+          const rowToken = data.find((r) => r.clave === "gh_token");
+          const rowRepo = data.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
+          if (rowToken?.valor) {
+            localStorage.setItem("cache_gh_token", rowToken.valor);
+            token = rowToken.valor;
+          }
+          if (rowRepo?.valor) {
+            localStorage.setItem("gh_repo", rowRepo.valor);
+          }
         }
-        if (rowRepo?.valor) {
-          localStorage.setItem("gh_repo", rowRepo.valor);
-        }
-      }
-    } catch (_) {}
-    return getToken();
+      } catch (_) {}
+    }
+    return token || getToken();
   }
 
   async function listarRamas() {
