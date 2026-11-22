@@ -153,18 +153,13 @@ const SupabaseAuth = (() => {
     const label = document.querySelector("#auth-btn-label");
     if (!btn || !label) return;
 
-    if (currentUser) {
-      if (sessionStorage.getItem("esInvitado") === "true") {
-        label.textContent = "Invitado";
-        btn.classList.remove("primary");
-        btn.title = "Modo Invitado · Clic para identificarte con tu cuenta";
-      } else {
-        const email = currentUser.email || "Usuario";
-        label.textContent = email.split("@")[0];
-        btn.classList.add("primary");
-        btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
-      }
+    if (currentUser && currentUser.id !== "invitado") {
+      const email = currentUser.email || "Usuario";
+      label.textContent = email.split("@")[0];
+      btn.classList.add("primary");
+      btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
     } else {
+      currentUser = null;
       label.textContent = "Iniciar sesión";
       btn.classList.remove("primary");
       btn.title = "Iniciar sesión con Supabase para guardar tu caché y progreso";
@@ -242,7 +237,7 @@ const SupabaseAuth = (() => {
     }
 
     const email = currentUser?.email || "";
-    const esInvitado = sessionStorage.getItem("esInvitado") === "true";
+    const esInvitado = false;
     const historyCount = typeof getHistory === "function" ? Object.keys(getHistory()).length : 0;
     const wrongCount = typeof getWrongIds === "function" ? getWrongIds().length : 0;
 
@@ -555,16 +550,10 @@ const SupabaseAuth = (() => {
   }
 
   async function autenticarConGate() {
-    if (sessionStorage.getItem("esInvitado") === "true") {
-      currentUser = { id: "invitado", email: "invitado@local" };
-      ocultarLoginGate();
-      updateAuthButton();
-      if (typeof window.renderizarInicioTests === "function") {
-        const mainEl = document.getElementById("main") || document.getElementById("app");
-        if (mainEl && !mainEl.innerHTML.trim()) window.renderizarInicioTests();
-      }
-      return true;
-    }
+    try {
+      sessionStorage.removeItem("esInvitado");
+      localStorage.removeItem("esInvitado");
+    } catch (_) {}
 
     const urlParams = new URLSearchParams(window.location.search);
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
@@ -831,18 +820,6 @@ const SupabaseAuth = (() => {
         if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
         mostrarLoginGate(`Error: ${err.message || err}`);
       }
-    });
-
-    document.getElementById("gate-btn-guest")?.addEventListener("click", () => {
-      sessionStorage.setItem("esInvitado", "true");
-      sessionStorage.setItem("esAdmin", "false");
-      currentUser = { id: "invitado", email: "invitado@local" };
-      ocultarLoginGate();
-      updateAuthButton();
-      if (typeof window.renderizarInicioTests === "function") {
-        window.renderizarInicioTests();
-      }
-      if (typeof toast === "function") toast("Has entrado en modo Invitado");
     });
 
     document.querySelector("#auth-btn")?.addEventListener("click", () => {

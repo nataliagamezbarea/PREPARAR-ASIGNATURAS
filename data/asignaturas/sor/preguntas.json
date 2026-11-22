@@ -1,0 +1,150 @@
+{
+  "formato": "preparar-tests-banco-preguntas",
+  "version": 1,
+  "clave": "SOR-banco-oficial",
+  "meta": {
+    "asignatura": "SOR",
+    "titulo": "SOR · Sistemas Operativos en Red · Banco de Preguntas",
+    "tema": 0,
+    "temas": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "apartado": 0,
+    "total": 8,
+    "version": "1.0",
+    "grado": "Segundo_grado_medio"
+  },
+  "preguntas": [
+    {
+      "id": "sor_q1",
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "1.1 Conceptos de cliente-servidor y roles de red",
+      "tipo": "teoria",
+      "enunciado": "¿Cuál es la función principal de un controlador de dominio en una red con Windows Server?",
+      "opciones": {
+        "A": "Autenticar y autorizar a todos los usuarios y equipos de la red mediante una base de datos centralizada.",
+        "B": "Asignar automáticamente direcciones IP dinámicas a los clientes de la red.",
+        "C": "Enrutar paquetes entre diferentes redes físicas y subredes.",
+        "D": "Actuar únicamente como servidor proxy de navegación web."
+      },
+      "correcta": "A",
+      "explicacion": "El controlador de dominio (DC) aloja Active Directory Domain Services y se encarga de la autenticación y autorización centralizada de cuentas y recursos."
+    },
+    {
+      "id": "sor_q2",
+      "tema": 1,
+      "apartado": 2,
+      "apartadoNombre": "1.2 Instalación de Windows Server y Linux Server",
+      "tipo": "teoria",
+      "enunciado": "¿Qué ventaja ofrece la instalación de Windows Server en modo 'Server Core' frente a la versión con experiencia de escritorio?",
+      "opciones": {
+        "A": "Mayor superficie de ataque y mayor consumo de memoria RAM.",
+        "B": "Menor consumo de recursos, menor superficie de ataque y menos reinicios por actualizaciones.",
+        "C": "Permite ejecutar programas gráficos de diseño 3D más rápido.",
+        "D": "No necesita conexión de red ni tarjeta de interfaz."
+      },
+      "correcta": "B",
+      "explicacion": "Server Core no incluye entorno gráfico de escritorio, reduciendo el consumo de RAM, CPU y la superficie de exposición a vulnerabilidades."
+    },
+    {
+      "id": "sor_q3",
+      "tema": 2,
+      "apartado": 1,
+      "apartadoNombre": "2.1 Estructura lógica y física de Active Directory",
+      "tipo": "teoria",
+      "enunciado": "En la jerarquía de Active Directory, ¿qué elemento representa el límite administrativo y de seguridad de más alto nivel?",
+      "opciones": {
+        "A": "La Unidad Organizativa (OU).",
+        "B": "El Bosque (Forest).",
+        "C": "El Árbol (Tree).",
+        "D": "El Sitio (Site)."
+      },
+      "correcta": "B",
+      "explicacion": "El bosque es el límite de seguridad supremo de Active Directory. Todos los árboles y dominios de un bosque comparten el mismo esquema y catálogo global."
+    },
+    {
+      "id": "sor_q4",
+      "tema": 2,
+      "apartado": 3,
+      "apartadoNombre": "2.3 Unidades organizativas (OU), usuarios y grupos",
+      "tipo": "teoria",
+      "enunciado": "¿Cuál es el propósito fundamental de crear Unidades Organizativas (OUs) en un dominio?",
+      "opciones": {
+        "A": "Vincular directivas de grupo (GPO) y delegar tareas de administración sobre un subconjunto de objetos.",
+        "B": "Aumentar la velocidad del cableado de red.",
+        "C": "Definir subredes físicas en diferentes ciudades.",
+        "D": "Sustituir a los switches de red por software."
+      },
+      "correcta": "A",
+      "explicacion": "Las OUs permiten estructurar lógicamente los objetos del dominio para aplicarles GPOs específicas y delegar permisos de gestión a administradores locales."
+    },
+    {
+      "id": "sor_q5",
+      "tema": 3,
+      "apartado": 1,
+      "apartadoNombre": "3.1 Permisos NTFS y permisos de recurso compartido (SMB)",
+      "tipo": "teoria",
+      "enunciado": "Si un usuario accede por red a una carpeta con permiso compartido de 'Lectura' pero permiso NTFS de 'Control Total', ¿cuál es su permiso efectivo final?",
+      "opciones": {
+        "A": "Control Total.",
+        "B": "Lectura (el permiso más restrictivo prevalece).",
+        "C": "Modificar.",
+        "D": "Acceso denegado absoluto."
+      },
+      "correcta": "B",
+      "explicacion": "Al combinar permisos compartidos (Share) y permisos del sistema de archivos (NTFS) a través de la red, siempre se aplica la combinación más restrictiva."
+    },
+    {
+      "id": "sor_q6",
+      "tema": 3,
+      "apartado": 2,
+      "apartadoNombre": "3.2 Servidor Samba en Linux integrado con dominio",
+      "tipo": "teoria",
+      "enunciado": "¿Qué protocolo de red implementa Samba en sistemas Linux para compartir carpetas e impresoras con clientes Windows?",
+      "opciones": {
+        "A": "SMB / CIFS.",
+        "B": "SNMPv3.",
+        "C": "TFTP.",
+        "D": "Telnet."
+      },
+      "correcta": "A",
+      "explicacion": "Samba implementa los protocolos SMB (Server Message Block) y CIFS, permitiendo la interoperabilidad nativa entre sistemas Unix/Linux y clientes Windows."
+    },
+    {
+      "id": "sor_q7",
+      "tema": 4,
+      "apartado": 1,
+      "apartadoNombre": "4.1 Creación, enlace y precedencia de directivas GPO",
+      "tipo": "teoria",
+      "enunciado": "¿En qué orden se procesan por defecto las Directivas de Grupo (GPO) en un entorno de Active Directory?",
+      "opciones": {
+        "A": "LSDOU: Local, Sitio (Site), Dominio (Domain), Unidad Organizativa (OU).",
+        "B": "OU, Dominio, Sitio, Local.",
+        "C": "Dominio, Local, OU, Sitio.",
+        "D": "Únicamente en el orden alfabético de sus nombres."
+      },
+      "correcta": "A",
+      "explicacion": "La regla mnemotécnica estándar es LSDOU: primero Local, luego Sitio, después Dominio y finalmente Unidad Organizativa (las de OU prevalecen sobre las anteriores salvo bloqueo de herencia)."
+    },
+    {
+      "id": "sor_q8",
+      "tema": 4,
+      "apartado": 3,
+      "apartadoNombre": "4.3 Copias de seguridad y monitorización del servidor",
+      "tipo": "teoria",
+      "enunciado": "¿Qué comando de consola en Windows permite forzar la actualización inmediata de las directivas de grupo en un equipo cliente?",
+      "opciones": {
+        "A": "gpupdate /force",
+        "B": "ipconfig /renew",
+        "C": "netdom resetpwd",
+        "D": "sfc /scannow"
+      },
+      "correcta": "A",
+      "explicacion": "'gpupdate /force' refresca de forma inmediata tanto las directivas de equipo como de usuario aplicadas mediante GPO."
+    }
+  ]
+}

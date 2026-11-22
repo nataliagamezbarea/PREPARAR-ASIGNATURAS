@@ -30,7 +30,8 @@ services:
     volumes:
       - ${DIRECTORIO_APUNTES:?Selecciona primero la carpeta de apuntes}:/data/apuntes:ro
       - ../datos/bancos:/app/datos/bancos
-      - ../public:/app/public:ro
+      - ../data:/app/data
+      - ../public:/app/public
       - ../server:/app/server:ro
     networks:
       - ollama_compartido

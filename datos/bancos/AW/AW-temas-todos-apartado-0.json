@@ -1,0 +1,69 @@
+{
+  "formato": "preparar-tests-banco-preguntas",
+  "version": 1,
+  "clave": "AW-banco-oficial",
+  "meta": {
+    "asignatura": "AW",
+    "titulo": "AW · Aplicaciones Web · Banco de Preguntas",
+    "tema": 0,
+    "temas": [
+      1,
+      2,
+      3
+    ],
+    "apartado": 0,
+    "total": 3,
+    "version": "1.0",
+    "grado": "Segundo_grado_medio"
+  },
+  "preguntas": [
+    {
+      "id": "aw_q1",
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "1.1 Pila LAMP",
+      "tipo": "teoria",
+      "enunciado": "¿Qué componente de la pila LAMP se encarga de ejecutar el código dinámico del lado del servidor?",
+      "opciones": {
+        "A": "El intérprete de PHP.",
+        "B": "El gestor de base de datos MySQL.",
+        "C": "El navegador del cliente.",
+        "D": "El sistema operativo Linux únicamente."
+      },
+      "correcta": "A",
+      "explicacion": "PHP procesa los scripts en el servidor antes de entregar el HTML generado al servidor web Apache para enviarlo al cliente."
+    },
+    {
+      "id": "aw_q2",
+      "tema": 2,
+      "apartado": 2,
+      "apartadoNombre": "2.2 Archivo de configuración de WordPress",
+      "tipo": "teoria",
+      "enunciado": "¿En qué archivo raíz de WordPress se configuran las credenciales de acceso a la base de datos MySQL (DB_NAME, DB_USER, DB_PASSWORD)?",
+      "opciones": {
+        "A": "wp-config.php",
+        "B": ".htaccess",
+        "C": "index.php",
+        "D": "wp-settings.php"
+      },
+      "correcta": "A",
+      "explicacion": "'wp-config.php' es el archivo de configuración primordial de WordPress donde se definen las constantes de conexión con la base de datos."
+    },
+    {
+      "id": "aw_q3",
+      "tema": 3,
+      "apartado": 1,
+      "apartadoNombre": "3.1 Plataformas de e-commerce",
+      "tipo": "teoria",
+      "enunciado": "¿Qué extensión o plugin oficial convierte una instalación estándar de WordPress en una completa tienda online de comercio electrónico?",
+      "opciones": {
+        "A": "WooCommerce.",
+        "B": "phpMyAdmin.",
+        "C": "Yoast SEO.",
+        "D": "Elementor."
+      },
+      "correcta": "A",
+      "explicacion": "WooCommerce es el plugin libre de comercio electrónico líder para la plataforma WordPress."
+    }
+  ]
+}

@@ -143,7 +143,318 @@
           ]
         }
       ],
-      "totalPreguntas": 1656
+      "totalPreguntas": 1656,
+      "grado": "Primer_grado_superior_DAW"
+    },
+    {
+      "id": "sor",
+      "nombre": "SOR · Sistemas Operativos en Red",
+      "grado": "Segundo_grado_medio",
+      "archivo": "./data/asignaturas/sor/preguntas.json",
+      "descripcion": "2º Grado Medio SMR · Dominios Active Directory, Samba, LDAP, usuarios, grupos y GPOs",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Instalación y arquitectura de sistemas operativos en red",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "1.1 Conceptos de cliente-servidor y roles de red"
+            },
+            {
+              "numero": 2,
+              "nombre": "1.2 Instalación de Windows Server y Linux Server"
+            },
+            {
+              "numero": 3,
+              "nombre": "1.3 Configuración básica de interfaces de red y nombres"
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Servicios de directorio: Active Directory y LDAP",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "2.1 Estructura lógica y física de Active Directory"
+            },
+            {
+              "numero": 2,
+              "nombre": "2.2 Controladores de dominio (DC) y catálogos globales"
+            },
+            {
+              "numero": 3,
+              "nombre": "2.3 Unidades organizativas (OU), usuarios y grupos"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Compartición de recursos y servidores de archivos",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "3.1 Permisos NTFS y permisos de recurso compartido (SMB)"
+            },
+            {
+              "numero": 2,
+              "nombre": "3.2 Servidor Samba en Linux integrado con dominio"
+            },
+            {
+              "numero": 3,
+              "nombre": "3.3 Cuotas de disco y almacenamiento distribuido"
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Tema 4 · Directivas de grupo (GPO) y mantenimiento del sistema",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "4.1 Creación, enlace y precedencia de directivas GPO"
+            },
+            {
+              "numero": 2,
+              "nombre": "4.2 Despliegue de software y restricciones de seguridad"
+            },
+            {
+              "numero": 3,
+              "nombre": "4.3 Copias de seguridad y monitorización del servidor"
+            }
+          ]
+        }
+      ],
+      "totalPreguntas": 8
+    },
+    {
+      "id": "seg",
+      "nombre": "SEG · Seguridad Informática",
+      "grado": "Segundo_grado_medio",
+      "archivo": "./data/asignaturas/seg/preguntas.json",
+      "descripcion": "2º Grado Medio SMR · Seguridad física y lógica, firewalls, copias de seguridad, criptografía y RGPD",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Principios de seguridad y legislación",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "1.1 Triada CIA (Confidencialidad, Integridad, Disponibilidad)"
+            },
+            {
+              "numero": 2,
+              "nombre": "1.2 Amenazas, vulnerabilidades y vectores de ataque"
+            },
+            {
+              "numero": 3,
+              "nombre": "1.3 Marco legal: RGPD y LOPD-GDD"
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Seguridad pasiva y copias de seguridad",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "2.1 SAIs (UPS), climatización y protección física"
+            },
+            {
+              "numero": 2,
+              "nombre": "2.2 Tipos de copia de seguridad: completa, diferencial e incremental"
+            },
+            {
+              "numero": 3,
+              "nombre": "2.3 Regla 3-2-1 y planes de recuperación ante desastres (DRP)"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Criptografía, firmas y certificados digitales",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "3.1 Criptografía simétrica frente a asimétrica"
+            },
+            {
+              "numero": 2,
+              "nombre": "3.2 Funciones hash y verificación de integridad"
+            },
+            {
+              "numero": 3,
+              "nombre": "3.3 Autoridades de certificación (CA) y certificados X.509"
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Tema 4 · Seguridad perimetral y cortafuegos (Firewalls)",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "4.1 Cortafuegos con estado (Stateful Inspection) y tablas de estado"
+            },
+            {
+              "numero": 2,
+              "nombre": "4.2 Reglas de filtrado iptables / nftables y UFW en Linux"
+            },
+            {
+              "numero": 3,
+              "nombre": "4.3 Zonas desmilitarizadas (DMZ) y VPNs"
+            }
+          ]
+        }
+      ],
+      "totalPreguntas": 8
+    },
+    {
+      "id": "ser",
+      "nombre": "SER · Servicios en Red",
+      "grado": "Segundo_grado_medio",
+      "archivo": "./data/asignaturas/ser/preguntas.json",
+      "descripcion": "2º Grado Medio SMR · Protocolos de red, DNS, DHCP, servidores Web, FTP y correo",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Direccionamiento IP y servicio DHCP",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "1.1 Rangos IP privados (RFC 1918) y máscaras de subred"
+            },
+            {
+              "numero": 2,
+              "nombre": "1.2 Funcionamiento de DHCP: proceso DORA"
+            },
+            {
+              "numero": 3,
+              "nombre": "1.3 Reservas de IP por dirección MAC y opciones DHCP"
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Resolución de nombres: DNS",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "2.1 Estructura jerárquica del DNS y servidores raíz"
+            },
+            {
+              "numero": 2,
+              "nombre": "2.2 Tipos de registros DNS: A, AAAA, CNAME, MX, PTR, NS"
+            },
+            {
+              "numero": 3,
+              "nombre": "2.3 Zonas directas e inversas y reenviadores (forwarders)"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Servidores de transferencia y alojamiento: Web y FTP",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "3.1 Servidores Web Apache y Nginx: Virtual Hosts y puertos"
+            },
+            {
+              "numero": 2,
+              "nombre": "3.2 Protocolo FTP activo frente a pasivo"
+            },
+            {
+              "numero": 3,
+              "nombre": "3.3 Seguridad en transferencias: FTPS y SFTP"
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Tema 4 · Servicios de correo y mensajería",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "4.1 Protocolos SMTP, POP3 e IMAP"
+            },
+            {
+              "numero": 2,
+              "nombre": "4.2 Agentes de correo: MUA, MTA y MDA"
+            },
+            {
+              "numero": 3,
+              "nombre": "4.3 Mecanismos antispam: SPF, DKIM y DMARC"
+            }
+          ]
+        }
+      ],
+      "totalPreguntas": 5
+    },
+    {
+      "id": "aw",
+      "nombre": "AW · Aplicaciones Web",
+      "grado": "Segundo_grado_medio",
+      "archivo": "./data/asignaturas/aw/preguntas.json",
+      "descripcion": "2º Grado Medio SMR · Gestores de contenidos (CMS), servidores web, comercio electrónico y ofimática web",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Servidores de aplicaciones web y entorno LAMP/WAMP",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "1.1 Pila de tecnologías LAMP (Linux, Apache, MySQL, PHP)"
+            },
+            {
+              "numero": 2,
+              "nombre": "1.2 Gestión de bases de datos relacionales con phpMyAdmin"
+            },
+            {
+              "numero": 3,
+              "nombre": "1.3 Seguridad en la configuración de PHP y permisos de ficheros"
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Gestores de contenidos (CMS): instalación y mantenimiento",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "2.1 Estructura y arquitectura de WordPress, Joomla y Moodle"
+            },
+            {
+              "numero": 2,
+              "nombre": "2.2 Archivo de configuración wp-config.php y conexión a base de datos"
+            },
+            {
+              "numero": 3,
+              "nombre": "2.3 Gestión de temas, plugins y actualización del CMS"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Seguridad, rendimiento y comercio electrónico",
+          "apartados": [
+            {
+              "numero": 1,
+              "nombre": "3.1 Plataformas de e-commerce: WooCommerce y PrestaShop"
+            },
+            {
+              "numero": 2,
+              "nombre": "3.2 Copias de seguridad de la base de datos y archivos multimedia"
+            },
+            {
+              "numero": 3,
+              "nombre": "3.3 Optimización de caché y prevención de inyecciones SQL"
+            }
+          ]
+        }
+      ],
+      "totalPreguntas": 3
     }
   ]
 }

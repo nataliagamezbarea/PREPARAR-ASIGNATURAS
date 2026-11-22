@@ -1,0 +1,102 @@
+{
+  "formato": "preparar-tests-banco-preguntas",
+  "version": 1,
+  "clave": "SER-banco-oficial",
+  "meta": {
+    "asignatura": "SER",
+    "titulo": "SER · Servicios en Red · Banco de Preguntas",
+    "tema": 0,
+    "temas": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "apartado": 0,
+    "total": 5,
+    "version": "1.0",
+    "grado": "Segundo_grado_medio"
+  },
+  "preguntas": [
+    {
+      "id": "ser_q1",
+      "tema": 1,
+      "apartado": 2,
+      "apartadoNombre": "1.2 Proceso DORA en DHCP",
+      "tipo": "teoria",
+      "enunciado": "¿Cuál es la secuencia correcta de los cuatro mensajes intercambiados en la asignación dinámica por DHCP?",
+      "opciones": {
+        "A": "Discover, Offer, Request, Acknowledge (DORA).",
+        "B": "Demand, Obtain, Renew, Accept.",
+        "C": "Discover, Open, Read, Apply.",
+        "D": "Dial, Operate, Route, Assign."
+      },
+      "correcta": "A",
+      "explicacion": "El protocolo DHCP sigue el proceso DORA: DHCPDiscover (difusión del cliente), DHCPOffer (propuesta del servidor), DHCPRequest (solicitud del cliente) y DHCPAck (confirmación final del servidor)."
+    },
+    {
+      "id": "ser_q2",
+      "tema": 2,
+      "apartado": 2,
+      "apartadoNombre": "2.2 Registros DNS",
+      "tipo": "teoria",
+      "enunciado": "¿Qué tipo de registro DNS asocia un nombre de dominio al servidor de correo electrónico encargado de recibir sus mensajes?",
+      "opciones": {
+        "A": "Registro MX (Mail Exchange).",
+        "B": "Registro A.",
+        "C": "Registro CNAME.",
+        "D": "Registro PTR."
+      },
+      "correcta": "A",
+      "explicacion": "El registro MX especifica los servidores de correo responsables de recibir los emails enviados a ese dominio, acompañados de una prioridad numérica."
+    },
+    {
+      "id": "ser_q3",
+      "tema": 2,
+      "apartado": 2,
+      "apartadoNombre": "2.2 Registros DNS",
+      "tipo": "teoria",
+      "enunciado": "¿Para qué sirve un registro DNS de tipo CNAME (Canonical Name)?",
+      "opciones": {
+        "A": "Para crear un alias que apunta a otro nombre canónico de dominio.",
+        "B": "Para asociar un nombre directamente con una dirección IPv6.",
+        "C": "Para realizar la resolución inversa de IP a nombre.",
+        "D": "Para definir la zona horaria del servidor."
+      },
+      "correcta": "A",
+      "explicacion": "El registro CNAME funciona como un alias que redirige un subdominio o nombre hacia otro nombre de dominio FQDN existente."
+    },
+    {
+      "id": "ser_q4",
+      "tema": 3,
+      "apartado": 2,
+      "apartadoNombre": "3.2 Protocolo FTP activo frente a pasivo",
+      "tipo": "teoria",
+      "enunciado": "¿Por qué en clientes situados tras un router con NAT o cortafuegos se debe utilizar preferentemente el modo FTP Pasivo (PASV)?",
+      "opciones": {
+        "A": "Porque en modo pasivo es el cliente quien inicia tanto la conexión de control como la de datos hacia puertos altos del servidor.",
+        "B": "Porque el modo activo no permite subir archivos de más de 1 MB.",
+        "C": "Porque el modo pasivo cifra automáticamente el tráfico con SSL.",
+        "D": "Porque el modo activo requiere obligatoriamente fibra óptica."
+      },
+      "correcta": "A",
+      "explicacion": "En modo pasivo, el cliente inicia ambas conexiones hacia el servidor, evitando que el firewall o NAT del cliente bloquee la conexión entrante de datos que iniciaría el servidor en modo activo."
+    },
+    {
+      "id": "ser_q5",
+      "tema": 4,
+      "apartado": 1,
+      "apartadoNombre": "4.1 Protocolos de correo",
+      "tipo": "teoria",
+      "enunciado": "¿Cuál es la principal ventaja de utilizar el protocolo IMAP en lugar de POP3 para consultar el correo electrónico?",
+      "opciones": {
+        "A": "Mantiene los correos y carpetas sincronizados en el servidor, permitiendo acceder desde múltiples dispositivos.",
+        "B": "Envía los mensajes de correo sin pasar por un servidor SMTP.",
+        "C": "Descarga los correos y los elimina inmediatamente del servidor.",
+        "D": "Solo funciona cuando no hay conexión a internet."
+      },
+      "correcta": "A",
+      "explicacion": "IMAP sincroniza el estado de los buzones y mensajes directamente en el servidor, ideal para usuarios con varios clientes o dispositivos."
+    }
+  ]
+}

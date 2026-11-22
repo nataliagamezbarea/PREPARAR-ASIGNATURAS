@@ -1685,18 +1685,13 @@ const SupabaseAuth = (() => {
     const label = document.querySelector("#auth-btn-label");
     if (!btn || !label) return;
 
-    if (currentUser) {
-      if (sessionStorage.getItem("esInvitado") === "true") {
-        label.textContent = "Invitado";
-        btn.classList.remove("primary");
-        btn.title = "Modo Invitado · Clic para identificarte con tu cuenta";
-      } else {
-        const email = currentUser.email || "Usuario";
-        label.textContent = email.split("@")[0];
-        btn.classList.add("primary");
-        btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
-      }
+    if (currentUser && currentUser.id !== "invitado") {
+      const email = currentUser.email || "Usuario";
+      label.textContent = email.split("@")[0];
+      btn.classList.add("primary");
+      btn.title = `Conectado como ${email} · Clic para ver perfil y sincronización`;
     } else {
+      currentUser = null;
       label.textContent = "Iniciar sesión";
       btn.classList.remove("primary");
       btn.title = "Iniciar sesión con Supabase para guardar tu caché y progreso";
@@ -1774,7 +1769,7 @@ const SupabaseAuth = (() => {
     }
 
     const email = currentUser?.email || "";
-    const esInvitado = sessionStorage.getItem("esInvitado") === "true";
+    const esInvitado = false;
     const historyCount = typeof getHistory === "function" ? Object.keys(getHistory()).length : 0;
     const wrongCount = typeof getWrongIds === "function" ? getWrongIds().length : 0;
 
@@ -2087,16 +2082,10 @@ const SupabaseAuth = (() => {
   }
 
   async function autenticarConGate() {
-    if (sessionStorage.getItem("esInvitado") === "true") {
-      currentUser = { id: "invitado", email: "invitado@local" };
-      ocultarLoginGate();
-      updateAuthButton();
-      if (typeof window.renderizarInicioTests === "function") {
-        const mainEl = document.getElementById("main") || document.getElementById("app");
-        if (mainEl && !mainEl.innerHTML.trim()) window.renderizarInicioTests();
-      }
-      return true;
-    }
+    try {
+      sessionStorage.removeItem("esInvitado");
+      localStorage.removeItem("esInvitado");
+    } catch (_) {}
 
     const urlParams = new URLSearchParams(window.location.search);
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
@@ -2363,18 +2352,6 @@ const SupabaseAuth = (() => {
         if (btn) { btn.disabled = false; btn.textContent = "Iniciar sesión"; }
         mostrarLoginGate(`Error: ${err.message || err}`);
       }
-    });
-
-    document.getElementById("gate-btn-guest")?.addEventListener("click", () => {
-      sessionStorage.setItem("esInvitado", "true");
-      sessionStorage.setItem("esAdmin", "false");
-      currentUser = { id: "invitado", email: "invitado@local" };
-      ocultarLoginGate();
-      updateAuthButton();
-      if (typeof window.renderizarInicioTests === "function") {
-        window.renderizarInicioTests();
-      }
-      if (typeof toast === "function") toast("Has entrado en modo Invitado");
     });
 
     document.querySelector("#auth-btn")?.addEventListener("click", () => {
@@ -3237,7 +3214,13 @@ function renderStart() {
     `;
   }).join("");
   const themeSummary = counts.temas.map(({ tema, count }) => `Tema ${tema}: ${count}`).join(" · ");
-  const subjectOptions = state.catalog.map((s) => {
+  const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
+  const filteredCatalog = state.catalog.filter((s) => {
+    if (!branchSelected || branchSelected === "todas" || branchSelected === "TODAS LAS RAMAS") return true;
+    return s.grado === branchSelected || (!s.grado && branchSelected === "Segundo_grado_medio");
+  });
+  const catalogToUse = filteredCatalog.length ? filteredCatalog : state.catalog;
+  const subjectOptions = catalogToUse.map((s) => {
     const suffix = s.localData ? ` (local) · ${s.localData.preguntas.length} preguntas` : "";
     const label = s.etiqueta || s.nombre;
     return `<option value="${esc(s.id)}" ${s.id === state.subjectId ? "selected" : ""}>${esc(label)}${suffix}</option>`;
@@ -3808,6 +3791,197 @@ function renderStart() {
     }
   }
   updateFooter();
+  initNavbarYGestionAsignaturas();
+}
+
+function initNavbarYGestionAsignaturas() {
+  const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
+  const branchSelect = document.getElementById("navbar-branch-select");
+  if (branchSelect) {
+    branchSelect.value = branchSelected;
+    if (!branchSelect.dataset.attached) {
+      branchSelect.dataset.attached = "true";
+      branchSelect.addEventListener("change", async (e) => {
+        const val = e.target.value;
+        state.ramaActual = val;
+        try { localStorage.setItem("rama_actual", val); } catch (_) {}
+        const matching = state.catalog.filter(s => val === "todas" || s.grado === val || (!s.grado && val === "Segundo_grado_medio"));
+        if (matching.length && (!state.subject || (state.subject.grado !== val && val !== "todas"))) {
+          await loadSubject(matching[0].id);
+        }
+        renderStart();
+        const nombreRama = val === "Segundo_grado_medio" ? "Segundo grado medio" : (val === "Primer_grado_medio" ? "Primer grado medio" : (val === "Primer_grado_superior_DAW" ? "Primer grado superior DAW" : "Todas las ramas"));
+        toast(`Grado activo: ${nombreRama}`);
+      });
+    }
+  }
+
+  const modal = document.getElementById("modal-gestionar-asignaturas");
+  const btnAbrir = document.getElementById("btn-gestionar-asignaturas");
+  const btnCerrar = document.getElementById("btn-cerrar-modal-gestionar");
+
+  const tabCrear = document.getElementById("tab-crear-asig");
+  const tabSubir = document.getElementById("tab-subir-tests");
+  const panelCrear = document.getElementById("panel-crear-asig");
+  const panelSubir = document.getElementById("panel-subir-tests");
+  const selectSubirAsig = document.getElementById("select-subir-asig");
+
+  if (modal && !modal.dataset.attached) {
+    modal.dataset.attached = "true";
+
+    btnAbrir?.addEventListener("click", () => {
+      if (selectSubirAsig) {
+        selectSubirAsig.innerHTML = state.catalog.map(s => `<option value="${esc(s.id)}" ${s.id === state.subjectId ? "selected" : ""}>${esc(s.nombre)} (${s.id})</option>`).join("");
+      }
+      modal.classList.remove("hidden");
+    });
+
+    btnCerrar?.addEventListener("click", () => modal.classList.add("hidden"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.add("hidden");
+    });
+
+    tabCrear?.addEventListener("click", () => {
+      tabCrear.style.color = "var(--brand)";
+      tabCrear.style.borderBottom = "2px solid var(--brand)";
+      tabSubir.style.color = "var(--muted)";
+      tabSubir.style.borderBottom = "2px solid transparent";
+      panelCrear.style.display = "flex";
+      panelSubir.style.display = "none";
+    });
+
+    tabSubir?.addEventListener("click", () => {
+      tabSubir.style.color = "var(--brand)";
+      tabSubir.style.borderBottom = "2px solid var(--brand)";
+      tabCrear.style.color = "var(--muted)";
+      tabCrear.style.borderBottom = "2px solid transparent";
+      panelSubir.style.display = "flex";
+      panelCrear.style.display = "none";
+    });
+
+    document.getElementById("btn-submit-crear-asig")?.addEventListener("click", async () => {
+      const grado = document.getElementById("input-asig-grado")?.value || "Segundo_grado_medio";
+      const nombre = (document.getElementById("input-asig-nombre")?.value || "").trim();
+      const idRaw = (document.getElementById("input-asig-id")?.value || "").trim() || nombre;
+      const desc = (document.getElementById("input-asig-desc")?.value || "").trim();
+      const temasRaw = (document.getElementById("input-asig-temas")?.value || "").trim();
+
+      if (!nombre) return alert("Por favor escribe el nombre de la asignatura.");
+      const id = idRaw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9_-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+      if (!id) return alert("El identificador no es válido.");
+
+      let temas = [];
+      if (temasRaw) {
+        temas = temasRaw.split("\n").map(l => l.trim()).filter(Boolean).map((linea, idx) => ({
+          numero: idx + 1,
+          nombre: linea.startsWith("Tema ") ? linea : `Tema ${idx + 1} · ${linea}`,
+          apartados: [{ numero: 1, nombre: `${idx + 1}.1 Conceptos iniciales` }]
+        }));
+      }
+
+      const btn = document.getElementById("btn-submit-crear-asig");
+      btn.disabled = true;
+      btn.textContent = "Creando asignatura...";
+
+      try {
+        const resp = await fetch("/api/asignaturas", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ id, nombre, grado, descripcion: desc, temas })
+        });
+        const resJson = await resp.json();
+        if (!resp.ok) throw new Error(resJson.error || "Error al crear asignatura");
+
+        await loadCatalog();
+        state.ramaActual = grado;
+        try { localStorage.setItem("rama_actual", grado); } catch (_) {}
+        await loadSubject(id);
+        modal.classList.add("hidden");
+        renderStart();
+        toast(`Asignatura "${nombre}" creada y lista.`);
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar y Registrar Asignatura';
+      }
+    });
+
+    const fileInput = document.getElementById("input-file-test-json");
+    const textarea = document.getElementById("textarea-test-json");
+    const preview = document.getElementById("subir-test-preview");
+
+    const updatePreview = (txt) => {
+      try {
+        const parsed = JSON.parse(txt);
+        const list = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.preguntas) ? parsed.preguntas : []);
+        if (list.length) {
+          const temas = new Set(list.map(p => p.tema || 1));
+          preview.style.display = "block";
+          preview.innerHTML = `<span style="color:var(--ok); font-weight:700;">✅ Válido:</span> ${list.length} preguntas detectadas en ${temas.size} tema(s).`;
+        } else {
+          preview.style.display = "none";
+        }
+      } catch (_) {
+        preview.style.display = "none";
+      }
+    };
+
+    textarea?.addEventListener("input", () => updatePreview(textarea.value));
+    fileInput?.addEventListener("change", (e) => {
+      const f = e.target.files?.[0];
+      if (f) {
+        const r = new FileReader();
+        r.onload = () => {
+          textarea.value = r.result;
+          updatePreview(r.result);
+        };
+        r.readAsText(f);
+      }
+    });
+
+    document.getElementById("btn-submit-subir-test")?.addEventListener("click", async () => {
+      const idAsig = selectSubirAsig?.value;
+      if (!idAsig) return alert("Selecciona la asignatura de destino.");
+      const contenido = textarea?.value.trim();
+      if (!contenido) return alert("Selecciona un archivo JSON o pega su contenido.");
+
+      let preguntas = [];
+      try {
+        const parsed = JSON.parse(contenido);
+        preguntas = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.preguntas) ? parsed.preguntas : Object.values(parsed));
+      } catch (_) {
+        return alert("El contenido no es JSON válido.");
+      }
+
+      if (!preguntas.length) return alert("No se encontraron preguntas en el JSON.");
+
+      const btn = document.getElementById("btn-submit-subir-test");
+      btn.disabled = true;
+      btn.textContent = "Subiendo preguntas...";
+
+      try {
+        const resp = await fetch("/api/tests/subir", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ idAsignatura: idAsig, preguntas })
+        });
+        const resJson = await resp.json();
+        if (!resp.ok) throw new Error(resJson.error || "Error al subir test");
+
+        await loadCatalog();
+        await loadSubject(idAsig);
+        modal.classList.add("hidden");
+        renderStart();
+        toast(`¡Test subido con éxito! ${resJson.totalPreguntas} preguntas disponibles.`);
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Test en el Banco Oficial';
+      }
+    });
+  }
 }
 
 function updateFooter() {
@@ -5777,8 +5951,17 @@ async function boot() {
         !asignatura.apuntesPrivados &&
         (asignatura.archivo || asignatura.localData),
     );
+    const branchBoot = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
+    const asignaturaDeRama = state.catalog.find(
+      (a) =>
+        (branchBoot === "todas" || a.grado === branchBoot || (!a.grado && branchBoot === "Segundo_grado_medio")) &&
+        !a.apuntesPrivados &&
+        (a.archivo || a.localData),
+    );
     const asignaturaInicial =
       asignaturaSesion ||
+      (saved && asignaturaGuardada && (branchBoot === "todas" || asignaturaGuardada.grado === branchBoot) ? asignaturaGuardada : null) ||
+      asignaturaDeRama ||
       asignaturaWec ||
       asignaturaGuardada ||
       state.catalog.find(

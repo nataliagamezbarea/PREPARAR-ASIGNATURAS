@@ -90,8 +90,17 @@ async function boot() {
         !asignatura.apuntesPrivados &&
         (asignatura.archivo || asignatura.localData),
     );
+    const branchBoot = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
+    const asignaturaDeRama = state.catalog.find(
+      (a) =>
+        (branchBoot === "todas" || a.grado === branchBoot || (!a.grado && branchBoot === "Segundo_grado_medio")) &&
+        !a.apuntesPrivados &&
+        (a.archivo || a.localData),
+    );
     const asignaturaInicial =
       asignaturaSesion ||
+      (saved && asignaturaGuardada && (branchBoot === "todas" || asignaturaGuardada.grado === branchBoot) ? asignaturaGuardada : null) ||
+      asignaturaDeRama ||
       asignaturaWec ||
       asignaturaGuardada ||
       state.catalog.find(

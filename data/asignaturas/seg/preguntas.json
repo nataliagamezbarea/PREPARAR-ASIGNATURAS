@@ -1,0 +1,150 @@
+{
+  "formato": "preparar-tests-banco-preguntas",
+  "version": 1,
+  "clave": "SEG-banco-oficial",
+  "meta": {
+    "asignatura": "SEG",
+    "titulo": "SEG · Seguridad Informática · Banco de Preguntas",
+    "tema": 0,
+    "temas": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "apartado": 0,
+    "total": 8,
+    "version": "1.0",
+    "grado": "Segundo_grado_medio"
+  },
+  "preguntas": [
+    {
+      "id": "seg_q1",
+      "tema": 1,
+      "apartado": 1,
+      "apartadoNombre": "1.1 Triada CIA",
+      "tipo": "teoria",
+      "enunciado": "¿A qué pilar de la triada CIA afecta un ataque de denegación de servicio distribuido (DDoS)?",
+      "opciones": {
+        "A": "A la Disponibilidad.",
+        "B": "A la Confidencialidad exclusivamente.",
+        "C": "Al No repudio de firmas.",
+        "D": "A la Criptoanalítica."
+      },
+      "correcta": "A",
+      "explicacion": "Un ataque DoS o DDoS busca saturar los recursos de un servicio para que los usuarios legítimos no puedan acceder, atacando directamente la Disponibilidad."
+    },
+    {
+      "id": "seg_q2",
+      "tema": 2,
+      "apartado": 2,
+      "apartadoNombre": "2.2 Tipos de copia de seguridad",
+      "tipo": "teoria",
+      "enunciado": "¿Cuál es la principal diferencia entre una copia de seguridad diferencial y una incremental?",
+      "opciones": {
+        "A": "La diferencial copia todo lo modificado desde la última copia completa; la incremental solo lo modificado desde la última copia (sea completa o incremental).",
+        "B": "La incremental nunca borra el bit de archivo y la diferencial siempre lo desactiva.",
+        "C": "La diferencial tarda más en restaurarse que la incremental.",
+        "D": "No hay diferencia, son nombres sinónimos."
+      },
+      "correcta": "A",
+      "explicacion": "La copia diferencial respalda los cambios acumulados desde el último backup completo. La incremental solo guarda lo cambiado desde el último backup previo de cualquier tipo."
+    },
+    {
+      "id": "seg_q3",
+      "tema": 2,
+      "apartado": 3,
+      "apartadoNombre": "2.3 Regla 3-2-1",
+      "tipo": "teoria",
+      "enunciado": "¿En qué consiste la regla 3-2-1 de copias de seguridad recomendada por INCIBE?",
+      "opciones": {
+        "A": "3 copias de los datos en 2 soportes distintos y al menos 1 copia fuera de la sede (offsite/cloud).",
+        "B": "Hacer copias a las 3:21 de la madrugada todos los días.",
+        "C": "Guardar 3 versiones de cada archivo durante 2 meses en 1 disco duro.",
+        "D": "Comprimir 3 veces el backup con contraseñas de 21 caracteres."
+      },
+      "correcta": "A",
+      "explicacion": "La regla 3-2-1 establece tener 3 copias de tus datos importantes, en 2 soportes o tecnologías distintas, con 1 de ellas ubicada fuera de las instalaciones físicas."
+    },
+    {
+      "id": "seg_q4",
+      "tema": 3,
+      "apartado": 1,
+      "apartadoNombre": "3.1 Criptografía simétrica y asimétrica",
+      "tipo": "teoria",
+      "enunciado": "En un esquema de cifrado asimétrico (clave pública y privada), si Ana quiere enviarle un mensaje confidencial a Beto, ¿con qué clave debe cifrarlo?",
+      "opciones": {
+        "A": "Con la clave pública de Beto.",
+        "B": "Con la clave privada de Beto.",
+        "C": "Con la clave privada de Ana.",
+        "D": "Con la clave pública de la Autoridad de Certificación."
+      },
+      "correcta": "A",
+      "explicacion": "Para garantizar la confidencialidad, el emisor cifra con la clave pública del destinatario; así solo el destinatario con su clave privada correspondiente podrá descifrarlo."
+    },
+    {
+      "id": "seg_q5",
+      "tema": 3,
+      "apartado": 2,
+      "apartadoNombre": "3.2 Funciones hash",
+      "tipo": "teoria",
+      "enunciado": "¿Cuál de las siguientes es una propiedad esencial de una función resumen o hash criptográfico seguro (ej. SHA-256)?",
+      "opciones": {
+        "A": "Resistencia a colisiones y efecto avalancha (un cambio mínimo en la entrada altera completamente la salida).",
+        "B": "Poder reconstruir el texto original a partir del hash resultante.",
+        "C": "Generar hashes de longitud variable según el tamaño del archivo analizado.",
+        "D": "Permitir descifrar contraseñas conociendo solo la clave privada."
+      },
+      "correcta": "A",
+      "explicacion": "Una función hash segura es unidireccional (irreversible), de longitud fija, produce el efecto avalancha y tiene alta resistencia a colisiones."
+    },
+    {
+      "id": "seg_q6",
+      "tema": 4,
+      "apartado": 1,
+      "apartadoNombre": "4.1 Cortafuegos con estado",
+      "tipo": "teoria",
+      "enunciado": "¿Por qué un cortafuegos con inspección de estado (stateful firewall) es superior a un simple filtro de paquetes estático?",
+      "opciones": {
+        "A": "Porque monitoriza el estado de las conexiones activas y permite el tráfico de respuesta legítimo (RELATED, ESTABLISHED).",
+        "B": "Porque impide por completo el uso de cables Ethernet.",
+        "C": "Porque convierte la dirección IP pública en privada sin usar NAT.",
+        "D": "Porque descifra todo el tráfico HTTPS sin certificados."
+      },
+      "correcta": "A",
+      "explicacion": "Un firewall con estado guarda registro de los flujos de comunicación abiertos y permite automáticamente el tráfico de vuelta perteneciente a conexiones válidas ya establecidas."
+    },
+    {
+      "id": "seg_q7",
+      "tema": 4,
+      "apartado": 2,
+      "apartadoNombre": "4.2 Reglas de filtrado en Linux",
+      "tipo": "teoria",
+      "enunciado": "En un servidor Ubuntu con cortafuegos UFW activo, ¿qué comando abre el puerto TCP 443 para conexiones web seguras?",
+      "opciones": {
+        "A": "sudo ufw allow 443/tcp",
+        "B": "sudo ufw deny 443",
+        "C": "sudo iptables -X 443",
+        "D": "sudo ufw block port 443"
+      },
+      "correcta": "A",
+      "explicacion": "'ufw allow 443/tcp' crea una regla de entrada que permite el tráfico entrante al puerto HTTPS (443 TCP)."
+    },
+    {
+      "id": "seg_q8",
+      "tema": 4,
+      "apartado": 3,
+      "apartadoNombre": "4.3 Zonas desmilitarizadas (DMZ)",
+      "tipo": "teoria",
+      "enunciado": "¿Cuál es el objetivo principal de situar un servidor web público dentro de una Zona Desmilitarizada (DMZ)?",
+      "opciones": {
+        "A": "Evitar que si el servidor web es comprometido, el atacante tenga acceso directo a la red interna corporativa.",
+        "B": "Hacer que las páginas web carguen más rápido en internet.",
+        "C": "Eliminar la necesidad de utilizar contraseñas en los routers.",
+        "D": "Conectar los equipos sin necesidad de cables ni switches."
+      },
+      "correcta": "A",
+      "explicacion": "La DMZ aísla los servidores accesibles desde Internet de la red local interna protegida (LAN), limitando el impacto en caso de intrusión."
+    }
+  ]
+}
