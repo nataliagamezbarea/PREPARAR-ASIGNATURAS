@@ -2242,23 +2242,6 @@ const RepoBranchManager = (() => {
 
     return token || getToken();
   }
-            const rowRepo = filas.find((r) => r.clave === "gh_repo" || r.clave === "gh_repo_general");
-            if (rowToken?.valor) {
-              token = rowToken.valor;
-              localStorage.setItem("cache_gh_token", token);
-            }
-            if (rowRepo?.valor) {
-              localStorage.setItem("gh_repo", rowRepo.valor);
-            }
-          }
-        }
-      } catch (err) {
-        console.warn("Fallo leyendo configuracion_privada de Supabase:", err);
-      }
-    }
-
-    return token || getToken();
-  }
 
   async function listarRamas() {
     const token = await obtenerTokenDesdeSupabase();
