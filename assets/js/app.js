@@ -2055,9 +2055,9 @@ const SupabaseAuth = (() => {
 
       const textoLimpio = decodeURIComponent(errDesc).replace(/\+/g, " ");
       if (textoLimpio.toLowerCase().includes("bad_oauth_state") || textoLimpio.toLowerCase().includes("state not found")) {
-        errorAlInicio = "El enlace anterior expiró o se limpió la sesión previa. Pulsa en Continuar con Google o GitHub para acceder.";
+        errorAlInicio = "";
       } else {
-        errorAlInicio = `Aviso: ${textoLimpio}. Pulsa de nuevo para entrar.`;
+        errorAlInicio = `Aviso: ${textoLimpio}.`;
       }
     }
 
