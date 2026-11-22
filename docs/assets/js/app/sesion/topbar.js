@@ -138,7 +138,8 @@ function inicializarTopbar() {
   if (btnNavbarApuntes && !btnNavbarApuntes.dataset.attached) {
     btnNavbarApuntes.dataset.attached = "true";
     btnNavbarApuntes.addEventListener("click", () => {
-      window.abrirPracticaDesdeApuntes?.();
+      const asig = state.subject?.nombre || state.subject?.id || "";
+      window.abrirPracticaDesdeApuntes?.(asig);
     });
   }
 

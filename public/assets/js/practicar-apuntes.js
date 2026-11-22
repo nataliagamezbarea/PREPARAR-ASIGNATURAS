@@ -324,6 +324,10 @@ function actualizarCabeceraAsignatura(asignatura) {
   const subtitulo = document.querySelector("#brand-sub");
   if (subtitulo)
     subtitulo.textContent = `${asignatura.temas.length} temas · Tests desde apuntes`;
+  const subPaso1 = document.querySelector("#apuntes-subtitulo-paso-1");
+  if (subPaso1) {
+    subPaso1.textContent = `${nombre} se abre con todos sus temas seleccionados; puedes desmarcar los que quieras excluir.`;
+  }
   document.title = `${nombre} · Tests desde apuntes`;
 }
 
@@ -366,11 +370,16 @@ function actualizarResumenSeleccion() {
   ultimaRevision = revision || "";
   const generar = document.querySelector("#generar-apuntes-tests");
   if (generar) generar.disabled = !revision || Boolean(tareaActual);
-  // Botón de practicar desactivado/oculto - solo exportar JSON
   const practicar = document.querySelector("#practicar-banco-apuntes");
   if (practicar) {
-    practicar.style.display = "none";
-    practicar.disabled = true;
+    if (banco && banco.total > 0) {
+      practicar.style.display = "inline-flex";
+      practicar.disabled = false;
+      practicar.textContent = `Practicar test guardado (${banco.total} preguntas)`;
+    } else {
+      practicar.style.display = "none";
+      practicar.disabled = true;
+    }
   }
   const exportar = document.querySelector("#exportar-banco-apuntes");
   if (exportar) exportar.disabled = false;
@@ -530,20 +539,14 @@ function reconstruirTemas(temasGuardados = [], apartadoGuardado = "0") {
   const selector = document.querySelector("#apuntes-lista-temas");
   if (!selector) return;
   const temas = asignatura?.temas ?? [];
-  const seleccionarTodosPorDefecto =
-    asignatura?.nombre.trim().toLocaleUpperCase("es") === "WEC";
   const temasPrevios = Array.isArray(temasGuardados)
     ? temasGuardados.map(Number)
     : temasGuardados
       ? [Number(temasGuardados)]
       : [];
-  const seleccionInicial = seleccionarTodosPorDefecto
-    ? temas.map((tema) => tema.numero)
-    : temasPrevios.length
-      ? temasPrevios
-      : temas.some((tema) => tema.numero === Number(temasGuardados))
-        ? [Number(temasGuardados)]
-        : [temas[0]?.numero].filter(Boolean);
+  const seleccionInicial = temasPrevios.length
+    ? temasPrevios
+    : temas.map((tema) => tema.numero);
   selector.innerHTML = temas.length
     ? `<label class="apuntes-tema todos"><input id="seleccionar-todos-temas" type="checkbox" ${temas.every((tema) => seleccionInicial.includes(tema.numero)) ? "checked" : ""}><span>Todos los temas</span></label>${temas
         .map(
@@ -577,7 +580,7 @@ function reconstruirTemas(temasGuardados = [], apartadoGuardado = "0") {
   reconstruirApartados(apartadoGuardado);
 }
 
-async function recargarDatosApuntes(conservarSeleccion = true) {
+async function recargarDatosApuntes(conservarSeleccion = true, asignaturaForzada = "") {
   const seleccionAnterior = conservarSeleccion
     ? leerSeleccionGuardada()
     : {};
@@ -598,16 +601,23 @@ async function recargarDatosApuntes(conservarSeleccion = true) {
         .join("")
     : '<option value="">No se encontraron asignaturas</option>';
   selectorAsignatura.disabled = catalogo.asignaturas.length === 0;
+
+  const asigBuscada = (asignaturaForzada || seleccionAnterior.asignatura || "").trim().toLowerCase();
+  const asignaturaCoincidente = catalogo.asignaturas.find(
+    (a) => a.nombre.trim().toLowerCase() === asigBuscada || (a.id && a.id.toLowerCase() === asigBuscada)
+  ) || catalogo.asignaturas.find(
+    (a) => a.nombre.trim().toLowerCase().includes(asigBuscada)
+  );
   const asignaturaWec = catalogo.asignaturas.find(
     (asignatura) => asignatura.nombre.trim().toLocaleUpperCase("es") === "WEC",
   );
   selectorAsignatura.value =
-    asignaturaWec?.nombre ??
+    asignaturaCoincidente?.nombre ??
     (catalogo.asignaturas.some(
       (asignatura) => asignatura.nombre === seleccionAnterior.asignatura,
     )
       ? seleccionAnterior.asignatura
-      : catalogo.asignaturas[0]?.nombre ?? "");
+      : asignaturaWec?.nombre ?? catalogo.asignaturas[0]?.nombre ?? "");
   const seleccionAsignatura =
     leerSeleccionPorAsignatura(selectorAsignatura.value).asignatura ===
     selectorAsignatura.value
@@ -917,6 +927,51 @@ function enlazarEventosPantalla() {
     .querySelector("#volver-tests")
     .addEventListener("click", () => window.renderizarInicioTests?.(), senal);
 
+  const btnSubirInline = document.querySelector("#btn-subir-apuntes-inline");
+  const inputSubirInline = document.querySelector("#input-archivo-subir-inline");
+  btnSubirInline?.addEventListener("click", () => inputSubirInline?.click(), senal);
+  inputSubirInline?.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const asigActual = valorSeleccionado("#apuntes-asignatura") || "GENERAL";
+    mostrarMensaje(`Subiendo y procesando "${file.name}" para ${asigActual}…`, "aviso");
+    try {
+      if (file.name.toLowerCase().endsWith(".json")) {
+        const txt = await file.text();
+        const json = JSON.parse(txt);
+        const resp = await fetch("/api/tests/subir", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idAsignatura: asigActual, preguntas: json })
+        });
+        const res = await resp.json();
+        if (!resp.ok) throw new Error(res.error || "Error al subir JSON");
+        mostrarMensaje(`✓ Banco JSON cargado con éxito (${res.totalPreguntas} preguntas en ${asigActual}).`, "correcto");
+      } else {
+        const reader = new FileReader();
+        const base64Promise = new Promise((res, rej) => {
+          reader.onload = () => res(reader.result.split(",")[1]);
+          reader.onerror = rej;
+        });
+        reader.readAsDataURL(file);
+        const base64 = await base64Promise;
+        const resp = await fetch("/api/apuntes/subir", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ asignatura: asigActual, nombreArchivo: file.name, contenidoBase64: base64 })
+        });
+        const res = await resp.json();
+        if (!resp.ok) throw new Error(res.error || "Error al guardar apuntes");
+        mostrarMensaje(`✓ Archivo "${file.name}" guardado e indexado en ${asigActual}.`, "correcto");
+      }
+      await recargarDatosApuntes(true, asigActual);
+    } catch (err) {
+      mostrarMensaje(`Error al subir: ${err.message}`, "error");
+    } finally {
+      inputSubirInline.value = "";
+    }
+  }, senal);
+
   const modoExamen = document.querySelectorAll('input[name="modo-examen-apuntes"]');
   const campoContexto = document.querySelector("#campo-contexto-examen");
   const textareaContexto = document.querySelector("#contexto-examen-apuntes");
@@ -1085,9 +1140,16 @@ async function renderizarPantallaApuntes(asignaturaPredeterminada = "", opciones
 
       <div class="practica-cuadricula">
         <section class="question-card">
-          <div class="apuntes-seccion-titulo"><span>01</span><div><h2>Elige qué practicar</h2><p>WEC se abre con todos sus temas seleccionados; puedes desmarcar los que quieras excluir.</p></div></div>
+          <div class="apuntes-seccion-titulo"><span>01</span><div><h2>Elige qué practicar</h2><p id="apuntes-subtitulo-paso-1">La asignatura se abre con todos sus temas seleccionados; puedes desmarcar los que quieras excluir.</p></div></div>
           <div class="apuntes-campos">
-            <label>Asignatura<select class="control" id="apuntes-asignatura"></select></label>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+              <label for="apuntes-asignatura" style="font-weight:700; margin:0;">Asignatura</label>
+              <button id="btn-subir-apuntes-inline" type="button" class="btn tiny" style="gap:6px; background:var(--brand-soft); color:var(--brand); border-color:var(--brand); cursor:pointer;" title="Subir apuntes (.pdf/.zip/.tex) o test JSON para esta asignatura">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Subir apuntes (.pdf / .zip / .tex) o Test JSON
+              </button>
+              <input type="file" id="input-archivo-subir-inline" accept=".pdf,.zip,.tex,.txt,.md,.json" style="display:none;">
+            </div>
+            <select class="control" id="apuntes-asignatura" style="margin-bottom:12px;"></select>
             <fieldset class="apuntes-temas"><legend>Temas · puedes elegir varios</legend><div id="apuntes-lista-temas" class="apuntes-lista-temas"></div></fieldset>
             <label>Apartado<select class="control" id="apuntes-apartado"><option value="0">Tema completo</option></select></label>
           </div>
@@ -1179,7 +1241,7 @@ async function renderizarPantallaApuntes(asignaturaPredeterminada = "", opciones
       <div id="apuntes-mensaje" class="apuntes-mensaje" role="status" aria-live="polite" hidden></div>
     </section>`;
   enlazarEventosPantalla();
-  void recargarDatosApuntes().then(() => {
+  void recargarDatosApuntes(true, asignaturaPredeterminada).then(() => {
     if (
       asignaturaPredeterminada &&
       catalogoApuntes?.asignaturas.some(

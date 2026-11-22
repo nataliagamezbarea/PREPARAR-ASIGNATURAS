@@ -7,7 +7,7 @@ import { comprobarModelo } from "./modelo.js";
 import { leerCatalogoApuntes } from "./apuntes.js";
 import { log, error as debugError } from "./debug.js";
 
-import { manejarAsignaturas } from "./rutas/asignaturas.js";
+import { manejarAsignaturas, leerCatalogoAsignaturas } from "./rutas/asignaturas.js";
 import { manejarExplain } from "./rutas/explain.js";
 import { manejarBancos, consolidarBancoDinamico } from "./rutas/bancos.js";
 import { manejarGenerar } from "./rutas/generar.js";
@@ -41,7 +41,7 @@ export async function leerJson(peticion) {
   let cuerpo = "";
   for await (const parte of peticion) {
     cuerpo += parte;
-    if (Buffer.byteLength(cuerpo) > 1024 * 1024) {
+    if (Buffer.byteLength(cuerpo) > 50 * 1024 * 1024) {
       throw Object.assign(new Error("La solicitud supera el tamaño permitido."), {
         estado: 413,
       });
@@ -169,7 +169,31 @@ async function procesarApi(peticion, respuesta, url) {
   if (peticion.method === "GET" && url.pathname === "/api/apuntes") {
     log("api", "ruta /api/apuntes");
     try {
-      return responderJson(respuesta, 200, await leerCatalogoApuntes());
+      const catalogo = await leerCatalogoApuntes();
+      try {
+        const catalogoBancos = await leerCatalogoAsignaturas();
+        for (const b of (catalogoBancos.asignaturas || [])) {
+          const nombre = b.nombre || b.id;
+          const existe = catalogo.asignaturas.find(a => a.nombre.toLowerCase() === nombre.toLowerCase());
+          if (!existe) {
+            catalogo.asignaturas.push({
+              nombre,
+              id: b.id,
+              temas: (b.temas || []).map(t => ({
+                numero: t.numero,
+                nombre: t.nombre || `Tema ${t.numero}`,
+                revision: "banco-oficial",
+                apartados: (t.apartados || []).map(ap => ({
+                  numero: ap.numero,
+                  nombre: ap.nombre || `Apartado ${t.numero}.${ap.numero}`,
+                  revision: "banco-oficial"
+                }))
+              }))
+            });
+          }
+        }
+      } catch (_) {}
+      return responderJson(respuesta, 200, catalogo);
     } catch (err) {
       debugError("api", err, { ruta: "/api/apuntes" });
       return responderError(respuesta, 503, err.message);

@@ -248,5 +248,38 @@ export async function manejarAsignaturas(peticion, respuesta, url, responderJson
     }
   }
 
+  if (peticion.method === "POST" && url.pathname === "/api/apuntes/subir") {
+    try {
+      const datos = await leerJson(peticion);
+      const asignatura = String(datos.asignatura || datos.idAsignatura || "").trim();
+      const nombreArchivo = String(datos.nombreArchivo || "").trim();
+      const contenidoBase64 = String(datos.contenidoBase64 || "");
+
+      if (!asignatura || !nombreArchivo || !contenidoBase64) {
+        return responderError(respuesta, 400, "Faltan datos obligatorios (asignatura, nombreArchivo, contenidoBase64).");
+      }
+
+      const ext = path.extname(nombreArchivo).toLowerCase();
+      if (![".pdf", ".zip", ".tex", ".txt", ".md"].includes(ext)) {
+        return responderError(respuesta, 400, "Formato no permitido. Sube un archivo .zip, .pdf, .tex, .md o .txt.");
+      }
+
+      const dirDestino = path.join(configuracion.raizApuntes, asignatura);
+      await mkdir(dirDestino, { recursive: true });
+
+      const rutaArchivo = path.join(dirDestino, path.basename(nombreArchivo));
+      const buffer = Buffer.from(contenidoBase64, "base64");
+      await writeFile(rutaArchivo, buffer);
+
+      return responderJson(respuesta, 200, {
+        ok: true,
+        mensaje: `Apuntes guardados con éxito en ${asignatura}/${path.basename(nombreArchivo)}`,
+        ruta: rutaArchivo
+      });
+    } catch (err) {
+      return responderError(respuesta, 500, "Error guardando apuntes: " + err.message);
+    }
+  }
+
   return false;
 }
