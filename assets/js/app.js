@@ -1700,6 +1700,11 @@ const SupabaseGestionAuth = (() => {
   }
 
   async function cerrarSesionCompleta(mensaje = "Has cerrado sesión.") {
+    const modalEl = document.querySelector("#auth-modal");
+    if (modalEl) {
+      modalEl.classList.add("hidden");
+      modalEl.style.display = "none";
+    }
     const c = SupabaseConfig.getClient();
     if (c) {
       try {
@@ -2091,6 +2096,8 @@ const SupabaseUI = (() => {
       });
 
       modal.querySelector("#btn-logout")?.addEventListener("click", async () => {
+        modal.classList.add("hidden");
+        modal.style.display = "none";
         await SupabaseGestionAuth.cerrarSesionCompleta("Has cerrado sesión.");
       });
     } else {

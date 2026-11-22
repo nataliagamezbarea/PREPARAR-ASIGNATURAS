@@ -51,6 +51,11 @@ const SupabaseGestionAuth = (() => {
   }
 
   async function cerrarSesionCompleta(mensaje = "Has cerrado sesión.") {
+    const modalEl = document.querySelector("#auth-modal");
+    if (modalEl) {
+      modalEl.classList.add("hidden");
+      modalEl.style.display = "none";
+    }
     const c = SupabaseConfig.getClient();
     if (c) {
       try {
