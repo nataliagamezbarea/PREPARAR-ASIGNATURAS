@@ -293,10 +293,17 @@ async function renderAiScreen() {
     logMensaje("Iniciando generación con la IA local…");
 
     try {
+      const nvKey = (typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")) || "";
       const res = await fetch(`${window.location.origin}/api/generar`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(solicitud),
+        headers: {
+          "Content-Type": "application/json",
+          ...(nvKey ? { "x-nvidia-api-key": nvKey } : {}),
+        },
+        body: JSON.stringify({
+          ...solicitud,
+          ...(nvKey ? { nvidiaApiKey: nvKey } : {}),
+        }),
       });
       const raw = await res.text();
       let data = null;
