@@ -4,6 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Test interactivo</title>
+<script>
+(function() {
+  try {
+    var m = document.cookie.match(/(?:^|; )auth_origin_app=([^;]*)/);
+    var authOrigin = m ? decodeURIComponent(m[1]) : (localStorage.getItem("auth_origin_app") || "");
+    if (authOrigin && (authOrigin.includes("generador-apuntes") || authOrigin.includes(":8002"))) {
+      document.cookie = "auth_origin_app=; path=/; max-age=0";
+      try { localStorage.removeItem("auth_origin_app"); } catch (_) {}
+      var destino = new URL(authOrigin);
+      if (!window.location.search.includes("error=")) {
+        destino.search = window.location.search;
+      }
+      destino.hash = window.location.hash;
+      window.location.replace(destino.toString());
+    }
+  } catch (_) {}
+})();
+</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" referrerpolicy="no-referrer">
 <link rel="stylesheet" href="./assets/css/app.css?v=2.3">
 <link rel="stylesheet" href="./assets/css/practicar-apuntes.css?v=2.3">
