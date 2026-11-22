@@ -6,7 +6,7 @@ services:
     image: preparar-tests:local
     container_name: preparar-tests
     environment:
-      PUERTO_WEB: 8124
+      PUERTO_WEB: 3000
       RUTA_APUNTES: /data/apuntes
       RUTA_BANCOS: /app/datos/bancos
       DIRECCION_OLLAMA: http://generador-apuntes-ollama:11434
@@ -26,7 +26,7 @@ services:
       TIEMPO_IA: ${TIEMPO_IA:-900}
       MAX_CARACTERES_BLOQUE: ${MAX_CARACTERES_BLOQUE:-10000}
     ports:
-      - "127.0.0.1:8124:8124"
+      - "127.0.0.1:3000:3000"
     volumes:
       - ${DIRECTORIO_APUNTES:?Selecciona primero la carpeta de apuntes}:/data/apuntes:ro
       - ./datos/bancos:/app/datos/bancos
@@ -40,7 +40,7 @@ services:
         - CMD
         - node
         - -e
-        - "fetch('http://127.0.0.1:8124/api/salud').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+        - "fetch('http://127.0.0.1:3000/api/salud').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
       interval: 20s
       timeout: 5s
       start_period: 15s

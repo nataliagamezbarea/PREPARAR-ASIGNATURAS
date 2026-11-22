@@ -10,5 +10,5 @@ RUN npm ci --omit=dev
 RUN mkdir -p /app/datos/bancos && chown -R node:node /app/datos
 
 USER node
-EXPOSE 8124
+EXPOSE 3000
 CMD ["node", "--watch", "server/servidor.js"]

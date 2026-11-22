@@ -1717,6 +1717,7 @@ const SupabaseAuth = (() => {
     }
 
     const email = currentUser?.email || "";
+    const esInvitado = sessionStorage.getItem("esInvitado") === "true";
     const historyCount = typeof getHistory === "function" ? Object.keys(getHistory()).length : 0;
     const wrongCount = typeof getWrongIds === "function" ? getWrongIds().length : 0;
 
@@ -1733,15 +1734,39 @@ const SupabaseAuth = (() => {
 
         <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
           <div style="width:40px; height:40px; border-radius:10px; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:18px;">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <i class="fa-solid ${esInvitado ? "fa-user-clock" : (currentUser ? "fa-cloud-arrow-up" : "fa-user")}"></i>
           </div>
           <div>
-            <h3 style="margin:0; font-size:18px;">${currentUser ? "Tu cuenta de Supabase" : "Iniciar sesión en Supabase"}</h3>
-            <small style="color:var(--muted);">${currentUser ? "Grados Informáticos · Sincronización activa" : "Guarda tu caché y progreso en la nube"}</small>
+            <h3 style="margin:0; font-size:18px;">${esInvitado ? "Modo Invitado" : (currentUser ? "Tu cuenta de Supabase" : "Iniciar sesión en Supabase")}</h3>
+            <small style="color:var(--muted);">${esInvitado ? "Practicando como invitado · Progreso local" : (currentUser ? "Grados Informáticos · Sincronización activa" : "Guarda tu caché y progreso en la nube")}</small>
           </div>
         </div>
 
-        ${currentUser ? `
+        ${esInvitado ? `
+          <div style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:13px; color:var(--muted);">Sesión</span>
+              <strong style="font-size:14px; color:var(--brand);">Invitado (Modo local)</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:13px; color:var(--muted);">Preguntas practicadas</span>
+              <strong><span class="pct-pill" style="background:var(--ok-soft); color:var(--ok); font-size:12px; padding:2px 8px; border-radius:12px;">${historyCount}</span></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13px; color:var(--muted);">Preguntas falladas</span>
+              <strong><span class="pct-pill" style="background:var(--bad-soft); color:var(--bad); font-size:12px; padding:2px 8px; border-radius:12px;">${wrongCount}</span></strong>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="btn primary" type="button" id="btn-login-from-guest" style="width:100%; justify-content:center; gap:8px;">
+              <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión con mi cuenta
+            </button>
+            <button class="btn ghost warn" type="button" id="btn-logout-guest" style="width:100%; justify-content:center; gap:8px;">
+              <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión de invitado
+            </button>
+          </div>
+        ` : (currentUser ? `
           <div style="background:var(--card2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; margin-bottom:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
               <span style="font-size:13px; color:var(--muted);">Usuario</span>
@@ -1804,7 +1829,7 @@ const SupabaseAuth = (() => {
               <button class="btn ghost" type="button" id="btn-submit-signup" style="flex:1; justify-content:center;">Registrarse</button>
             </div>
           </form>
-        `}
+        `)}
       </div>
     `;
 
@@ -1816,7 +1841,26 @@ const SupabaseAuth = (() => {
       if (e.target === modal) modal.classList.add("hidden");
     });
 
-    if (currentUser) {
+    if (esInvitado) {
+      modal.querySelector("#btn-logout-guest")?.addEventListener("click", () => {
+        sessionStorage.removeItem("esInvitado");
+        sessionStorage.removeItem("esAdmin");
+        currentUser = null;
+        updateAuthButton();
+        modal.classList.add("hidden");
+        mostrarLoginGate("Has salido del modo invitado. Inicia sesión para continuar.");
+        if (typeof toast === "function") toast("Sesión de invitado cerrada.");
+      });
+
+      modal.querySelector("#btn-login-from-guest")?.addEventListener("click", () => {
+        sessionStorage.removeItem("esInvitado");
+        sessionStorage.removeItem("esAdmin");
+        currentUser = null;
+        updateAuthButton();
+        modal.classList.add("hidden");
+        mostrarLoginGate();
+      });
+    } else if (currentUser) {
       modal.querySelector("#btn-sync-now")?.addEventListener("click", async () => {
         const btn = modal.querySelector("#btn-sync-now");
         if (btn) { btn.disabled = true; btn.textContent = "Sincronizando…"; }
@@ -1828,10 +1872,13 @@ const SupabaseAuth = (() => {
       modal.querySelector("#btn-logout")?.addEventListener("click", async () => {
         const c = getClient();
         if (c) await c.auth.signOut().catch(() => {});
+        sessionStorage.removeItem("esInvitado");
+        sessionStorage.removeItem("esAdmin");
         currentUser = null;
         updateAuthButton();
-        if (typeof toast === "function") toast("Has cerrado sesión.");
         modal.classList.add("hidden");
+        mostrarLoginGate("Has cerrado sesión.");
+        if (typeof toast === "function") toast("Has cerrado sesión.");
       });
     } else {
       modal.querySelector("#btn-oauth-google")?.addEventListener("click", async () => {

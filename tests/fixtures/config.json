@@ -1,5 +1,5 @@
 {
-  "puerto": 8124,
+  "puerto": 3000,
   "modeloIA": "qwen2.5vl:7b",
   "tiempoIA": 900,
   "maxCaracteresBloque": 10000,

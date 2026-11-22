@@ -66,7 +66,7 @@ export const configuracion = {
     raizProyecto,
     process.env.RUTA_BANCOS ?? "datos/bancos",
   ),
-  puerto: enteroEntorno("PUERTO_WEB", 8124, 1, 65535),
+  puerto: enteroEntorno("PUERTO_WEB", 3000, 1, 65535),
   proveedorIA: (process.env.PROVEEDOR_IA || "auto").trim().toLowerCase(),
   direccionOllama: (process.env.DIRECCION_OLLAMA ??
     "http://generador-apuntes-ollama:11434")

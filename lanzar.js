@@ -311,7 +311,7 @@ async function guardarCarpetaApuntes(rutaElegida) {
 
   const entorno = await leerConfiguracionEntorno();
   entorno.set("DIRECTORIO_APUNTES", ruta);
-  entorno.set("PUERTO_WEB", entorno.get("PUERTO_WEB") || "8124");
+  entorno.set("PUERTO_WEB", entorno.get("PUERTO_WEB") || "3000");
   entorno.set("MODELO_IA", entorno.get("MODELO_IA") || "qwen2.5vl:7b");
   entorno.set("NUM_CTX_IA", entorno.get("NUM_CTX_IA") || "24576");
   entorno.set("TOKENS_MAX_IA", entorno.get("TOKENS_MAX_IA") || "2048");
@@ -529,7 +529,7 @@ async function esperarServicioListo(puerto, modelo) {
 async function iniciar() {
   try {
     const entorno = await leerConfiguracionEntorno();
-    const puerto = Number(entorno.get("PUERTO_WEB") || 8124);
+    const puerto = Number(entorno.get("PUERTO_WEB") || 3000);
     if (!Number.isSafeInteger(puerto) || puerto < 1 || puerto > 65535)
       throw new Error("PUERTO_WEB debe ser un puerto entre 1 y 65535.");
     const direccion = `http://127.0.0.1:${puerto}`;
