@@ -1851,6 +1851,25 @@ const SupabaseGestionAuth = (() => {
       let { data: { session } } = await c.auth.getSession();
       const hasTokenInUrl = window.location.hash.includes("access_token") || window.location.search.includes("code=");
 
+      // Si no hay sesión local, intentar recuperar desde la cookie compartida entre puertos
+      if (!session && !hasTokenInUrl) {
+        try {
+          const m = document.cookie.match(/(?:^|; )sb_shared_session=([^;]*)/);
+          if (m) {
+            const parsed = JSON.parse(decodeURIComponent(m[1]));
+            if (parsed && parsed.access_token) {
+              const resCookie = await c.auth.setSession({
+                access_token: parsed.access_token,
+                refresh_token: parsed.refresh_token || ""
+              });
+              if (resCookie.data?.session) {
+                session = resCookie.data.session;
+              }
+            }
+          }
+        } catch (_) {}
+      }
+
       if (!session && hasTokenInUrl) {
         if (window.location.search.includes("code=")) {
           const code = urlParams.get("code");
@@ -1895,6 +1914,12 @@ const SupabaseGestionAuth = (() => {
       }
 
       currentUser = session.user;
+      try {
+        if (session?.access_token) {
+          const payload = { access_token: session.access_token, refresh_token: session.refresh_token };
+          document.cookie = `sb_shared_session=${encodeURIComponent(JSON.stringify(payload))}; path=/; max-age=604800; samesite=lax`;
+        }
+      } catch (_) {}
       try { sessionStorage.setItem("esAdmin", "true"); } catch (_) {}
       ocultarLoginGate();
       if (typeof SupabaseUI !== "undefined") SupabaseUI.updateAuthButton();
