@@ -166,12 +166,12 @@ async function loadCatalog() {
   } catch {}
   const byId = new Map();
   catalog
-    .filter((s) => s && s.id && (s.archivo || s.localData))
+    .filter((s) => s && s.id && (s.archivo || s.localData || (Array.isArray(s.temas) && s.temas.length > 0)))
     .forEach((s) => {
       byId.set(s.id, {
         ...s,
         nombre: s.nombre || s.id,
-        etiqueta: `${s.nombre || s.id} (Banco de preguntas)`,
+        etiqueta: s.etiqueta || (s.archivo ? `${s.nombre || s.id} (Banco de preguntas)` : `${s.nombre || s.id}`),
       });
     });
 
@@ -182,7 +182,7 @@ async function loadCatalog() {
       byId.set(apId, {
         ...s,
         id: apId,
-        etiqueta: `${s.nombre} · apuntes privados (${s.temas?.length || 0} temas)`,
+        etiqueta: `${s.nombre} · apuntes (${s.temas?.length || 0} temas)`,
       });
     });
 

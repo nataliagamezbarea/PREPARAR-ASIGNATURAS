@@ -588,18 +588,60 @@ async function recargarDatosApuntes(conservarSeleccion = true, asignaturaForzada
     ? leerSeleccionGuardada()
     : {};
   const [catalogo, bancos] = await Promise.all([
-    consultarAPI("/api/apuntes"),
-    consultarAPI("/api/bancos"),
+    consultarAPI("/api/apuntes").catch(() => ({ asignaturas: [] })),
+    consultarAPI("/api/bancos").catch(() => ({ bancos: [] })),
   ]);
+
+  if (!catalogo.asignaturas) catalogo.asignaturas = [];
+
+  // Enriquecer el catálogo con data/asignaturas.json para garantizar todas las asignaturas de GitHub y del grado
+  try {
+    const resLocal = await fetch("./data/asignaturas.json").catch(() => fetch("/data/asignaturas.json"));
+    if (resLocal && resLocal.ok) {
+      const dataJson = await resLocal.json();
+      if (Array.isArray(dataJson.asignaturas)) {
+        for (const aj of dataJson.asignaturas) {
+          const clave = (aj.nombre || aj.id || "").trim().toLowerCase();
+          if (!catalogo.asignaturas.some(a => (a.nombre || "").trim().toLowerCase() === clave || (a.id && a.id.toLowerCase() === clave))) {
+            catalogo.asignaturas.push({
+              id: aj.id,
+              nombre: aj.nombre || aj.id,
+              grado: aj.grado,
+              temas: Array.isArray(aj.temas) ? aj.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
+            });
+          }
+        }
+      }
+    }
+  } catch (_) {}
+
+  // Enriquecer también con asignaturas personalizadas de localStorage si existen
+  try {
+    const custom = JSON.parse(localStorage.getItem("preparar_tests_custom_subjects") || "[]");
+    for (const c of custom) {
+      if (c && (c.nombre || c.id)) {
+        const clave = (c.nombre || c.id).trim().toLowerCase();
+        if (!catalogo.asignaturas.some(a => (a.nombre || "").trim().toLowerCase() === clave || (a.id && a.id.toLowerCase() === clave))) {
+          catalogo.asignaturas.push({
+            id: c.id,
+            nombre: c.nombre || c.id,
+            grado: c.grado,
+            temas: Array.isArray(c.temas) ? c.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
+          });
+        }
+      }
+    }
+  } catch (_) {}
+
   catalogoApuntes = catalogo;
-  bancosPreguntas = bancos.bancos;
+  bancosPreguntas = bancos?.bancos || [];
   const selectorAsignatura = document.querySelector("#apuntes-asignatura");
   if (!selectorAsignatura) return;
   selectorAsignatura.innerHTML = catalogo.asignaturas.length
     ? catalogo.asignaturas
         .map(
           (asignatura) =>
-            `<option value="${escaparHTML(asignatura.nombre)}">${escaparHTML(asignatura.nombre)} · ${asignatura.temas.length} temas</option>`,
+            `<option value="${escaparHTML(asignatura.nombre)}">${escaparHTML(asignatura.nombre)} · ${(asignatura.temas || []).length} temas</option>`,
         )
         .join("")
     : '<option value="">No se encontraron asignaturas</option>';

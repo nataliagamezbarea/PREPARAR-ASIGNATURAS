@@ -58,102 +58,35 @@ async function consultarAPI(ruta, opciones = {}) {
       window.location.hostname.endsWith("github.io") ||
       window.location.hostname.endsWith("pages.dev"));
 
-  // Resolver en modo estático / frontend sin fallar
   if (esEntornoEstatico) {
-    if (ruta === "/api/salud") {
-      const nvKey = (typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")) || "";
-      return {
-        ok: true,
-        modeloDisponible: true,
-        modelo: nvKey ? "NVIDIA Cloud (Navegador)" : "NVIDIA Cloud (Token en ⚙️)"
-      };
-    }
-    if (ruta === "/api/apuntes") {
-      try {
-        const respCat = await fetch("./data/asignaturas.json").catch(() =>
-          fetch("https://raw.githubusercontent.com/nataliagamezbarea/GRADOS_INFORMATICOS/master/test/asignaturas.json")
-        );
-        const data = await respCat.json();
-        return {
-          asignaturas: (data.asignaturas || []).map((a) => ({
-            id: a.id,
-            nombre: a.nombre,
-            temas: (a.temas || [{ numero: 1, nombre: "Tema 1" }]).map((t) => ({
-              numero: Number(t.numero) || 1,
-              nombre: t.nombre || `Tema ${t.numero}`,
-              revision: "frontend",
-              apartados: t.apartados || [{ numero: 1, nombre: "1.1 General", revision: "frontend" }]
-            }))
-          }))
-        };
-      } catch {
-        return { asignaturas: [] };
-      }
-    }
-    if (ruta === "/api/bancos") {
-      const bancosLocales = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && k.startsWith("preparar_tests_banco_")) {
-          try {
-            const obj = JSON.parse(localStorage.getItem(k));
-            if (obj && obj.meta) bancosLocales.push(obj.meta);
-          } catch (_) {}
-        }
-      }
-      return { bancos: bancosLocales };
-    }
-    if (ruta.startsWith("/api/banco?")) {
-      const urlParams = new URL(ruta, "http://dummy");
-      const asigParam = (urlParams.searchParams.get("asignatura") || "").toUpperCase();
-      const guardado = localStorage.getItem(`preparar_tests_banco_${asigParam}`);
-      if (guardado) return JSON.parse(guardado);
-      const respPreg = await fetch(`./data/asignaturas/${asigParam.toLowerCase()}/preguntas.json`).catch(() =>
-        fetch(`https://raw.githubusercontent.com/nataliagamezbarea/GRADOS_INFORMATICOS/master/test/${asigParam}/preguntas.json`)
-      );
-      if (respPreg.ok) return await respPreg.json();
-      throw new Error("No hay banco guardado para esta selección.");
-    }
-    if (ruta === "/api/generar") {
-      throw new Error("FRONTEND_FALLBACK");
-    }
+    throw new Error(
+      "La generación de tests desde apuntes privados requiere ejecutar la aplicación en local (con el acceso directo de tu Escritorio o Docker), ya que en GitHub Pages no hay acceso a los archivos de tu ordenador ni a la IA local.",
+    );
   }
 
+  const respuesta = await fetch(ruta, {
+    cache: "no-store",
+    ...opciones,
+    headers: {
+      ...(opciones.body ? { "content-type": "application/json" } : {}),
+      ...(typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")
+        ? { "x-nvidia-api-key": localStorage.getItem("preparar_tests_nvidia_key") }
+        : {}),
+      ...opciones.headers,
+    },
+  });
+  let datos;
   try {
-    const respuesta = await fetch(ruta, {
-      cache: "no-store",
-      ...opciones,
-      headers: {
-        ...(opciones.body ? { "content-type": "application/json" } : {}),
-        ...(typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")
-          ? { "x-nvidia-api-key": localStorage.getItem("preparar_tests_nvidia_key") }
-          : {}),
-        ...opciones.headers,
-      },
-    });
-    let datos;
-    try {
-      datos = await respuesta.json();
-    } catch {
-      throw new Error(`El servidor devolvió una respuesta no válida (${respuesta.status}).`);
-    }
-    if (!respuesta.ok)
-      throw Object.assign(
-        new Error(datos.error || `La operación falló (${respuesta.status}).`),
-        { status: respuesta.status },
-      );
-    return datos;
-  } catch (err) {
-    if (ruta === "/api/salud") {
-      const nvKey = (typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")) || "";
-      return {
-        ok: true,
-        modeloDisponible: true,
-        modelo: nvKey ? "NVIDIA Cloud (Navegador)" : "NVIDIA Cloud (Token en ⚙️)"
-      };
-    }
-    throw err;
+    datos = await respuesta.json();
+  } catch {
+    throw new Error(`El servidor devolvió una respuesta no válida (${respuesta.status}).`);
   }
+  if (!respuesta.ok)
+    throw Object.assign(
+      new Error(datos.error || `La operación falló (${respuesta.status}).`),
+      { status: respuesta.status },
+    );
+  return datos;
 }
 
 function leerSeleccionGuardada() {
@@ -180,21 +113,10 @@ async function exportarBancoGuardado() {
   const temas = obtenerTemasSeleccionados();
   const todos = document.querySelector("#seleccionar-todos-temas")?.checked;
   const parametroTemas = todos ? "todos" : temas.join(",");
-  const asig = valorSeleccionado("#apuntes-asignatura");
   try {
-    let banco;
-    try {
-      banco = await consultarAPI(
-        `/api/banco?asignatura=${encodeURIComponent(asig)}&tema=${temas.length === 1 ? temas[0] : 0}&temas=${encodeURIComponent(parametroTemas)}&apartado=${Number(valorSeleccionado("#apuntes-apartado") || 0)}`,
-      );
-    } catch (err) {
-      const guardado = localStorage.getItem(`preparar_tests_banco_${(asig || "").toUpperCase()}`);
-      if (guardado) {
-        banco = JSON.parse(guardado);
-      } else {
-        throw err;
-      }
-    }
+    const banco = await consultarAPI(
+      `/api/banco?asignatura=${encodeURIComponent(valorSeleccionado("#apuntes-asignatura"))}&tema=${temas.length === 1 ? temas[0] : 0}&temas=${encodeURIComponent(parametroTemas)}&apartado=${Number(valorSeleccionado("#apuntes-apartado") || 0)}`,
+    );
     const archivo = new Blob([`${JSON.stringify(banco, null, 2)}\n`], {
       type: "application/json",
     });
@@ -437,9 +359,9 @@ function actualizarResumenSeleccion() {
   const elemento = apartado
     ? tema?.apartados.find((item) => item.numero === apartado)
     : null;
-  const revision = (temas.length === 1
+  const revision = temas.length === 1
     ? apartado ? elemento?.revision : tema?.revision
-    : temas.every((item) => item.revision) ? "seleccion-multiple" : "") || "frontend";
+    : temas.every((item) => item.revision) ? "seleccion-multiple" : "";
   const banco = obtenerBancoSeleccionado();
   const cambios = banco?.apuntesActualizados;
   resumen.innerHTML = `
@@ -447,7 +369,7 @@ function actualizarResumenSeleccion() {
     ${elemento ? `<span class="apuntes-chip">${escaparHTML(elemento.nombre)}</span>` : '<span class="apuntes-chip">Tema completo</span>'}
     ${temas.length === 1 && tema?.apartados.length ? `<span class="apuntes-chip">${tema.apartados.length} apartados</span>` : ""}
     ${banco ? `<span class="apuntes-chip ${cambios ? "aviso" : "correcto"}">${banco.total} preguntas guardadas${cambios ? " · apuntes actualizados" : ""}</span>` : '<span class="apuntes-chip">Aún sin test guardado</span>'}
-    <span class="apuntes-ruta">${revision === "frontend" ? "Listo para generar con IA en el navegador (NVIDIA Cloud) o local" : "Selección leída de tus archivos .tex privados"}</span>`;
+    <span class="apuntes-ruta">${revision ? "Selección leída de tus archivos .tex privados" : "No se encontró la revisión de los apuntes"}</span>`;
   ultimaRevision = revision || "";
   const generar = document.querySelector("#generar-apuntes-tests");
   if (generar) generar.disabled = !revision || Boolean(tareaActual);
@@ -666,18 +588,60 @@ async function recargarDatosApuntes(conservarSeleccion = true, asignaturaForzada
     ? leerSeleccionGuardada()
     : {};
   const [catalogo, bancos] = await Promise.all([
-    consultarAPI("/api/apuntes"),
-    consultarAPI("/api/bancos"),
+    consultarAPI("/api/apuntes").catch(() => ({ asignaturas: [] })),
+    consultarAPI("/api/bancos").catch(() => ({ bancos: [] })),
   ]);
+
+  if (!catalogo.asignaturas) catalogo.asignaturas = [];
+
+  // Enriquecer el catálogo con data/asignaturas.json para garantizar todas las asignaturas de GitHub y del grado
+  try {
+    const resLocal = await fetch("./data/asignaturas.json").catch(() => fetch("/data/asignaturas.json"));
+    if (resLocal && resLocal.ok) {
+      const dataJson = await resLocal.json();
+      if (Array.isArray(dataJson.asignaturas)) {
+        for (const aj of dataJson.asignaturas) {
+          const clave = (aj.nombre || aj.id || "").trim().toLowerCase();
+          if (!catalogo.asignaturas.some(a => (a.nombre || "").trim().toLowerCase() === clave || (a.id && a.id.toLowerCase() === clave))) {
+            catalogo.asignaturas.push({
+              id: aj.id,
+              nombre: aj.nombre || aj.id,
+              grado: aj.grado,
+              temas: Array.isArray(aj.temas) ? aj.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
+            });
+          }
+        }
+      }
+    }
+  } catch (_) {}
+
+  // Enriquecer también con asignaturas personalizadas de localStorage si existen
+  try {
+    const custom = JSON.parse(localStorage.getItem("preparar_tests_custom_subjects") || "[]");
+    for (const c of custom) {
+      if (c && (c.nombre || c.id)) {
+        const clave = (c.nombre || c.id).trim().toLowerCase();
+        if (!catalogo.asignaturas.some(a => (a.nombre || "").trim().toLowerCase() === clave || (a.id && a.id.toLowerCase() === clave))) {
+          catalogo.asignaturas.push({
+            id: c.id,
+            nombre: c.nombre || c.id,
+            grado: c.grado,
+            temas: Array.isArray(c.temas) ? c.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
+          });
+        }
+      }
+    }
+  } catch (_) {}
+
   catalogoApuntes = catalogo;
-  bancosPreguntas = bancos.bancos;
+  bancosPreguntas = bancos?.bancos || [];
   const selectorAsignatura = document.querySelector("#apuntes-asignatura");
   if (!selectorAsignatura) return;
   selectorAsignatura.innerHTML = catalogo.asignaturas.length
     ? catalogo.asignaturas
         .map(
           (asignatura) =>
-            `<option value="${escaparHTML(asignatura.nombre)}">${escaparHTML(asignatura.nombre)} · ${asignatura.temas.length} temas</option>`,
+            `<option value="${escaparHTML(asignatura.nombre)}">${escaparHTML(asignatura.nombre)} · ${(asignatura.temas || []).length} temas</option>`,
         )
         .join("")
     : '<option value="">No se encontraron asignaturas</option>';
@@ -880,71 +844,9 @@ async function iniciarGeneracion() {
     document.querySelector("#apuntes-progreso").hidden = false;
     await vigilarGeneracion(respuesta.id);
   } catch (error) {
-    console.info("[generar] Backend local no disponible, ejecutando en frontend con NVIDIA NIM:", error.message);
-    try {
-      const panel = document.querySelector("#apuntes-progreso");
-      if (panel) panel.hidden = false;
-      document.querySelector("#apuntes-barra").value = 15;
-
-      const fnGenerar = window.generarPreguntasFrontendNvidia || generarPreguntasFrontendNvidia;
-      const preguntas = await fnGenerar(solicitud, (prog) => {
-        renderizarProgreso(prog);
-      });
-
-      const asig = (solicitud.asignatura || "GENERAL").toUpperCase();
-      const bancoObj = {
-        formato: "preparar-tests-banco-preguntas",
-        version: 1,
-        clave: `${asig}-banco-oficial`,
-        meta: {
-          asignatura: asig,
-          titulo: `${asig} · Banco de Preguntas`,
-          tema: Number(solicitud.tema) || 0,
-          temas: Array.isArray(solicitud.temas) ? solicitud.temas : [Number(solicitud.tema) || 1],
-          apartado: Number(solicitud.apartado) || 0,
-          total: preguntas.length,
-          version: "1.0",
-        },
-        preguntas,
-      };
-
-      try {
-        localStorage.setItem(`preparar_tests_banco_${asig}`, JSON.stringify(bancoObj));
-      } catch (_) {}
-
-      const idxB = bancosPreguntas.findIndex((b) => b.asignatura === asig);
-      if (idxB >= 0) {
-        bancosPreguntas[idxB] = { ...bancoObj.meta, preguntas };
-      } else {
-        bancosPreguntas.push({ ...bancoObj.meta, preguntas });
-      }
-
-      renderizarProgreso({
-        porcentaje: 100,
-        fase: "completado",
-        mensaje: `¡${preguntas.length} preguntas generadas con éxito en el navegador con NVIDIA NIM!`,
-        detalle: "Banco guardado en local. Listo para practicar.",
-        actual: preguntas.length,
-        total: preguntas.length,
-        guardadas: preguntas.length,
-        generadas: preguntas.length,
-        terminado: true,
-      });
-
-      const practicar = document.querySelector("#practicar-banco-apuntes");
-      if (practicar) {
-        practicar.style.display = "inline-flex";
-        practicar.disabled = false;
-        practicar.textContent = `Practicar test guardado (${preguntas.length} preguntas)`;
-      }
-      const exportar = document.querySelector("#exportar-banco-apuntes");
-      if (exportar) exportar.disabled = false;
-    } catch (frontErr) {
-      mostrarMensaje(`Error en la generación: ${frontErr.message}`, "error");
-    } finally {
-      boton.disabled = false;
-      tareaActual = "";
-    }
+    mostrarMensaje(error.message, "error");
+    boton.disabled = false;
+    tareaActual = "";
   }
 }
 
@@ -967,28 +869,17 @@ async function detenerGeneracion() {
 async function practicarBancoGuardado() {
   const temas = obtenerTemasSeleccionados();
   const todos = document.querySelector("#seleccionar-todos-temas")?.checked;
-  const asig = valorSeleccionado("#apuntes-asignatura");
   const seleccion = {
-    asignatura: asig,
+    asignatura: valorSeleccionado("#apuntes-asignatura"),
     tema: temas.length === 1 ? temas[0] : 0,
     temas: todos ? "todos" : temas.join(","),
     apartado: Number(valorSeleccionado("#apuntes-apartado") || 0),
   };
   try {
-    let banco;
-    try {
-      banco = await consultarAPI(
-        `/api/banco?asignatura=${encodeURIComponent(seleccion.asignatura)}&tema=${seleccion.tema}&temas=${encodeURIComponent(seleccion.temas)}&apartado=${seleccion.apartado}`,
-      );
-    } catch (err) {
-      const guardado = localStorage.getItem(`preparar_tests_banco_${(asig || "").toUpperCase()}`);
-      if (guardado) {
-        banco = JSON.parse(guardado);
-      } else {
-        throw err;
-      }
-    }
-    if (banco?.apuntesActualizados) {
+    const banco = await consultarAPI(
+      `/api/banco?asignatura=${encodeURIComponent(seleccion.asignatura)}&tema=${seleccion.tema}&temas=${encodeURIComponent(seleccion.temas)}&apartado=${seleccion.apartado}`,
+    );
+    if (banco.apuntesActualizados) {
       mostrarMensaje(
         "Los apuntes cambiaron desde el último test. Puedes practicar el banco existente o generar nuevas preguntas.",
         "aviso",

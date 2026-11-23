@@ -959,12 +959,12 @@ async function loadCatalog() {
   } catch {}
   const byId = new Map();
   catalog
-    .filter((s) => s && s.id && (s.archivo || s.localData))
+    .filter((s) => s && s.id && (s.archivo || s.localData || (Array.isArray(s.temas) && s.temas.length > 0)))
     .forEach((s) => {
       byId.set(s.id, {
         ...s,
         nombre: s.nombre || s.id,
-        etiqueta: `${s.nombre || s.id} (Banco de preguntas)`,
+        etiqueta: s.etiqueta || (s.archivo ? `${s.nombre || s.id} (Banco de preguntas)` : `${s.nombre || s.id}`),
       });
     });
 
@@ -975,7 +975,7 @@ async function loadCatalog() {
       byId.set(apId, {
         ...s,
         id: apId,
-        etiqueta: `${s.nombre} · apuntes privados (${s.temas?.length || 0} temas)`,
+        etiqueta: `${s.nombre} · apuntes (${s.temas?.length || 0} temas)`,
       });
     });
 
@@ -3802,11 +3802,10 @@ function inicializarTopbar() {
   // 2. Selector de asignaturas en la barra superior (topbar)
   const navbarSubjectSelect = document.getElementById("navbar-subject-select");
   if (navbarSubjectSelect) {
-    const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
-    const matchingSubjects = state.catalog.filter(s => {
-      if (branchSelected === "todas" || branchSelected === "TODAS LAS RAMAS") return true;
-      return s.grado === branchSelected || (!s.grado && branchSelected === "Segundo_grado_medio");
-    });
+    const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "";
+    const matchingSubjects = (branchSelected && branchSelected !== "todas" && branchSelected !== "TODAS LAS RAMAS")
+      ? state.catalog.filter(s => s.grado === branchSelected)
+      : state.catalog;
     const listToRender = matchingSubjects.length ? matchingSubjects : state.catalog;
     navbarSubjectSelect.innerHTML = listToRender.map(s => {
       const label = s.etiqueta || s.nombre;
@@ -4220,11 +4219,10 @@ function renderStart() {
   const last = Number(stats.lastPct || 0);
 
   const themeSummary = counts.temas.map(({ tema, count }) => `Tema ${tema}: ${count}`).join(" · ");
-  const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
-  const filteredCatalog = state.catalog.filter((s) => {
-    if (!branchSelected || branchSelected === "todas" || branchSelected === "TODAS LAS RAMAS") return true;
-    return s.grado === branchSelected || (!s.grado && branchSelected === "Segundo_grado_medio");
-  });
+  const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "";
+  const filteredCatalog = (branchSelected && branchSelected !== "todas" && branchSelected !== "TODAS LAS RAMAS")
+    ? state.catalog.filter((s) => s.grado === branchSelected)
+    : state.catalog;
   const catalogToUse = filteredCatalog.length ? filteredCatalog : state.catalog;
   const subjectOptions = catalogToUse.map((s) => {
     const suffix = s.localData ? ` (local) · ${s.localData.preguntas.length} preguntas` : "";

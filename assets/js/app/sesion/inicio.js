@@ -35,11 +35,10 @@ function renderStart() {
   const last = Number(stats.lastPct || 0);
 
   const themeSummary = counts.temas.map(({ tema, count }) => `Tema ${tema}: ${count}`).join(" · ");
-  const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
-  const filteredCatalog = state.catalog.filter((s) => {
-    if (!branchSelected || branchSelected === "todas" || branchSelected === "TODAS LAS RAMAS") return true;
-    return s.grado === branchSelected || (!s.grado && branchSelected === "Segundo_grado_medio");
-  });
+  const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "";
+  const filteredCatalog = (branchSelected && branchSelected !== "todas" && branchSelected !== "TODAS LAS RAMAS")
+    ? state.catalog.filter((s) => s.grado === branchSelected)
+    : state.catalog;
   const catalogToUse = filteredCatalog.length ? filteredCatalog : state.catalog;
   const subjectOptions = catalogToUse.map((s) => {
     const suffix = s.localData ? ` (local) · ${s.localData.preguntas.length} preguntas` : "";

@@ -38,27 +38,23 @@ export async function leerCatalogoApuntes(opciones = {}) {
     return await leerCatalogoApuntesLocal(opciones);
   }
 
-  const fuente = (opciones.fuente || configuracion.fuenteAsignaturas || "local").trim().toLowerCase();
+  const [localRes, githubRes] = await Promise.allSettled([
+    leerCatalogoApuntesLocal(opciones),
+    leerCatalogoGitHub(),
+  ]);
 
-  if (fuente === "github") {
-    try {
-      return await leerCatalogoGitHub();
-    } catch (err) {
-      console.warn("[apuntes] Aviso: no se pudo cargar el catálogo desde GitHub, intentando local:", err.message);
-      return await leerCatalogoApuntesLocal(opciones);
-    }
+  const catLocal = localRes.status === "fulfilled" ? localRes.value : { asignaturas: [] };
+  const catGitHub = githubRes.status === "fulfilled" ? githubRes.value : { asignaturas: [] };
+
+  const mapa = new Map();
+  for (const asig of (catGitHub.asignaturas || [])) {
+    if (asig && asig.nombre) mapa.set(asig.nombre.toLowerCase(), asig);
+  }
+  for (const asig of (catLocal.asignaturas || [])) {
+    if (asig && asig.nombre) mapa.set(asig.nombre.toLowerCase(), asig);
   }
 
-  if (fuente === "auto") {
-    try {
-      const catLocal = await leerCatalogoApuntesLocal(opciones);
-      if (catLocal.asignaturas?.length) return catLocal;
-    } catch (_) {}
-    return await leerCatalogoGitHub();
-  }
-
-  // Por defecto "local"
-  return await leerCatalogoApuntesLocal(opciones);
+  return { asignaturas: Array.from(mapa.values()) };
 }
 
 export async function obtenerMaterialSeleccionado(seleccion, opciones = {}) {

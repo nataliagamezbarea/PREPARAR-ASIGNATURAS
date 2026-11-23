@@ -83,11 +83,10 @@ function inicializarTopbar() {
   // 2. Selector de asignaturas en la barra superior (topbar)
   const navbarSubjectSelect = document.getElementById("navbar-subject-select");
   if (navbarSubjectSelect) {
-    const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "Segundo_grado_medio";
-    const matchingSubjects = state.catalog.filter(s => {
-      if (branchSelected === "todas" || branchSelected === "TODAS LAS RAMAS") return true;
-      return s.grado === branchSelected || (!s.grado && branchSelected === "Segundo_grado_medio");
-    });
+    const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "";
+    const matchingSubjects = (branchSelected && branchSelected !== "todas" && branchSelected !== "TODAS LAS RAMAS")
+      ? state.catalog.filter(s => s.grado === branchSelected)
+      : state.catalog;
     const listToRender = matchingSubjects.length ? matchingSubjects : state.catalog;
     navbarSubjectSelect.innerHTML = listToRender.map(s => {
       const label = s.etiqueta || s.nombre;
