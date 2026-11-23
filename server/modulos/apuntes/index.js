@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { configuracion } from "../../configuracion.js";
 import {
   comprobarRaizApuntes,
@@ -53,6 +56,38 @@ export async function leerCatalogoApuntes(opciones = {}) {
   for (const asig of (catLocal.asignaturas || [])) {
     if (asig && asig.nombre) mapa.set(asig.nombre.toLowerCase(), asig);
   }
+
+  // Enriquecer con todas las asignaturas oficiales del grado desde asignaturas.json
+  try {
+    const candidatas = [
+      path.join(configuracion.raizBancos, "asignaturas.json"),
+      path.join(configuracion.raizPublica, "data", "asignaturas.json"),
+      path.join(configuracion.raizProyecto, "data", "asignaturas.json"),
+    ];
+    for (const c of candidatas) {
+      if (fs.existsSync(c)) {
+        const contenido = await readFile(c, "utf8");
+        const json = JSON.parse(contenido);
+        if (Array.isArray(json.asignaturas)) {
+          for (const asig of json.asignaturas) {
+            const clave = (asig.nombre || asig.id || "").trim().toLowerCase();
+            if (clave && !mapa.has(clave)) {
+              mapa.set(clave, {
+                nombre: asig.nombre || asig.id,
+                id: asig.id,
+                grado: asig.grado,
+                temas: (asig.temas || []).map(t => ({
+                  numero: t.numero,
+                  nombre: t.nombre || `Tema ${t.numero}`,
+                  apartados: t.apartados || []
+                }))
+              });
+            }
+          }
+        }
+      }
+    }
+  } catch (_) {}
 
   return { asignaturas: Array.from(mapa.values()) };
 }

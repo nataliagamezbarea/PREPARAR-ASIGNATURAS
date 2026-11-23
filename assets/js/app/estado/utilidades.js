@@ -12,7 +12,17 @@ const LS = {
 };
 
 const DEFAULT_CATALOG = [
-  { id: "wec", nombre: "WEC", archivo: "./data/asignaturas/wec/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · Banco de preguntas" }
+  { id: "wec", nombre: "WEC", archivo: "./data/asignaturas/wec/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · Banco de preguntas", grado: "Segundo_grado_superior" },
+  { id: "sor", nombre: "SOR · Sistemas Operativos en Red", archivo: "./data/asignaturas/sor/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · Banco de preguntas", grado: "Segundo_grado_medio" },
+  { id: "seg", nombre: "SEG · Seguridad Informática", archivo: "./data/asignaturas/seg/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · Banco de preguntas", grado: "Segundo_grado_medio" },
+  { id: "ser", nombre: "SER · Servicios en Red", archivo: "./data/asignaturas/ser/preguntas.json", descripcion: "Temas 1, 2, 3 y 4 · Banco de preguntas", grado: "Segundo_grado_medio" },
+  { id: "aw", nombre: "AW · Aplicaciones Web", archivo: "./data/asignaturas/aw/preguntas.json", descripcion: "Temas 1, 2 y 3 · Banco de preguntas", grado: "Segundo_grado_medio" },
+  { id: "aad", nombre: "AAD · Acceso a Datos", archivo: "./data/asignaturas/aad/preguntas.json", descripcion: "Temas 1 al 5 · Banco de preguntas", grado: "Segundo_grado_superior" },
+  { id: "pmdm", nombre: "PMDM · Programación Multimedia y Dispositivos Móviles", archivo: "./data/asignaturas/pmdm/preguntas.json", descripcion: "Temas 1 al 3 · Banco de preguntas", grado: "Segundo_grado_superior" },
+  { id: "sge", nombre: "SGE · Sistemas de Gestión Empresarial", archivo: "./data/asignaturas/sge/preguntas.json", descripcion: "Temas 1 al 5 · Banco de preguntas", grado: "Segundo_grado_superior" },
+  { id: "unity", nombre: "Optativa Unity", archivo: "./data/asignaturas/unity/preguntas.json", descripcion: "Temas 1 y 2 · Banco de preguntas", grado: "Segundo_grado_superior" },
+  { id: "ingles-dam", nombre: "English for DAM · Inglés Técnico", archivo: "./data/asignaturas/ingles-dam/preguntas.json", descripcion: "Temas 1 y 2 · Banco de preguntas", grado: "Segundo_grado_superior" },
+  { id: "proyecto-dam", nombre: "Projecte Intermodular DAM", archivo: "./data/asignaturas/proyecto-dam/preguntas.json", descripcion: "Temas 1 y 2 · Banco de preguntas", grado: "Segundo_grado_superior" }
 ];
 
 const state = {

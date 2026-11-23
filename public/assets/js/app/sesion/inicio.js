@@ -35,12 +35,7 @@ function renderStart() {
   const last = Number(stats.lastPct || 0);
 
   const themeSummary = counts.temas.map(({ tema, count }) => `Tema ${tema}: ${count}`).join(" · ");
-  const branchSelected = state.ramaActual || localStorage.getItem("rama_actual") || "";
-  const filteredCatalog = (branchSelected && branchSelected !== "todas" && branchSelected !== "TODAS LAS RAMAS")
-    ? state.catalog.filter((s) => s.grado === branchSelected)
-    : state.catalog;
-  const catalogToUse = filteredCatalog.length ? filteredCatalog : state.catalog;
-  const subjectOptions = catalogToUse.map((s) => {
+  const subjectOptions = state.catalog.map((s) => {
     const suffix = s.localData ? ` (local) · ${s.localData.preguntas.length} preguntas` : "";
     const label = s.etiqueta || s.nombre;
     return `<option value="${esc(s.id)}" ${s.id === state.subjectId ? "selected" : ""}>${esc(label)}${suffix}</option>`;

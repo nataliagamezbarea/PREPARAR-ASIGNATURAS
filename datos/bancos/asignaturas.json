@@ -455,6 +455,206 @@
         }
       ],
       "totalPreguntas": 3
+    },
+    {
+      "id": "aad",
+      "nombre": "AAD · Acceso a Datos",
+      "grado": "Segundo_grado_superior",
+      "descripcion": "2º Grado Superior DAM · Manejo de ficheros, SQL, conectores JDBC, ORM Hibernate, APIs y NoSQL",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Manejo de ficheros",
+          "apartados": [
+            { "numero": 1, "nombre": "1.1 Clases asociadas a la gestión de ficheros" },
+            { "numero": 2, "nombre": "1.2 Formatos XML y JSON para almacenamiento" }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Manejo de conectores y bases de datos relacionales (SQL)",
+          "apartados": [
+            { "numero": 1, "nombre": "2.1 Protocolos de acceso y controladores JDBC" },
+            { "numero": 2, "nombre": "2.2 Ejecución de sentencias y transacciones" }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Mapeo objeto-relacional (ORM)",
+          "apartados": [
+            { "numero": 1, "nombre": "3.1 Conceptos de ORM y configuración" },
+            { "numero": 2, "nombre": "3.2 Mapeo de entidades y relaciones" }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Tema 4 · Gestión de información mediante APIs y WebSockets",
+          "apartados": [
+            { "numero": 1, "nombre": "4.1 Servicios web RESTful" },
+            { "numero": 2, "nombre": "4.2 Conexiones en tiempo real con WebSockets" }
+          ]
+        },
+        {
+          "numero": 5,
+          "nombre": "Tema 5 · Bases de datos NoSQL",
+          "apartados": [
+            { "numero": 1, "nombre": "5.1 Tipos de bases de datos NoSQL: Documentales y Clave-Valor" },
+            { "numero": 2, "nombre": "5.2 Operaciones CRUD en MongoDB" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pmdm",
+      "nombre": "PMDM · Programación Multimedia y Dispositivos Móviles",
+      "grado": "Segundo_grado_superior",
+      "descripcion": "2º Grado Superior DAM · Desarrollo nativo Android con Java/Kotlin, UI Layouts y videojuegos 2D",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Introducción al desarrollo móvil y Android Studio",
+          "apartados": [
+            { "numero": 1, "nombre": "1.1 Estructura de proyectos Android y Manifest" },
+            { "numero": 2, "nombre": "1.2 Ciclo de vida de Activities y Fragments" }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Interfaz de usuario (Layouts, Vistas y Eventos)",
+          "apartados": [
+            { "numero": 1, "nombre": "2.1 ConstraintLayout, LinearLayout y diseño adaptativo" },
+            { "numero": 2, "nombre": "2.2 RecyclerView, adaptadores y navegación" }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Programación de videojuegos 2D en Android Studio",
+          "apartados": [
+            { "numero": 1, "nombre": "3.1 SurfaceView, bucle de juego (Game Loop) y Canvas" },
+            { "numero": 2, "nombre": "3.2 Detección de colisiones y gestión de físicas" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sge",
+      "nombre": "SGE · Sistemas de Gestión Empresarial",
+      "grado": "Segundo_grado_superior",
+      "descripcion": "2º Grado Superior DAM · Despliegue de ERP/CRM Odoo en Docker, configuración e implantación en empresas",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Despliegue de Odoo con Docker Compose",
+          "apartados": [
+            { "numero": 1, "nombre": "1.1 Arquitectura de contenedores Docker y volúmenes" },
+            { "numero": 2, "nombre": "1.2 Configuración del servicio PostgreSQL y Odoo" }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Sistemas ERP-CRM-BI",
+          "apartados": [
+            { "numero": 1, "nombre": "2.1 Procesos de negocio empresariales" },
+            { "numero": 2, "nombre": "2.2 Integración de CRM y analítica BI" }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tema 3 · Instalación y configuración de un ERP",
+          "apartados": [
+            { "numero": 1, "nombre": "3.1 Parámetros iniciales, usuarios y permisos" },
+            { "numero": 2, "nombre": "3.2 Configuración de planes contables y almacén" }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Tema 4 · Implantación de un ERP en la empresa",
+          "apartados": [
+            { "numero": 1, "nombre": "4.1 Migración de datos y parametrización" },
+            { "numero": 2, "nombre": "4.2 Pruebas de aceptación y puesta en marcha" }
+          ]
+        },
+        {
+          "numero": 5,
+          "nombre": "Tema 5 · Entorno de desarrollo y primer módulo Odoo",
+          "apartados": [
+            { "numero": 1, "nombre": "5.1 Estructura MVC en Python y modelos de datos" },
+            { "numero": 2, "nombre": "5.2 Vistas XML, menús y controladores" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unity",
+      "nombre": "Optativa Unity",
+      "grado": "Segundo_grado_superior",
+      "descripcion": "2º Grado Superior DAM · Creación de videojuegos con Unity Engine y programación en C#",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Introducción y entorno Unity Hub",
+          "apartados": [
+            { "numero": 1, "nombre": "1.1 Jerarquía de GameObjects, escenas y componentes" },
+            { "numero": 2, "nombre": "1.2 Gestión de Assets, prefabs y materiales" }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Programación de mecánicas en C#",
+          "apartados": [
+            { "numero": 1, "nombre": "2.1 MonoBehaviour, Start, Update y FixedUpdate" },
+            { "numero": 2, "nombre": "2.2 Rigidbody, colisiones y entrada de usuario" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ingles-dam",
+      "nombre": "English for DAM · Inglés Técnico",
+      "grado": "Segundo_grado_superior",
+      "descripcion": "2º Grado Superior DAM · Comunicación técnica, documentación en inglés y preparación C1",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Technical vocabulary & Software Architecture",
+          "apartados": [
+            { "numero": 1, "nombre": "1.1 Technical specs, API docs and user manuals" },
+            { "numero": 2, "nombre": "1.2 Professional communication and standups" }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Preparation C1 & Speak and Improve",
+          "apartados": [
+            { "numero": 1, "nombre": "2.1 Reading and writing technical reports" },
+            { "numero": 2, "nombre": "2.2 Presentation and defense of software projects" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proyecto-dam",
+      "nombre": "Projecte Intermodular DAM",
+      "grado": "Segundo_grado_superior",
+      "descripcion": "2º Grado Superior DAM · Planificación, desarrollo fullstack y defensa final del proyecto de grado",
+      "temas": [
+        {
+          "numero": 1,
+          "nombre": "Tema 1 · Continguts, criteris i planificació del projecte",
+          "apartados": [
+            { "numero": 1, "nombre": "1.1 Cronograma, abast i documentació tècnica" },
+            { "numero": 2, "nombre": "1.2 Arquitectura del sistema i elecció tecnològica" }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Tema 2 · Fases de desenvolupament, proves i defensa",
+          "apartados": [
+            { "numero": 1, "nombre": "2.1 Implementació i desplegament continu" },
+            { "numero": 2, "nombre": "2.2 Presentació pública i rúbrica d'avaluació" }
+          ]
+        }
+      ]
     }
   ]
 }

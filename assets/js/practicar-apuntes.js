@@ -59,6 +59,19 @@ async function consultarAPI(ruta, opciones = {}) {
       window.location.hostname.endsWith("pages.dev"));
 
   if (esEntornoEstatico) {
+    if (ruta === "/api/apuntes" || ruta === "/api/asignaturas") {
+      try {
+        const resp = await fetch("./data/asignaturas.json").catch(() => fetch("/data/asignaturas.json"));
+        if (resp && resp.ok) return await resp.json();
+      } catch (_) {}
+      return { asignaturas: [] };
+    }
+    if (ruta === "/api/bancos") {
+      return { bancos: [] };
+    }
+    if (ruta === "/api/salud") {
+      return { ok: true, modeloDisponible: true, modelo: "NVIDIA Cloud" };
+    }
     throw new Error(
       "La generación de tests desde apuntes privados requiere ejecutar la aplicación en local (con el acceso directo de tu Escritorio o Docker), ya que en GitHub Pages no hay acceso a los archivos de tu ordenador ni a la IA local.",
     );
@@ -587,29 +600,56 @@ async function recargarDatosApuntes(conservarSeleccion = true, asignaturaForzada
   const seleccionAnterior = conservarSeleccion
     ? leerSeleccionGuardada()
     : {};
-  const [catalogo, bancos] = await Promise.all([
+  const [catalogo, bancos, asigBancos] = await Promise.all([
     consultarAPI("/api/apuntes").catch(() => ({ asignaturas: [] })),
     consultarAPI("/api/bancos").catch(() => ({ bancos: [] })),
+    consultarAPI("/api/asignaturas").catch(() => ({ asignaturas: [] })),
   ]);
 
   if (!catalogo.asignaturas) catalogo.asignaturas = [];
 
+  // Enriquecer con asignaturas de /api/asignaturas
+  for (const ab of (asigBancos?.asignaturas || [])) {
+    const clave = (ab.nombre || ab.id || "").trim().toLowerCase();
+    if (!catalogo.asignaturas.some(a => (a.nombre || "").trim().toLowerCase() === clave || (a.id && a.id.toLowerCase() === clave))) {
+      catalogo.asignaturas.push({
+        id: ab.id,
+        nombre: ab.nombre || ab.id,
+        grado: ab.grado,
+        temas: Array.isArray(ab.temas) && ab.temas.length ? ab.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
+      });
+    }
+  }
+
   // Enriquecer el catálogo con data/asignaturas.json para garantizar todas las asignaturas de GitHub y del grado
   try {
-    const resLocal = await fetch("./data/asignaturas.json").catch(() => fetch("/data/asignaturas.json"));
-    if (resLocal && resLocal.ok) {
-      const dataJson = await resLocal.json();
-      if (Array.isArray(dataJson.asignaturas)) {
-        for (const aj of dataJson.asignaturas) {
-          const clave = (aj.nombre || aj.id || "").trim().toLowerCase();
-          if (!catalogo.asignaturas.some(a => (a.nombre || "").trim().toLowerCase() === clave || (a.id && a.id.toLowerCase() === clave))) {
-            catalogo.asignaturas.push({
-              id: aj.id,
-              nombre: aj.nombre || aj.id,
-              grado: aj.grado,
-              temas: Array.isArray(aj.temas) ? aj.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
-            });
-          }
+    let dataJson = null;
+    try {
+      const resLocal = await fetch("./data/asignaturas.json");
+      if (resLocal.ok) dataJson = await resLocal.json();
+    } catch (_) {}
+    if (!dataJson) {
+      try {
+        const resPub = await fetch("/data/asignaturas.json");
+        if (resPub.ok) dataJson = await resPub.json();
+      } catch (_) {}
+    }
+    if (!dataJson) {
+      try {
+        const resGH = await fetch("https://raw.githubusercontent.com/nataliagamezbarea/GRADOS_INFORMATICOS/Segundo_grado_superior/test/asignaturas.json");
+        if (resGH.ok) dataJson = await resGH.json();
+      } catch (_) {}
+    }
+    if (dataJson && Array.isArray(dataJson.asignaturas)) {
+      for (const aj of dataJson.asignaturas) {
+        const clave = (aj.nombre || aj.id || "").trim().toLowerCase();
+        if (!catalogo.asignaturas.some(a => (a.nombre || "").trim().toLowerCase() === clave || (a.id && a.id.toLowerCase() === clave))) {
+          catalogo.asignaturas.push({
+            id: aj.id,
+            nombre: aj.nombre || aj.id,
+            grado: aj.grado,
+            temas: Array.isArray(aj.temas) && aj.temas.length ? aj.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
+          });
         }
       }
     }
@@ -626,12 +666,14 @@ async function recargarDatosApuntes(conservarSeleccion = true, asignaturaForzada
             id: c.id,
             nombre: c.nombre || c.id,
             grado: c.grado,
-            temas: Array.isArray(c.temas) ? c.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
+            temas: Array.isArray(c.temas) && c.temas.length ? c.temas : [{ numero: 1, nombre: "Tema 1", apartados: [] }]
           });
         }
       }
     }
   } catch (_) {}
+
+  catalogo.asignaturas.sort((a, b) => (a.nombre || "").localeCompare((b.nombre || ""), "es"));
 
   catalogoApuntes = catalogo;
   bancosPreguntas = bancos?.bancos || [];

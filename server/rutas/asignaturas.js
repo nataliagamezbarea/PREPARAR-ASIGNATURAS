@@ -11,13 +11,22 @@ export async function leerCatalogoAsignaturas() {
     path.join(configuracion.raizPublica, "data", "asignaturas.json"),
     path.join(configuracion.raizProyecto, "data", "asignaturas.json"),
   ];
+  const mapa = new Map();
   for (const c of candidatas) {
     try {
       const contenido = await readFile(c, "utf8");
-      return JSON.parse(contenido);
+      const json = JSON.parse(contenido);
+      if (Array.isArray(json.asignaturas)) {
+        for (const asig of json.asignaturas) {
+          const clave = (asig.nombre || asig.id || "").trim().toLowerCase();
+          if (clave && !mapa.has(clave)) {
+            mapa.set(clave, asig);
+          }
+        }
+      }
     } catch (_) {}
   }
-  return { asignaturas: [] };
+  return { asignaturas: Array.from(mapa.values()) };
 }
 
 export function normalizarListaTemas(temas) {
