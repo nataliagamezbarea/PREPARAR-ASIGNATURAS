@@ -1,12 +1,40 @@
 import fs from "node:fs";
 import path from "node:path";
+import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const raizProyecto = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
+function cargarArchivoEnv() {
+  const rutaEnv = path.resolve(raizProyecto, ".env");
+  try {
+    if (fs.existsSync(rutaEnv)) {
+      const contenido = fs.readFileSync(rutaEnv, "utf8");
+      for (const linea of contenido.split("\n")) {
+        const recortada = linea.trim();
+        if (!recortada || recortada.startsWith("#")) continue;
+        const idx = recortada.indexOf("=");
+        if (idx > 0) {
+          const clave = recortada.slice(0, idx).trim();
+          let valor = recortada.slice(idx + 1).trim();
+          if ((valor.startsWith('"') && valor.endsWith('"')) || (valor.startsWith("'") && valor.endsWith("'"))) {
+            valor = valor.slice(1, -1);
+          }
+          if (process.env[clave] === undefined || process.env[clave] === "") {
+            process.env[clave] = valor;
+          }
+        }
+      }
+    }
+  } catch (_) {}
+}
+
+cargarArchivoEnv();
+
 function resolverRaizApuntes() {
   const candidatas = [
     process.env.RUTA_APUNTES,
+    process.env.DIRECTORIO_APUNTES,
     "/data/apuntes",
     "/home/natalia/Escritorio/GRADOS_INFORMATICOS/apuntes_privados",
     "/home/natalia/Escritorio/GRADOS_INFORMATICOS/apuntes",
@@ -19,7 +47,7 @@ function resolverRaizApuntes() {
       if (fs.existsSync(c)) return path.resolve(c);
     } catch (_) {}
   }
-  return path.resolve(process.env.RUTA_APUNTES ?? "/data/apuntes");
+  return path.resolve(process.env.RUTA_APUNTES ?? process.env.DIRECTORIO_APUNTES ?? "/data/apuntes");
 }
 
 function enteroEntorno(nombre, predeterminado, minimo, maximo = Number.MAX_SAFE_INTEGER) {
@@ -27,6 +55,18 @@ function enteroEntorno(nombre, predeterminado, minimo, maximo = Number.MAX_SAFE_
   return Number.isSafeInteger(valor) && valor >= minimo && valor <= maximo
     ? valor
     : predeterminado;
+}
+
+function resolverGitHubToken() {
+  const envToken = (process.env.GH_TOKEN || process.env.GITHUB_TOKEN || "").trim();
+  if (envToken) {
+    return envToken;
+  }
+  try {
+    const salida = execSync("gh auth token", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 3000 }).trim();
+    if (salida) return salida;
+  } catch (_) {}
+  return "";
 }
 
 export const configuracion = {
@@ -102,6 +142,12 @@ export const configuracion = {
     process.env.RUTA_BANCOS ?? "datos/bancos",
   ),
   puerto: enteroEntorno("PUERTO_WEB", 3000, 1, 65535),
+  fuenteAsignaturas: (process.env.FUENTE_ASIGNATURAS || "local").trim().toLowerCase(),
+  githubRepo: (process.env.GITHUB_REPOSITORY || "nataliagamezbarea/GRADOS_INFORMATICOS").trim(),
+  githubBranch: (process.env.GITHUB_BRANCH || "master").trim(),
+  githubToken: resolverGitHubToken(),
+  githubTestDir: (process.env.GITHUB_TEST_DIR || "test").trim().replace(/^\/+|\/+$/g, ""),
+  githubApuntesDir: (process.env.GITHUB_APUNTES_DIR || "apuntes_privados").trim().replace(/^\/+|\/+$/g, ""),
   proveedorIA: (process.env.PROVEEDOR_IA || "auto").trim().toLowerCase(),
   direccionOllama: (process.env.DIRECCION_OLLAMA ??
     "http://generador-apuntes-ollama:11434")
@@ -109,7 +155,7 @@ export const configuracion = {
     .replace(/\/+$/, ""),
   modelo: (process.env.MODELO_IA ?? "qwen2.5vl:7b").trim(),
   nvidiaApiKey: (process.env.NVIDIA_API_KEY ?? "").trim(),
-  nvidiaModelo: (process.env.NVIDIA_MODELO ?? "meta/llama-3.1-8b-instruct").trim(),
+  nvidiaModelo: (process.env.NVIDIA_MODELO ?? "nvidia/nemotron-3.5-bolt-e4b").trim(),
   nvidiaBaseUrl: (process.env.NVIDIA_BASE_URL ?? "https://integrate.api.nvidia.com/v1").trim().replace(/\/+$/, ""),
   contextoModelo: enteroEntorno("NUM_CTX_IA", 24576, 4096, 131072),
   tokensRespuesta: enteroEntorno("TOKENS_MAX_IA", 2048, 256, 8192),

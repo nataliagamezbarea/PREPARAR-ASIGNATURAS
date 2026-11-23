@@ -1,5 +1,6 @@
 .env
 datos/bancos/.*.tmp
+cache/
 node_modules/
 npm-debug.log*
 *.log
