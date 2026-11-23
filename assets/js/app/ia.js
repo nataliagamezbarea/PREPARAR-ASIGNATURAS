@@ -350,18 +350,46 @@ async function renderAiScreen() {
 
       mostrarResultado(banco, nuevasIds);
     } catch (error) {
-      const message =
-        error?.name === "AbortError"
-          ? "La IA tardó demasiado. Prueba con menos preguntas o un modelo más rápido."
-          : error.message;
-      $("#ai-preview").innerHTML = `
-        <div class="empty-state" style="background:var(--bad-soft);border-color:var(--bad)">
-          <div class="emoji"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
-          <h3>No se pudo generar</h3>
-          <p>${esc(message)}</p>
-          <p style="margin-top:8px;font-size:12px">Asegúrate de que Preparar tests y Ollama estén activos (<code>docker compose up -d</code> en esta carpeta).</p>
-        </div>`;
-      logMensaje(message);
+      logMensaje(`Backend no disponible (${error.message}). Intentando generación 100% en el navegador con NVIDIA NIM…`);
+      try {
+        const preguntas = await window.generarPreguntasFrontendNvidia({
+          asignatura: subjectName,
+          tema: temaDefault || 1,
+          cantidad: count,
+          contextoExamen: `${tiposLabel}. Examen tipo test estándar.`,
+          tipoPreguntas: types,
+        }, (prog) => {
+          $("#ai-preview").innerHTML = `<div class="ai-loading" style="padding:20px">${esc(prog.mensaje || "Generando preguntas…")}</div>`;
+          logMensaje(prog.mensaje);
+        });
+
+        const bancoObj = {
+          formato: "preparar-tests-banco-preguntas",
+          version: 1,
+          meta: { asignatura: subjectName, total: preguntas.length },
+          preguntas,
+        };
+        const claveIA = subjectName || state.subjectId || "default";
+        const nuevasIds = preguntas.map((q) => q.id);
+
+        preguntas.forEach((p) => {
+          if (!state.questions.some((q) => q.id === p.id)) state.questions.push(p);
+        });
+        recordAiGenerated(claveIA, preguntas.map((q) => q.enunciado));
+        mostrarResultado(bancoObj, nuevasIds);
+        toast(`✓ ¡${preguntas.length} preguntas generadas en el navegador!`);
+        return;
+      } catch (frontErr) {
+        const message = frontErr.message || error.message;
+        $("#ai-preview").innerHTML = `
+          <div class="empty-state" style="background:var(--bad-soft);border-color:var(--bad)">
+            <div class="emoji"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+            <h3>No se pudo generar</h3>
+            <p>${esc(message)}</p>
+            <p style="margin-top:8px;font-size:12px">Puedes configurar tu token de NVIDIA NIM en <strong>Opciones ⚙️</strong> para generar directamente en el navegador, o iniciar Ollama en local.</p>
+          </div>`;
+        logMensaje(message);
+      }
     } finally {
       const current = $("#ai-generate");
       if (current) {

@@ -29,6 +29,7 @@ const files = [
   "assets/js/app/depurador.js",
   "assets/js/app/preguntas.js",
   "assets/js/app/fallos.js",
+  "assets/js/app/generador-frontend.js",
   "assets/js/app/ia.js",
   "assets/js/app/resultados.js",
   "assets/js/app/inicio.js"
