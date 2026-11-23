@@ -140,15 +140,6 @@
             <label class="switch" style="display:flex; align-items:center; gap:8px; cursor:pointer"><input type="checkbox" id="shuffle-toggle"> Barajar el orden</label>
           </div>
           <hr style="border:0; border-top:1px solid var(--line); margin: 14px 0 10px;">
-          <div style="font-weight:700; font-size:13px; color:var(--text); margin-bottom:8px;"><i class="fa-solid fa-microchip"></i> IA Cloud / NVIDIA NIM</div>
-          <div style="display:flex; flex-direction:column; gap:6px;">
-            <input type="password" id="input-nvidia-token" class="control" placeholder="Token NVIDIA (nvapi-...)" style="font-size:12px; padding:6px 8px; width:100%;">
-            <button class="btn tiny" type="button" id="btn-guardar-nvidia-token" style="justify-content:center; gap:6px;">
-              <i class="fa-solid fa-floppy-disk"></i> Guardar Token NVIDIA
-            </button>
-            <p class="muted" style="font-size:11px; margin:2px 0 0; line-height:1.2;">Se usa en producción o cuando Ollama local no esté activo.</p>
-          </div>
-          <hr style="border:0; border-top:1px solid var(--line); margin: 14px 0 10px;">
           <div style="font-weight:700; font-size:13px; color:var(--text); margin-bottom:8px;"><i class="fa-solid fa-trash-can"></i> Progreso y datos</div>
           <button class="btn tiny warn" type="button" id="dropdown-reset-progress-btn" style="width:100%; justify-content:center; gap:6px;">
             <i class="fa-solid fa-trash"></i> Eliminar todo el progreso
@@ -228,15 +219,9 @@
         <input type="text" id="input-asig-nombre" class="control" placeholder="Ej: SOR · Sistemas Operativos en Red" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box;">
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div>
-          <label for="input-asig-id" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Código / ID corto</label>
-          <input type="text" id="input-asig-id" class="control" placeholder="Ej: sor" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box;">
-        </div>
-        <div>
-          <label for="input-asig-desc" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Descripción</label>
-          <input type="text" id="input-asig-desc" class="control" placeholder="Ej: 2º Grado Medio · Active Directory y Samba" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box;">
-        </div>
+      <div>
+        <label for="input-asig-desc" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Descripción</label>
+        <input type="text" id="input-asig-desc" class="control" placeholder="Ej: 2º Grado Medio · Active Directory y Samba" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box;">
       </div>
 
       <div style="background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:8px;">

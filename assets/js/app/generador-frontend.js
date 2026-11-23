@@ -6,23 +6,17 @@
 
 async function generarPreguntasFrontendNvidia(solicitud, onProgreso) {
   let apiKey = (typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")) || "";
-  if (!apiKey) {
-    const inputNv = document.querySelector("#input-nvidia-token");
-    if (inputNv?.value?.trim()) {
-      apiKey = inputNv.value.trim();
-    }
+  if (!apiKey && typeof obtenerConfiguracionSupabase === "function") {
+    try {
+      const cfg = await obtenerConfiguracionSupabase();
+      if (cfg?.nvidiaApiKey) apiKey = cfg.nvidiaApiKey;
+    } catch (_) {}
+  }
+  if (!apiKey && typeof window !== "undefined" && window.NVIDIA_API_KEY) {
+    apiKey = window.NVIDIA_API_KEY;
   }
   if (!apiKey) {
-    apiKey = window.prompt("Introduce tu API Key de NVIDIA NIM (nvapi-...) para generar tests en el navegador:") || "";
-    if (apiKey) {
-      apiKey = apiKey.trim();
-      localStorage.setItem("preparar_tests_nvidia_key", apiKey);
-      const inputNv = document.querySelector("#input-nvidia-token");
-      if (inputNv) inputNv.value = apiKey;
-    }
-  }
-  if (!apiKey) {
-    throw new Error("Se requiere una API Key de NVIDIA NIM (guárdala en Opciones ⚙️) para generar en el navegador.");
+    apiKey = "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";
   }
 
   const cantidad = Math.max(1, Math.min(30, Number(solicitud.cantidad) || 5));

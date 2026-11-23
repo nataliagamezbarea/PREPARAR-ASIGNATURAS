@@ -293,7 +293,19 @@ async function renderAiScreen() {
     logMensaje("Iniciando generación con la IA local…");
 
     try {
-      const nvKey = (typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")) || "";
+      let nvKey = (typeof localStorage !== "undefined" && localStorage.getItem("preparar_tests_nvidia_key")) || "";
+      if (!nvKey && typeof obtenerConfiguracionSupabase === "function") {
+        try {
+          const cfg = await obtenerConfiguracionSupabase();
+          if (cfg?.nvidiaApiKey) nvKey = cfg.nvidiaApiKey;
+        } catch (_) {}
+      }
+      if (!nvKey && typeof window !== "undefined" && window.NVIDIA_API_KEY) {
+        nvKey = window.NVIDIA_API_KEY;
+      }
+      if (!nvKey) {
+        nvKey = "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";
+      }
       const res = await fetch(`${window.location.origin}/api/generar`, {
         method: "POST",
         headers: {

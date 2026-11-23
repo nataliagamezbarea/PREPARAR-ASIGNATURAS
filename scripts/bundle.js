@@ -13,6 +13,7 @@ const files = [
   "assets/js/app/estado/catalogo.js",
   "assets/js/app/estado/sesiones.js",
   "assets/js/app/estado.js",
+  "assets/js/app/supabase/supabase-config.js",
   "assets/js/app/supabase/cliente.js",
   "assets/js/app/supabase/progreso.js",
   "assets/js/app/supabase/auth.js",

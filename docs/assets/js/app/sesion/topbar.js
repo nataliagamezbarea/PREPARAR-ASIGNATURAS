@@ -177,21 +177,6 @@ function inicializarTopbar() {
     }
   }
 
-  // 5.b Token de NVIDIA NIM
-  const inputNvidia = document.getElementById("input-nvidia-token");
-  const btnGuardarNvidia = document.getElementById("btn-guardar-nvidia-token");
-  if (inputNvidia) {
-    inputNvidia.value = localStorage.getItem("preparar_tests_nvidia_key") || "";
-  }
-  if (btnGuardarNvidia && !btnGuardarNvidia.dataset.attached) {
-    btnGuardarNvidia.dataset.attached = "true";
-    btnGuardarNvidia.addEventListener("click", () => {
-      const val = (inputNvidia?.value || "").trim();
-      localStorage.setItem("preparar_tests_nvidia_key", val);
-      toast(val ? "✓ Token NVIDIA guardado" : "Token NVIDIA eliminado");
-    });
-  }
-
   // 6. Modal Gestionar Asignaturas y Tests
   const modal = document.getElementById("modal-gestionar-asignaturas");
   const btnAbrir = document.getElementById("btn-gestionar-asignaturas");
@@ -272,12 +257,10 @@ function inicializarTopbar() {
       if (!asig) return;
 
       const inputNombre = document.getElementById("input-asig-nombre");
-      const inputId = document.getElementById("input-asig-id");
       const inputDesc = document.getElementById("input-asig-desc");
       const textareaTemas = document.getElementById("input-asig-temas");
 
       if (inputNombre && !inputNombre.value.trim()) inputNombre.value = asig.nombre || asig.id;
-      if (inputId && !inputId.value.trim()) inputId.value = asig.id.toLowerCase();
       if (inputDesc && !inputDesc.value.trim()) inputDesc.value = `${asig.nombre || asig.id} · Banco de preguntas oficial`;
 
       if (textareaTemas && Array.isArray(asig.temas) && asig.temas.length > 0) {
@@ -313,14 +296,10 @@ function inicializarTopbar() {
         const res = await resp.json();
         if (resp.ok && res.ok) {
           const inputNombre = document.getElementById("input-asig-nombre");
-          const inputId = document.getElementById("input-asig-id");
           const textareaTemas = document.getElementById("input-asig-temas");
 
           if (inputNombre && (!inputNombre.value.trim() || inputNombre.value === "Nueva Asignatura")) {
             inputNombre.value = res.titulo || file.name.replace(/\.[^/.]+$/, "");
-          }
-          if (inputId && !inputId.value.trim()) {
-            inputId.value = slugify(inputNombre?.value || file.name);
           }
           if (textareaTemas && Array.isArray(res.temas) && res.temas.length > 0) {
             textareaTemas.value = res.temas.map((t) => t.nombre).join("\n");
@@ -352,7 +331,6 @@ function inicializarTopbar() {
     btnGuardarAsig?.addEventListener("click", async () => {
       const nombre = document.getElementById("input-asig-nombre")?.value.trim();
       const grado = document.getElementById("input-asig-grado")?.value;
-      const idRaw = document.getElementById("input-asig-id")?.value.trim() || slugify(nombre);
       const desc = document.getElementById("input-asig-desc")?.value.trim();
       const temasTxt = document.getElementById("input-asig-temas")?.value.trim();
 
@@ -362,7 +340,7 @@ function inicializarTopbar() {
       }
       btnGuardarAsig.disabled = true;
       btnGuardarAsig.textContent = "Creando…";
-      const id = slugify(idRaw || nombre);
+      const id = slugify(nombre.split("·")[0].split("-")[0].trim() || nombre);
 
       const temasArr = (temasTxt || "Tema 1")
         .split(/\r?\n/)
