@@ -156,6 +156,24 @@ function renderModalidadesPractica() {
         ${themeButtons}
       </div>
     </div>
+
+    <!-- 4. Subir mis propios apuntes al crear el test -->
+    <div style="background:var(--card2); border:1px dashed var(--brand); border-radius:var(--radius-sm); padding:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:8px;">
+      <div>
+        <div style="font-weight:700; font-size:14px; color:var(--brand); display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-file-arrow-up"></i> ¿Quieres crear el test con tus propios apuntes?
+        </div>
+        <p style="margin:4px 0 0; font-size:12px; color:var(--muted);">
+          Sube tu PDF, ZIP o archivo de apuntes para generar preguntas tipo test adaptadas.
+        </p>
+      </div>
+      <div>
+        <input type="file" id="modal-subir-apuntes-input" accept=".pdf,.zip,.tex,.txt,.md" style="display:none;">
+        <button type="button" class="btn" id="modal-subir-apuntes-btn" style="background:var(--brand-soft); color:var(--brand); border-color:var(--brand); font-weight:700; gap:8px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Subir apuntes (.pdf / .zip / .tex)
+        </button>
+      </div>
+    </div>
   `;
 
   // Dynamic subapartados
@@ -217,6 +235,36 @@ function renderModalidadesPractica() {
     const shuffle = order === "aleatorio";
     cerrarModalModalidades();
     startTest({ filter: customFilter, immediate, shuffle, sample: qty });
+  });
+
+  // Manejar subida de apuntes propios desde el modal
+  const btnSubirApuntesModal = $("#modal-subir-apuntes-btn");
+  const inputSubirApuntesModal = $("#modal-subir-apuntes-input");
+  btnSubirApuntesModal?.addEventListener("click", () => inputSubirApuntesModal?.click());
+  inputSubirApuntesModal?.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const asigActual = state.currentSubject || "WEC";
+    cerrarModalModalidades();
+    toast(`Subiendo "${file.name}" para ${asigActual}…`);
+    try {
+      const reader = new FileReader();
+      const base64Promise = new Promise((res, rej) => {
+        reader.onload = () => res(reader.result.split(",")[1]);
+        reader.onerror = rej;
+      });
+      reader.readAsDataURL(file);
+      const base64 = await base64Promise;
+      const resp = await fetch("/api/apuntes/subir", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ asignatura: asigActual, nombreArchivo: file.name, contenidoBase64: base64 })
+      });
+      if (resp.ok) {
+        toast(`✓ Apuntes "${file.name}" subidos con éxito.`);
+      }
+    } catch (_) {}
+    window.abrirPracticaDesdeApuntes?.();
   });
 
   // Botones de inicio rápido en el modal

@@ -239,6 +239,25 @@
         </div>
       </div>
 
+      <div style="background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:8px;">
+        <div style="font-size:0.8rem; font-weight:700; color:var(--brand); display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Autocompletar temas:
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div>
+            <label for="select-asig-copiar-temas" style="display:block; font-size:0.75rem; margin-bottom:2px; color:var(--muted);">1. Desde el repositorio o apuntes:</label>
+            <select id="select-asig-copiar-temas" class="control" style="width:100%; padding:6px; font-size:0.8rem; border-radius:6px; border:1px solid var(--line); background:var(--card); color:var(--text);">
+              <option value="">-- Elige asignatura del repo --</option>
+            </select>
+          </div>
+          <div>
+            <label for="input-asig-pdf" style="display:block; font-size:0.75rem; margin-bottom:2px; color:var(--muted);">2. O añade un PDF de temario:</label>
+            <input type="file" id="input-asig-pdf" accept=".pdf,.zip,.tex" style="width:100%; padding:4px; font-size:0.75rem; border-radius:6px; border:1px solid var(--line); background:var(--card);">
+          </div>
+        </div>
+        <div id="asig-pdf-status" style="font-size:0.75rem; color:var(--muted); display:none;"></div>
+      </div>
+
       <div>
         <label for="input-asig-temas" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text);">Temas (uno por línea)</label>
         <textarea id="input-asig-temas" class="control" rows="3" placeholder="Tema 1 · Instalación y arquitectura&#10;Tema 2 · Servicios de directorio&#10;Tema 3 · Compartición de recursos" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); box-sizing:border-box; font-family:inherit; font-size:0.85rem;"></textarea>

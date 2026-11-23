@@ -3214,6 +3214,24 @@ function renderModalidadesPractica() {
         ${themeButtons}
       </div>
     </div>
+
+    <!-- 4. Subir mis propios apuntes al crear el test -->
+    <div style="background:var(--card2); border:1px dashed var(--brand); border-radius:var(--radius-sm); padding:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:8px;">
+      <div>
+        <div style="font-weight:700; font-size:14px; color:var(--brand); display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-file-arrow-up"></i> ¿Quieres crear el test con tus propios apuntes?
+        </div>
+        <p style="margin:4px 0 0; font-size:12px; color:var(--muted);">
+          Sube tu PDF, ZIP o archivo de apuntes para generar preguntas tipo test adaptadas.
+        </p>
+      </div>
+      <div>
+        <input type="file" id="modal-subir-apuntes-input" accept=".pdf,.zip,.tex,.txt,.md" style="display:none;">
+        <button type="button" class="btn" id="modal-subir-apuntes-btn" style="background:var(--brand-soft); color:var(--brand); border-color:var(--brand); font-weight:700; gap:8px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Subir apuntes (.pdf / .zip / .tex)
+        </button>
+      </div>
+    </div>
   `;
 
   // Dynamic subapartados
@@ -3275,6 +3293,36 @@ function renderModalidadesPractica() {
     const shuffle = order === "aleatorio";
     cerrarModalModalidades();
     startTest({ filter: customFilter, immediate, shuffle, sample: qty });
+  });
+
+  // Manejar subida de apuntes propios desde el modal
+  const btnSubirApuntesModal = $("#modal-subir-apuntes-btn");
+  const inputSubirApuntesModal = $("#modal-subir-apuntes-input");
+  btnSubirApuntesModal?.addEventListener("click", () => inputSubirApuntesModal?.click());
+  inputSubirApuntesModal?.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const asigActual = state.currentSubject || "WEC";
+    cerrarModalModalidades();
+    toast(`Subiendo "${file.name}" para ${asigActual}…`);
+    try {
+      const reader = new FileReader();
+      const base64Promise = new Promise((res, rej) => {
+        reader.onload = () => res(reader.result.split(",")[1]);
+        reader.onerror = rej;
+      });
+      reader.readAsDataURL(file);
+      const base64 = await base64Promise;
+      const resp = await fetch("/api/apuntes/subir", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ asignatura: asigActual, nombreArchivo: file.name, contenidoBase64: base64 })
+      });
+      if (resp.ok) {
+        toast(`✓ Apuntes "${file.name}" subidos con éxito.`);
+      }
+    } catch (_) {}
+    window.abrirPracticaDesdeApuntes?.();
   });
 
   // Botones de inicio rápido en el modal
@@ -3646,9 +3694,37 @@ function inicializarTopbar() {
 
   if (btnAbrir && modal && !btnAbrir.dataset.attached) {
     btnAbrir.dataset.attached = "true";
+
+    let pdfAdjuntoParaAsig = null;
+    let catalogoTemasRepo = [];
+
+    async function cargarTemasDelRepo() {
+      const selectCopiar = document.getElementById("select-asig-copiar-temas");
+      if (!selectCopiar) return;
+      try {
+        const resp = await fetch("/api/apuntes/catalogo-temas");
+        if (resp.ok) {
+          const datos = await resp.json();
+          if (Array.isArray(datos.asignaturas) && datos.asignaturas.length > 0) {
+            catalogoTemasRepo = datos.asignaturas;
+            selectCopiar.innerHTML = '<option value="">-- Elige asignatura del repositorio / apuntes --</option>' +
+              catalogoTemasRepo.map((a) => `<option value="${a.id}">${a.nombre || a.id} (${(a.temas || []).length} temas)</option>`).join("");
+          }
+        }
+      } catch (_) {}
+    }
+
     btnAbrir.addEventListener("click", () => {
       modal.classList.remove("hidden");
+      void cargarTemasDelRepo();
+      const selectSubir = document.getElementById("select-subir-asig");
+      if (selectSubir && state.catalog?.asignaturas) {
+        selectSubir.innerHTML = state.catalog.asignaturas.map((a) =>
+          `<option value="${a.id}">${a.nombre || a.id}</option>`
+        ).join("");
+      }
     });
+
     btnCerrar?.addEventListener("click", () => {
       modal.classList.add("hidden");
     });
@@ -3659,6 +3735,8 @@ function inicializarTopbar() {
     tabCrear?.addEventListener("click", () => {
       panelCrear?.classList.remove("hidden");
       panelSubir?.classList.add("hidden");
+      if (panelCrear) panelCrear.style.display = "flex";
+      if (panelSubir) panelSubir.style.display = "none";
       tabCrear.style.color = "var(--brand)";
       tabCrear.style.borderBottom = "2px solid var(--brand)";
       tabSubir.style.color = "var(--muted)";
@@ -3668,33 +3746,127 @@ function inicializarTopbar() {
     tabSubir?.addEventListener("click", () => {
       panelSubir?.classList.remove("hidden");
       panelCrear?.classList.add("hidden");
+      if (panelSubir) panelSubir.style.display = "flex";
+      if (panelCrear) panelCrear.style.display = "none";
       tabSubir.style.color = "var(--brand)";
       tabSubir.style.borderBottom = "2px solid var(--brand)";
       tabCrear.style.color = "var(--muted)";
       tabCrear.style.borderBottom = "2px solid transparent";
     });
 
+    // 1. "Los temas los leerá del este": Copiar temas de asignatura existente en el repo
+    const selectCopiarTemas = document.getElementById("select-asig-copiar-temas");
+    selectCopiarTemas?.addEventListener("change", (e) => {
+      const elegidoId = e.target.value;
+      if (!elegidoId) return;
+      const asig = catalogoTemasRepo.find((a) => a.id.toLowerCase() === elegidoId.toLowerCase());
+      if (!asig) return;
+
+      const inputNombre = document.getElementById("input-asig-nombre");
+      const inputId = document.getElementById("input-asig-id");
+      const inputDesc = document.getElementById("input-asig-desc");
+      const textareaTemas = document.getElementById("input-asig-temas");
+
+      if (inputNombre && !inputNombre.value.trim()) inputNombre.value = asig.nombre || asig.id;
+      if (inputId && !inputId.value.trim()) inputId.value = asig.id.toLowerCase();
+      if (inputDesc && !inputDesc.value.trim()) inputDesc.value = `${asig.nombre || asig.id} · Banco de preguntas oficial`;
+
+      if (textareaTemas && Array.isArray(asig.temas) && asig.temas.length > 0) {
+        textareaTemas.value = asig.temas.map((t) => t.nombre || `Tema ${t.numero}`).join("\n");
+        toast(`✓ ${(asig.temas || []).length} temas cargados desde ${asig.nombre || asig.id}.`);
+      }
+    });
+
+    // 2. "O le añado PDF y pues eso": Extraer temas automáticamente de un PDF
+    const inputPdf = document.getElementById("input-asig-pdf");
+    const statusPdf = document.getElementById("asig-pdf-status");
+    inputPdf?.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (statusPdf) {
+        statusPdf.style.display = "block";
+        statusPdf.textContent = `Analizando "${file.name}" y extrayendo temario…`;
+      }
+      try {
+        const reader = new FileReader();
+        const base64Promise = new Promise((res, rej) => {
+          reader.onload = () => res(reader.result.split(",")[1]);
+          reader.onerror = rej;
+        });
+        reader.readAsDataURL(file);
+        const base64 = await base64Promise;
+
+        const resp = await fetch("/api/apuntes/analizar-pdf", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nombreArchivo: file.name, contenidoBase64: base64 })
+        });
+        const res = await resp.json();
+        if (resp.ok && res.ok) {
+          const inputNombre = document.getElementById("input-asig-nombre");
+          const inputId = document.getElementById("input-asig-id");
+          const textareaTemas = document.getElementById("input-asig-temas");
+
+          if (inputNombre && (!inputNombre.value.trim() || inputNombre.value === "Nueva Asignatura")) {
+            inputNombre.value = res.titulo || file.name.replace(/\.[^/.]+$/, "");
+          }
+          if (inputId && !inputId.value.trim()) {
+            inputId.value = slugify(inputNombre?.value || file.name);
+          }
+          if (textareaTemas && Array.isArray(res.temas) && res.temas.length > 0) {
+            textareaTemas.value = res.temas.map((t) => t.nombre).join("\n");
+          }
+
+          pdfAdjuntoParaAsig = {
+            nombreArchivo: file.name,
+            archivoBase64: base64
+          };
+
+          if (statusPdf) {
+            statusPdf.textContent = `✓ ${res.temas?.length || 0} temas detectados y extraídos con éxito de "${file.name}".`;
+            statusPdf.style.color = "var(--ok)";
+          }
+          toast(`✓ ${res.temas?.length || 0} temas detectados de "${file.name}".`);
+        } else {
+          throw new Error(res.error || "No se pudo extraer texto del PDF.");
+        }
+      } catch (err) {
+        if (statusPdf) {
+          statusPdf.textContent = `Aviso: ${err.message}. Puedes escribir los temas manualmente.`;
+          statusPdf.style.color = "var(--warn)";
+        }
+      }
+    });
+
     // Guardar Asignatura
-    const btnGuardarAsig = document.getElementById("btn-guardar-asig");
+    const btnGuardarAsig = document.getElementById("btn-submit-crear-asig") || document.getElementById("btn-guardar-asig");
     btnGuardarAsig?.addEventListener("click", async () => {
       const nombre = document.getElementById("input-asig-nombre")?.value.trim();
       const grado = document.getElementById("input-asig-grado")?.value;
+      const idRaw = document.getElementById("input-asig-id")?.value.trim() || slugify(nombre);
+      const desc = document.getElementById("input-asig-desc")?.value.trim();
+      const temasTxt = document.getElementById("input-asig-temas")?.value.trim();
+
       if (!nombre) {
         toast("Escribe el nombre de la asignatura");
         return;
       }
       btnGuardarAsig.disabled = true;
       btnGuardarAsig.textContent = "Creando…";
-      const id = slugify(nombre);
+      const id = slugify(idRaw || nombre);
+
+      const temasArr = (temasTxt || "Tema 1")
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter(Boolean)
+        .map((t, idx) => ({ numero: idx + 1, nombre: t }));
+
       const nuevaAsig = {
         id,
         nombre,
-        grado: grado || "General",
-        descripcion: "Asignatura personalizada creada por el usuario",
-        temas: [
-          { numero: 1, nombre: "Tema 1", preguntas: 0 },
-          { numero: 2, nombre: "Tema 2", preguntas: 0 }
-        ],
+        grado: grado || "Segundo_grado_medio",
+        descripcion: desc || `${nombre} · Banco de preguntas`,
+        temas: temasArr,
         localData: {
           preguntas: [],
           stats: { total: 0, respondidas: 0, aciertos: 0 }
@@ -3702,14 +3874,22 @@ function inicializarTopbar() {
       };
 
       try {
+        const payload = {
+          id,
+          nombre,
+          grado,
+          descripcion: desc,
+          temas: temasTxt,
+          ...(pdfAdjuntoParaAsig || {})
+        };
         const resp = await fetch("/api/asignaturas", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nombre, grado })
+          body: JSON.stringify(payload)
         });
         const res = await resp.json().catch(() => null);
         if (resp.ok && res?.ok) {
-          toast(`✓ Asignatura "${res.asignatura?.nombre || nombre}" creada.`);
+          toast(`✓ Asignatura "${res.asignatura?.nombre || nombre}" creada y registrada.`);
         } else {
           toast(`✓ Asignatura "${nombre}" guardada.`);
         }
@@ -3717,7 +3897,7 @@ function inicializarTopbar() {
         toast(`✓ Asignatura "${nombre}" guardada localmente.`);
       }
 
-      // Guardar siempre en localStorage para que esté disponible offline / Pages
+      // Guardar en localStorage para disponibilidad inmediata
       try {
         const custom = JSON.parse(localStorage.getItem("preparar_tests_custom_subjects") || "[]");
         if (!custom.some((s) => s.id === id)) {
@@ -3727,57 +3907,69 @@ function inicializarTopbar() {
       } catch {}
 
       modal.classList.add("hidden");
+      pdfAdjuntoParaAsig = null;
       await loadCatalog();
       await loadSubject(id);
       renderStart();
       btnGuardarAsig.disabled = false;
-      btnGuardarAsig.textContent = "Crear y Guardar Asignatura";
+      btnGuardarAsig.textContent = "Guardar y Registrar Asignatura";
     });
 
     // Subir Test JSON
-    const btnSubirTest = document.getElementById("btn-subir-test");
+    const btnSubirTest = document.getElementById("btn-submit-subir-test") || document.getElementById("btn-subir-test");
     btnSubirTest?.addEventListener("click", async () => {
       const asigId = document.getElementById("select-subir-asig")?.value;
-      const fileInput = document.getElementById("input-subir-archivo");
+      const fileInput = document.getElementById("input-file-test-json") || document.getElementById("input-subir-archivo");
+      const textareaJson = document.getElementById("textarea-test-json");
       const archivo = fileInput?.files?.[0];
-      if (!archivo) {
-        toast("Selecciona un archivo JSON");
+
+      let jsonTexto = "";
+      if (archivo) {
+        jsonTexto = await archivo.text();
+      } else if (textareaJson && textareaJson.value.trim()) {
+        jsonTexto = textareaJson.value.trim();
+      } else {
+        toast("Selecciona un archivo JSON o pega el contenido.");
         return;
       }
+
       btnSubirTest.disabled = true;
       btnSubirTest.textContent = "Subiendo…";
       try {
-        const reader = new FileReader();
-        reader.onload = async () => {
-          try {
-            const json = JSON.parse(reader.result);
-            const resp = await fetch("/api/tests/subir", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ asignaturaId: asigId, nombreArchivo: archivo.name, contenido: json })
-            });
-            const res = await resp.json();
-            if (resp.ok && res.ok) {
-              toast(`✓ Test añadido (${res.totalPreguntas} preguntas)`);
-              modal.classList.add("hidden");
-              await loadCatalog();
-              await loadSubject(asigId);
-              renderStart();
-            } else {
-              toast(`Error: ${res.error || "Fallo al subir"}`);
-            }
-          } catch (pe) {
-            toast(`El archivo no es un JSON válido: ${pe.message}`);
-          } finally {
-            btnSubirTest.disabled = false;
-            btnSubirTest.textContent = "Subir y Guardar Test";
-          }
-        };
-        reader.readAsText(archivo);
+        let json;
+        try {
+          json = JSON.parse(jsonTexto);
+        } catch (pe) {
+          throw new Error(`El archivo o texto no es un JSON válido: ${pe.message}`);
+        }
+
+        const resp = await fetch("/api/tests/subir", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            idAsignatura: asigId,
+            asignaturaId: asigId,
+            nombreArchivo: archivo?.name || "test.json",
+            preguntas: json
+          })
+        });
+        const res = await resp.json();
+        if (resp.ok && res.ok) {
+          toast(`✓ Test añadido con éxito (${res.totalPreguntas} preguntas en ${asigId}).`);
+          modal.classList.add("hidden");
+          if (fileInput) fileInput.value = "";
+          if (textareaJson) textareaJson.value = "";
+          await loadCatalog();
+          await loadSubject(asigId);
+          renderStart();
+        } else {
+          toast(`Error: ${res.error || "Fallo al subir banco"}`);
+        }
       } catch (err) {
         toast(`Error: ${err.message}`);
+      } finally {
         btnSubirTest.disabled = false;
-        btnSubirTest.textContent = "Subir y Guardar Test";
+        btnSubirTest.textContent = "Guardar Test en el Banco Oficial";
       }
     });
   }
