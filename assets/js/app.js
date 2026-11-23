@@ -1691,6 +1691,7 @@ const SupabaseConfig = (() => {
 const SupabaseProgreso = (() => {
   let isSyncing = false;
   let autoSyncTimer = null;
+  let tablaProgresoDisponible = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("supabase_has_progreso_tests") === "false") ? false : null;
 
   function updateSyncStatusUI(text) {
     const statusEl = document.querySelector("#sync-cloud-status");
@@ -1715,18 +1716,25 @@ const SupabaseProgreso = (() => {
       const localStats = typeof getStats === "function" ? getStats() : {};
       const localSession = typeof getSession === "function" ? getSession() : null;
 
-      // Intentar leer de la tabla del schema "grados-informaticos" de forma segura
+      // Intentar leer de la tabla del schema "grados-informaticos" solo si está disponible
       let schemaProgress = null;
-      try {
-        const res = await c.schema("grados-informaticos")
-          .from("progreso_tests")
-          .select("*")
-          .eq("usuario_id", currentUser.id);
-        if (res && !res.error && Array.isArray(res.data) && res.data.length > 0) {
-          schemaProgress = res.data[0];
+      if (tablaProgresoDisponible !== false) {
+        try {
+          const res = await c.schema("grados-informaticos")
+            .from("progreso_tests")
+            .select("*")
+            .eq("usuario_id", currentUser.id);
+          if (res && !res.error && Array.isArray(res.data) && res.data.length > 0) {
+            schemaProgress = res.data[0];
+            tablaProgresoDisponible = true;
+          } else if (res?.error && (res.error.code === "PGRST205" || res.error.message?.includes("not find the table") || res.status === 404)) {
+            tablaProgresoDisponible = false;
+            try { sessionStorage.setItem("supabase_has_progreso_tests", "false"); } catch (_) {}
+          }
+        } catch (errDb) {
+          tablaProgresoDisponible = false;
+          try { sessionStorage.setItem("supabase_has_progreso_tests", "false"); } catch (_) {}
         }
-      } catch (errDb) {
-        console.warn("Aviso: no se pudo consultar progreso_tests en el esquema grados-informaticos:", errDb?.message || errDb);
       }
 
       const cloudProgress = schemaProgress?.historial
@@ -1758,34 +1766,50 @@ const SupabaseProgreso = (() => {
         }
       }
 
-      const payload = {
-        updatedAt: new Date().toISOString(),
-        history: mergedHistory,
-        wrongIds: mergedWrong,
-        stats: mergedStats,
-        session: localSession,
-        countPracticadas: Object.keys(mergedHistory).length
-      };
+      const countPracticadas = Object.keys(mergedHistory).length;
 
-      // 1. Guardar en tabla del schema grados-informaticos
-      try {
-        await c.schema("grados-informaticos").from("progreso_tests").upsert({
-          usuario_id: currentUser.id,
-          email: currentUser.email,
-          asignatura_id: (window.state?.subjectId || "general"),
-          historial: mergedHistory,
-          fallos: mergedWrong,
-          estadisticas: mergedStats,
-          actualizado_en: new Date().toISOString()
-        }, { onConflict: "usuario_id,asignatura_id" });
-      } catch (dbErr) {
-        console.log("[SupabaseProgreso] Info schema:", dbErr?.message || dbErr);
+      // 1. Guardar en tabla si está disponible
+      if (tablaProgresoDisponible !== false) {
+        try {
+          const resUpsert = await c.schema("grados-informaticos").from("progreso_tests").upsert({
+            usuario_id: currentUser.id,
+            email: currentUser.email,
+            asignatura_id: (window.state?.subjectId || "general"),
+            historial: mergedHistory,
+            fallos: mergedWrong,
+            estadisticas: mergedStats,
+            actualizado_en: new Date().toISOString()
+          }, { onConflict: "usuario_id,asignatura_id" });
+
+          if (resUpsert?.error && (resUpsert.error.code === "PGRST205" || resUpsert.error.message?.includes("not find the table") || resUpsert.status === 404)) {
+            tablaProgresoDisponible = false;
+            try { sessionStorage.setItem("supabase_has_progreso_tests", "false"); } catch (_) {}
+          }
+        } catch (_) {
+          tablaProgresoDisponible = false;
+          try { sessionStorage.setItem("supabase_has_progreso_tests", "false"); } catch (_) {}
+        }
       }
 
-      // 2. No guardar el historial completo en user_metadata para no inflar el token JWT de Supabase (>8KB causa 520 en Cloudflare)
-      // El progreso completo ya está guardado en la tabla progreso_tests.
+      // 2. Si la tabla no está creada en Supabase, guardar resumen ligero en user_metadata (< 1KB, sin saturar JWT)
+      if (tablaProgresoDisponible === false && c.auth?.updateUser) {
+        try {
+          const resumenLigero = {
+            stats: mergedStats,
+            wrongIds: mergedWrong.slice(-30),
+            countPracticadas,
+            updatedAt: new Date().toISOString()
+          };
+          const { data: updateData, error: updateErr } = await c.auth.updateUser({
+            data: { test_progress: resumenLigero }
+          });
+          if (!updateErr && updateData?.user && window.SupabaseAuth) {
+            window.SupabaseAuth.setCurrentUser(updateData.user);
+          }
+        } catch (_) {}
+      }
 
-      // 3. Aplicar al estado local (caché siempre actualizado)
+      // 3. Aplicar al estado local (caché local siempre completa y persistida)
       if (typeof setHistory === "function") setHistory(mergedHistory);
       if (typeof setWrongIds === "function") setWrongIds(mergedWrong);
       if (typeof setStats === "function") setStats(mergedStats);
@@ -1795,14 +1819,13 @@ const SupabaseProgreso = (() => {
         localStorage.setItem("preparar_tests_ultima_sync", new Date().toISOString());
       } catch (_) {}
 
-      updateSyncStatusUI(`Sincronizado (${payload.countPracticadas} preguntas)`);
-      console.log(`[SupabaseProgreso] Sincronizado con Supabase (${payload.countPracticadas} preguntas)`);
+      updateSyncStatusUI(`Sincronizado (${countPracticadas} preguntas)`);
     } catch (e) {
-      console.error("[SupabaseProgreso] Error al sincronizar:", e);
+      console.warn("[SupabaseProgreso] Aviso al sincronizar:", e?.message || e);
       try {
         localStorage.setItem("preparar_tests_sync_pendiente", "true");
       } catch (_) {}
-      updateSyncStatusUI("Guardado en caché (pendiente Supabase)");
+      updateSyncStatusUI("Guardado en caché (local)");
     } finally {
       isSyncing = false;
     }
@@ -3001,27 +3024,49 @@ const WEC_ESTRUCTURA_TEMAS = [
 
 function formatearFiltroLegible(filter) {
   if (!filter || filter === "all") return "Test completo (Ambas)";
-  if (filter.startsWith("tema:")) {
-    const parts = filter.split(":");
+  if (typeof filter === "object" && filter !== null) {
+    if (filter.nombre) return String(filter.nombre);
+    if (filter.titulo) return String(filter.titulo);
+    const partes = [];
+    if (filter.examen && filter.examen !== "all") partes.push(filter.examen);
+    if (filter.tema && filter.tema !== "all") {
+      let t = `Tema ${filter.tema}`;
+      if (filter.subapartado && filter.subapartado !== "all") t += `.${filter.subapartado}`;
+      partes.push(t);
+    }
+    if (filter.categoria && filter.categoria !== "all") {
+      partes.push(filter.categoria === "codigo" ? "Código" : (filter.categoria === "teoria" ? "Teoría" : filter.categoria));
+    }
+    if (filter.repaso && filter.repaso !== "todas") {
+      partes.push(filter.repaso === "fallos" ? "Fallos" : (filter.repaso === "faltan" ? "Por practicar" : filter.repaso));
+    }
+    if (partes.length) return partes.join(" · ");
+    if (Array.isArray(filter.temas) && filter.temas.length) return `Temas: ${filter.temas.join(", ")}`;
+    return "Test personalizado";
+  }
+  const fStr = typeof filter === "string" ? filter : String(filter || "");
+  if (!fStr || fStr === "all") return "Test completo (Ambas)";
+  if (fStr.startsWith("tema:")) {
+    const parts = fStr.split(":");
     const t = parts[1];
     const sub = parts[2];
     if (sub === "codigo") return `Tema ${t} · Solo código y desarrollo`;
     if (sub === "teoria") return `Tema ${t} · Solo teoría`;
     return `Tema ${t}`;
   }
-  if (filter.startsWith("apartado:")) {
-    const [, t, ap, sub] = filter.split(":");
+  if (fStr.startsWith("apartado:")) {
+    const [, t, ap, sub] = fStr.split(":");
     if (sub === "codigo") return `Apartado ${t}.${ap} · Solo código`;
     if (sub === "teoria") return `Apartado ${t}.${ap} · Solo teoría`;
     return `Apartado ${t}.${ap}`;
   }
-  if (filter === "codigo") return "Solo código de examen";
-  if (filter === "teoria") return "Solo teoría";
-  if (filter === "desarrollo") return "Retos de desarrollo y funciones (Corrección IA)";
-  if (filter === "escribir_codigo") return "Escribir funciones complejas para un 10";
-  if (filter === "traza_linea") return "Traza línea a línea (Event Loop)";
-  if (filter === "fallos") return "Repaso de fallos";
-  return filter;
+  if (fStr === "codigo") return "Solo código de examen";
+  if (fStr === "teoria") return "Solo teoría";
+  if (fStr === "desarrollo") return "Retos de desarrollo y funciones (Corrección IA)";
+  if (fStr === "escribir_codigo") return "Escribir funciones complejas para un 10";
+  if (fStr === "traza_linea") return "Traza línea a línea (Event Loop)";
+  if (fStr === "fallos") return "Repaso de fallos";
+  return fStr;
 }
 
 function construirArbolDashboardHTML() {

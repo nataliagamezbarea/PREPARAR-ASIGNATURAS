@@ -57,27 +57,49 @@ const WEC_ESTRUCTURA_TEMAS = [
 
 function formatearFiltroLegible(filter) {
   if (!filter || filter === "all") return "Test completo (Ambas)";
-  if (filter.startsWith("tema:")) {
-    const parts = filter.split(":");
+  if (typeof filter === "object" && filter !== null) {
+    if (filter.nombre) return String(filter.nombre);
+    if (filter.titulo) return String(filter.titulo);
+    const partes = [];
+    if (filter.examen && filter.examen !== "all") partes.push(filter.examen);
+    if (filter.tema && filter.tema !== "all") {
+      let t = `Tema ${filter.tema}`;
+      if (filter.subapartado && filter.subapartado !== "all") t += `.${filter.subapartado}`;
+      partes.push(t);
+    }
+    if (filter.categoria && filter.categoria !== "all") {
+      partes.push(filter.categoria === "codigo" ? "Código" : (filter.categoria === "teoria" ? "Teoría" : filter.categoria));
+    }
+    if (filter.repaso && filter.repaso !== "todas") {
+      partes.push(filter.repaso === "fallos" ? "Fallos" : (filter.repaso === "faltan" ? "Por practicar" : filter.repaso));
+    }
+    if (partes.length) return partes.join(" · ");
+    if (Array.isArray(filter.temas) && filter.temas.length) return `Temas: ${filter.temas.join(", ")}`;
+    return "Test personalizado";
+  }
+  const fStr = typeof filter === "string" ? filter : String(filter || "");
+  if (!fStr || fStr === "all") return "Test completo (Ambas)";
+  if (fStr.startsWith("tema:")) {
+    const parts = fStr.split(":");
     const t = parts[1];
     const sub = parts[2];
     if (sub === "codigo") return `Tema ${t} · Solo código y desarrollo`;
     if (sub === "teoria") return `Tema ${t} · Solo teoría`;
     return `Tema ${t}`;
   }
-  if (filter.startsWith("apartado:")) {
-    const [, t, ap, sub] = filter.split(":");
+  if (fStr.startsWith("apartado:")) {
+    const [, t, ap, sub] = fStr.split(":");
     if (sub === "codigo") return `Apartado ${t}.${ap} · Solo código`;
     if (sub === "teoria") return `Apartado ${t}.${ap} · Solo teoría`;
     return `Apartado ${t}.${ap}`;
   }
-  if (filter === "codigo") return "Solo código de examen";
-  if (filter === "teoria") return "Solo teoría";
-  if (filter === "desarrollo") return "Retos de desarrollo y funciones (Corrección IA)";
-  if (filter === "escribir_codigo") return "Escribir funciones complejas para un 10";
-  if (filter === "traza_linea") return "Traza línea a línea (Event Loop)";
-  if (filter === "fallos") return "Repaso de fallos";
-  return filter;
+  if (fStr === "codigo") return "Solo código de examen";
+  if (fStr === "teoria") return "Solo teoría";
+  if (fStr === "desarrollo") return "Retos de desarrollo y funciones (Corrección IA)";
+  if (fStr === "escribir_codigo") return "Escribir funciones complejas para un 10";
+  if (fStr === "traza_linea") return "Traza línea a línea (Event Loop)";
+  if (fStr === "fallos") return "Repaso de fallos";
+  return fStr;
 }
 
 function construirArbolDashboardHTML() {
