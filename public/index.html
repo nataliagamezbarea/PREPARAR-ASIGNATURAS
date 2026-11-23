@@ -7,17 +7,25 @@
 <script>
 (function() {
   try {
+    var hasAuthTokens = window.location.hash.includes("access_token=") ||
+                        window.location.hash.includes("refresh_token=") ||
+                        window.location.search.includes("code=");
     var m = document.cookie.match(/(?:^|; )auth_origin_app=([^;]*)/);
     var authOrigin = m ? decodeURIComponent(m[1]) : (localStorage.getItem("auth_origin_app") || "");
     if (authOrigin && (authOrigin.includes("generador-apuntes") || authOrigin.includes(":8002"))) {
-      document.cookie = "auth_origin_app=; path=/; max-age=0";
-      try { localStorage.removeItem("auth_origin_app"); } catch (_) {}
-      var destino = new URL(authOrigin);
-      if (!window.location.search.includes("error=")) {
-        destino.search = window.location.search;
+      if (hasAuthTokens) {
+        document.cookie = "auth_origin_app=; path=/; max-age=0";
+        try { localStorage.removeItem("auth_origin_app"); } catch (_) {}
+        var destino = new URL(authOrigin);
+        if (!window.location.search.includes("error=")) {
+          destino.search = window.location.search;
+        }
+        destino.hash = window.location.hash;
+        window.location.replace(destino.toString());
+      } else {
+        document.cookie = "auth_origin_app=; path=/; max-age=0";
+        try { localStorage.removeItem("auth_origin_app"); } catch (_) {}
       }
-      destino.hash = window.location.hash;
-      window.location.replace(destino.toString());
     }
   } catch (_) {}
 })();
@@ -107,6 +115,10 @@
         <i class="fa-solid fa-book-open" aria-hidden="true"></i>
         <span>Tests desde apuntes</span>
       </button>
+      <a class="btn tiny" id="btn-ir-generador-apuntes" href="http://localhost:8002" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;" title="Ir al Generador de Apuntes (Cuaderno IA)">
+        <i class="fa-solid fa-pen-nib" aria-hidden="true"></i>
+        <span>Generar apuntes</span>
+      </a>
       <button class="btn tiny" id="btn-gestionar-asignaturas" type="button" style="display:inline-flex;align-items:center;gap:6px;" title="Crear asignatura y subir tests JSON">
         <i class="fa-solid fa-folder-plus" aria-hidden="true"></i>
         <span>Asignaturas y Tests</span>

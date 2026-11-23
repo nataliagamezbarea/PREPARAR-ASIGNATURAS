@@ -161,8 +161,12 @@ const SupabaseGestionAuth = (() => {
         const m = document.cookie.match(new RegExp("(?:^|; )" + nombre + "=([^;]*)"));
         return m ? decodeURIComponent(m[1]) : null;
       }
+      const tieneTokenOAuth =
+        window.location.hash.includes("access_token=") ||
+        window.location.hash.includes("refresh_token=") ||
+        window.location.search.includes("code=");
       const authOrigin = localStorage.getItem("auth_origin_app") || leerCookie("auth_origin_app");
-      if (authOrigin && (authOrigin.includes("generador-apuntes") || authOrigin.includes(":8002"))) {
+      if (tieneTokenOAuth && authOrigin && (authOrigin.includes("generador-apuntes") || authOrigin.includes(":8002"))) {
         document.cookie = "auth_origin_app=; path=/; max-age=0";
         localStorage.removeItem("auth_origin_app");
         const destino = new URL(authOrigin);
@@ -173,6 +177,9 @@ const SupabaseGestionAuth = (() => {
         destino.hash = window.location.hash;
         window.location.replace(destino.toString());
         return false;
+      } else {
+        document.cookie = "auth_origin_app=; path=/; max-age=0";
+        try { localStorage.removeItem("auth_origin_app"); } catch (_) {}
       }
     } catch (_) {}
 

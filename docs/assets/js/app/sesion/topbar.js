@@ -143,6 +143,15 @@ function inicializarTopbar() {
     });
   }
 
+  // 4.1. Enlace directo a Generador de Apuntes (Cuaderno IA)
+  const btnIrApuntes = document.getElementById("btn-ir-generador-apuntes");
+  if (btnIrApuntes) {
+    const esLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    btnIrApuntes.href = esLocal
+      ? "http://localhost:8002"
+      : (window.APP_CONFIG?.urlApuntes || "https://nataliagamezbarea.github.io/generador-apuntes/");
+  }
+
   // 5. Opciones de práctica y sincronización de caché (Barajar y Corrección inmediata)
   const shuffleToggle = $("#shuffle-toggle");
   if (shuffleToggle) {

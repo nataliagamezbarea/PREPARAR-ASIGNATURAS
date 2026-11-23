@@ -1804,8 +1804,12 @@ const SupabaseGestionAuth = (() => {
         const m = document.cookie.match(new RegExp("(?:^|; )" + nombre + "=([^;]*)"));
         return m ? decodeURIComponent(m[1]) : null;
       }
+      const tieneTokenOAuth =
+        window.location.hash.includes("access_token=") ||
+        window.location.hash.includes("refresh_token=") ||
+        window.location.search.includes("code=");
       const authOrigin = localStorage.getItem("auth_origin_app") || leerCookie("auth_origin_app");
-      if (authOrigin && (authOrigin.includes("generador-apuntes") || authOrigin.includes(":8002"))) {
+      if (tieneTokenOAuth && authOrigin && (authOrigin.includes("generador-apuntes") || authOrigin.includes(":8002"))) {
         document.cookie = "auth_origin_app=; path=/; max-age=0";
         localStorage.removeItem("auth_origin_app");
         const destino = new URL(authOrigin);
@@ -1816,6 +1820,9 @@ const SupabaseGestionAuth = (() => {
         destino.hash = window.location.hash;
         window.location.replace(destino.toString());
         return false;
+      } else {
+        document.cookie = "auth_origin_app=; path=/; max-age=0";
+        try { localStorage.removeItem("auth_origin_app"); } catch (_) {}
       }
     } catch (_) {}
 
@@ -3577,6 +3584,15 @@ function inicializarTopbar() {
       const asig = state.subject?.nombre || state.subject?.id || "";
       window.abrirPracticaDesdeApuntes?.(asig);
     });
+  }
+
+  // 4.1. Enlace directo a Generador de Apuntes (Cuaderno IA)
+  const btnIrApuntes = document.getElementById("btn-ir-generador-apuntes");
+  if (btnIrApuntes) {
+    const esLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    btnIrApuntes.href = esLocal
+      ? "http://localhost:8002"
+      : (window.APP_CONFIG?.urlApuntes || "https://nataliagamezbarea.github.io/generador-apuntes/");
   }
 
   // 5. Opciones de práctica y sincronización de caché (Barajar y Corrección inmediata)
